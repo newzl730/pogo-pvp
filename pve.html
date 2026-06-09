@@ -127,6 +127,7 @@ function renderSide(){
   let h='<div class="navlbl">攻击属性</div>';
   DATA.types.forEach((t,i)=>{h+=`<div class="nav${i===cur&&mode==='type'?' on':''}" onclick="selType(${i})"><span class="dot" style="background:${TYPECOLOR[t.type]}"></span><div>${t.typeCn}系<small> ${(t.attackers||[]).length}只</small></div></div>`;});
   h+='<div class="navlbl">工具 / 参考</div>';
+  h+=`<div class="nav${mode==='bosses'?' on':''}" onclick="selBosses()"><span class="dot" style="background:var(--bad)"></span><div>当前 Boss<small>现役 boss 用啥打</small></div></div>`;
   h+=`<div class="nav${mode==='counter'?' on':''}" onclick="selCounter()"><span class="dot" style="background:var(--accent2)"></span><div>克制查询<small>按 boss 属性查 counter</small></div></div>`;
   h+=`<div class="nav${mode==='basics'?' on':''}" onclick="selBasics()"><span class="dot" style="background:var(--accent)"></span><div>机制速查<small>相克/DPS/天气/暗影</small></div></div>`;
   $("side").innerHTML=h;
@@ -188,6 +189,45 @@ $("ov").onclick=e=>{if(e.target===$("ov"))closeOv();};
 addEventListener("keydown",e=>{if(e.key==="Escape")closeOv();});
 
 // ---- counter lookup ----
+// ---- current raid bosses (2026-06 snapshot; rotates weekly) ----
+const CURRENTBOSSES=[
+ {tier:'5★ 传说',en:'Reshiram',cn:'莱希拉姆',dex:643,t:['Dragon','Fire']},
+ {tier:'超进化 Mega',en:'Mega Audino',cn:'超级差不多娃娃',dex:531,t:['Normal','Fairy']},
+ {tier:'5★ 暗影',en:'Shadow Dialga',cn:'暗影帝牙卢卡',dex:483,t:['Steel','Dragon']},
+ {tier:'3★',en:'Galarian Weezing',cn:'伽勒尔双弹瓦斯',dex:110,t:['Poison','Fairy']},
+ {tier:'3★',en:'Togetic',cn:'波克基古',dex:176,t:['Fairy','Flying']},
+ {tier:'3★ 暗影',en:'Shadow Alolan Marowak',cn:'暗影阿罗拉嘎啦嘎啦',dex:105,t:['Fire','Ghost']},
+ {tier:'3★ 暗影',en:'Shadow Hitmonlee',cn:'暗影飞腿郎',dex:106,t:['Fighting']},
+ {tier:'3★ 暗影',en:'Shadow Gligar',cn:'暗影天蝎',dex:207,t:['Ground','Flying']},
+ {tier:'1★',en:'Galarian Meowth',cn:'伽勒尔喵喵',dex:52,t:['Steel']},
+ {tier:'1★',en:'Chimecho',cn:'风铃铃',dex:358,t:['Psychic']},
+ {tier:'1★',en:'Galarian Stunfisk',cn:'伽勒尔泥巴鱼',dex:618,t:['Ground','Steel']},
+ {tier:'1★',en:'Hatenna',cn:'迷布莉姆',dex:856,t:['Psychic']},
+ {tier:'1★ 暗影',en:'Shadow Horsea',cn:'暗影墨海马',dex:116,t:['Water']},
+ {tier:'1★ 暗影',en:'Shadow Porygon',cn:'暗影多边兽',dex:137,t:['Normal']},
+ {tier:'1★ 暗影',en:'Shadow Beldum',cn:'暗影铁哑铃',dex:374,t:['Steel','Psychic']},
+ {tier:'1★ 暗影',en:'Shadow Golett',cn:'暗影泥偶小人',dex:622,t:['Ground','Ghost']},
+];
+const TIER_ORDER=['5★ 传说','超进化 Mega','5★ 暗影','3★','3★ 暗影','1★','1★ 暗影'];
+function selBosses(){mode='bosses';renderSide();renderBosses();scrollTo(0,0);}
+function renderBosses(){
+  let h='<div class="lg-head"><h2>当前团战 Boss</h2></div><div class="muted" style="margin-bottom:6px">2026 年 6 月快照（boss 每周轮换）。点 boss → 看推荐 counter。找不到的用「克制查询」搜名字。</div>';
+  for(const tier of TIER_ORDER){
+    const list=CURRENTBOSSES.filter(b=>b.tier===tier);if(!list.length)continue;
+    h+=`<div class="secttl">${tier}</div><div class="agrid">`;
+    for(const b of list){
+      h+=`<div class="acard" onclick='gotoBoss(${JSON.stringify(b).replace(/'/g,"&#39;")})'>
+        <img loading="lazy" src="${sprite(b.dex)}" onerror="this.src=FB">
+        <div style="min-width:0"><div class="nm">${esc(b.cn||b.en)}</div><div class="en">${esc(b.en)}</div>
+        <div class="badges">${b.t.map(ty=>`<span class="tbadge" style="background:${TYPECOLOR[ty]||'#666'};color:#fff">${TYPECN[ty]||ty}</span>`).join('')}</div></div></div>`;
+    }
+    h+='</div>';
+  }
+  $("main").innerHTML=h;
+}
+function gotoBoss(b){cb1=b.t[0];cb2=b.t[1]||'';mode='counter';renderSide();renderCounter();
+  $("cbsel").innerHTML=`🎯 Boss：<b>${b.cn?esc(b.cn)+' / ':''}${esc(b.en)}</b>（${b.t.map(x=>`<span style="color:${TYPECOLOR[x]}">${TYPECN[x]||x}</span>`).join(' / ')}）`;}
+
 let cb1=null,cb2='';
 function selCounter(){mode='counter';renderSide();renderCounter();scrollTo(0,0);}
 let _cbf=[];
