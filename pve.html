@@ -128,6 +128,7 @@ function renderSide(){
   DATA.types.forEach((t,i)=>{h+=`<div class="nav${i===cur&&mode==='type'?' on':''}" onclick="selType(${i})"><span class="dot" style="background:${TYPECOLOR[t.type]}"></span><div>${t.typeCn}系<small> ${(t.attackers||[]).length}只</small></div></div>`;});
   h+='<div class="navlbl">工具 / 参考</div>';
   h+=`<div class="nav${mode==='bosses'?' on':''}" onclick="selBosses()"><span class="dot" style="background:var(--bad)"></span><div>当前 Boss<small>现役 boss 用啥打</small></div></div>`;
+  h+=`<div class="nav${mode==='shadow'?' on':''}" onclick="selShadow()"><span class="dot" style="background:#9b6cff"></span><div>暗影净化<small>哪些留/哪些净化排行</small></div></div>`;
   h+=`<div class="nav${mode==='counter'?' on':''}" onclick="selCounter()"><span class="dot" style="background:var(--accent2)"></span><div>克制查询<small>按 boss 属性查 counter</small></div></div>`;
   h+=`<div class="nav${mode==='basics'?' on':''}" onclick="selBasics()"><span class="dot" style="background:var(--accent)"></span><div>机制速查<small>相克/DPS/天气/暗影</small></div></div>`;
   $("side").innerHTML=h;
@@ -227,6 +228,39 @@ function renderBosses(){
 }
 function gotoBoss(b){cb1=b.t[0];cb2=b.t[1]||'';mode='counter';renderSide();renderCounter();
   $("cbsel").innerHTML=`🎯 Boss：<b>${b.cn?esc(b.cn)+' / ':''}${esc(b.en)}</b>（${b.t.map(x=>`<span style="color:${TYPECOLOR[x]}">${TYPECN[x]||x}</span>`).join(' / ')}）`;}
+
+// ---- shadow keep/purify ranking (computed from type attacker lists) ----
+function selShadow(){mode='shadow';renderSide();renderShadow();scrollTo(0,0);}
+const TR={'S+':0,'S':1,'A':2,'B':3};
+function renderShadow(){
+  const map={};
+  for(const t of DATA.types) for(const a of (t.attackers||[])){
+    if(!/shadow|暗影/i.test(a.form||'')) continue;
+    const k=a.ref;
+    if(!map[k]) map[k]={ref:k,cn:a.cn,en:a.name,dex:a.dex,tier:a.tier,types:[],a};
+    if((TR[a.tier]??9)<(TR[map[k].tier]??9)) {map[k].tier=a.tier;map[k].a=a;}
+    if(!map[k].types.includes(t.typeCn)) map[k].types.push(t.typeCn);
+  }
+  const keep=Object.values(map).sort((x,y)=>(TR[x.tier]??9)-(TR[y.tier]??9)||(x.dex||9999)-(y.dex||9999));
+  let h=`<div class="lg-head"><h2>暗影 保留 / 净化 排行</h2></div>
+  <div class="box" style="margin-bottom:14px;line-height:1.7">
+   <b style="color:var(--good)">✅ 保留暗影（别净化）</b>：<b>进攻型</b>——团战/PvE 主力。暗影 <b>攻 +20%</b>，DPS 质变，是绝大多数输出位的最佳形态。下面榜单里的都建议留着当暗影。<br>
+   <b style="color:var(--warn)">♻️ 净化的情况</b>：① 你要它做 <b>PvP 肉墙/坦克</b>（暗影防 -17%，很多 GL/UL 墙净化版更强）；② 想 <b>更便宜强化 + IV 各 +2</b>；③ 想清 <b>挫志(Frustration)</b> 又错过活动（净化直接换 Return）；④ 它<b>不是有名攻击手</b>，净化收编/交换。<br>
+   <span class="muted">一句话：能打输出的留暗影，做防守/省资源/PvP 肉墙的净化。</span>
+  </div>
+  <div class="muted" style="margin-bottom:8px">↓ 以下是<b>值得保留为暗影</b>的团战输出手（按 tier 排，点看详情）。不在榜上的暗影，多数可按上面规则净化。</div>`;
+  h+=`<div class="agrid">`;
+  for(const m of keep){
+    const a=Object.assign({},m.a,{_tcn:m.types[0]});
+    h+=`<div class="acard" onclick='openMon(${JSON.stringify(a).replace(/'/g,"&#39;")})'>
+      <img loading="lazy" src="${sprite(m.dex)}" onerror="this.src=FB">
+      <div style="min-width:0"><div class="nm">${esc(m.cn||m.en)}</div><div class="en">${esc(m.en)}${m.dex?' #'+m.dex:''}</div>
+      <div class="badges"><span class="tier tier-${m.tier==='S+'?'Sp':m.tier}">${esc(m.tier)}</span><span class="form form-shadow">暗影</span></div>
+      <div class="mv">${m.types.map(x=>x+'系').join(' · ')}</div></div></div>`;
+  }
+  h+='</div>';
+  $("main").innerHTML=h;
+}
 
 let cb1=null,cb2='';
 function selCounter(){mode='counter';renderSide();renderCounter();scrollTo(0,0);}
