@@ -197,8 +197,9 @@ const normEn=s=>(s||'').toLowerCase().replace(/[^a-z]/g,'');
 // unique pokemon across all leagues (for IV reverse lookup); remember which leagues each appears in
 const ALLP=(()=>{const m=new Map();DATA.leagues.forEach((lg,li)=>lg.pokemon.forEach((p,pi)=>{if(!p.base)return;const k=normEn(p.en);if(!m.has(k))m.set(k,{cn:p.cn,en:p.en,dex:p.dex,base:p.base,where:[]});m.get(k).where.push([li,pi]);}));return[...m.values()].sort((a,b)=>(a.dex||9999)-(b.dex||9999));})();
 let mode='league',curLeague=0,teamView='best';
-let iq={a:0,d:15,h:15,maxL:50,sort:'c1500',asc:true,q:'',lg:{c1500:true,c2500:true,cM:true}};
+let iq={a:0,d:15,h:15,maxL:50,sort:'c1500',asc:true,q:'',lg:{c1500:true,c2500:true,cM:true},badge:{}};
 const IQL=[['c1500',1500,'超级1500','var(--great)'],['c2500',2500,'高级2500','var(--ultra)'],['cM',null,'大师∞','var(--master)']];
+const BADGES=[...new Set(DATA.leagues.map(shortLeague))];
 
 function cleanTitle(t){return (t||'').replace(/^(\d+[\.、]\s*|阵容[一二三四五六]?\s*[:：]?\s*|上分[一二三四五六]?\s*[:：]?\s*)/,'').trim();}
 function parseMoves(s){s=s||'';const i=s.indexOf('+');let fast='',charged=[];if(i>=0){fast=s.slice(0,i).trim();charged=s.slice(i+1).split(/[\/、,]/).map(x=>x.trim()).filter(Boolean);}else{charged=s.split(/[\/、,]/).map(x=>x.trim()).filter(Boolean);}return{fast,charged};}
@@ -340,13 +341,15 @@ function tierColor(r){if(r<=10)return'var(--good)';if(r<=50)return'var(--accent)
 function rankCell(base,cap){return fastRank(base,cap===null?Infinity:cap,iq.maxL,iq.a,iq.d,iq.h);}
 function cellHtml(c){return `<td><span class="rk" style="background:${tierColor(c.rank)}" title="等级 L${c.L||'—'}${c.L>40?' 需XL':''} · CP ${c.master?'—':c.CP} · 满配 ${c.pct.toFixed(1)}%">#${c.rank}</span></td>`;}
 function renderIvQuery(){
+  if(!Object.keys(iq.badge).length) BADGES.forEach(b=>iq.badge[b]=true);
   let h=`<div class="lg-head"><h2>IV 反查</h2></div>
   <div class="muted" style="margin-bottom:10px">输入一个 IV，一次看到它在全部 ${ALLP.length} 只宝可梦、各 CP 联赛下的排名（点列头排序，点宝可梦看详情）。</div>
   <div class="calc" style="max-width:560px">
     <div class="ivrow"><label>攻击 Atk</label><input type="range" id="qa" min="0" max="15" value="${iq.a}"><div class="v" id="qav">${iq.a}</div></div>
     <div class="ivrow"><label>防御 Def</label><input type="range" id="qd" min="0" max="15" value="${iq.d}"><div class="v" id="qdv">${iq.d}</div></div>
     <div class="ivrow"><label>体力 HP</label><input type="range" id="qh" min="0" max="15" value="${iq.h}"><div class="v" id="qhv">${iq.h}</div></div>
-    <div class="opt"><span>联赛(可多选)</span>${IQL.map(([key,cap,label,color])=>`<span class="lgtog${iq.lg[key]?'':' off'}" id="lgbtn_${key}" onclick="toggleLg('${key}')"><span class="lgdot" style="background:${color}"></span>${label}</span>`).join('')}</div>
+    <div class="opt"><span>出场杯赛(筛宝可梦)</span>${BADGES.map(b=>`<span class="lgtog${iq.badge[b]?'':' off'}" id="bdg_${b}" onclick="toggleBadge('${b}')">${b}</span>`).join('')}</div>
+    <div class="opt"><span>排名列(可多选)</span>${IQL.map(([key,cap,label,color])=>`<span class="lgtog${iq.lg[key]?'':' off'}" id="lgbtn_${key}" onclick="toggleLg('${key}')"><span class="lgdot" style="background:${color}"></span>${label}</span>`).join('')}</div>
     <div class="opt"><span>强化</span><select id="qlv"><option value="40">L40 无XL</option><option value="50" selected>L50 XL</option></select>
       <label class="cbx"><input type="checkbox" id="qbb"> 最佳搭档<small style="color:var(--dim)">+1级</small></label>
       <input id="qsearch" placeholder="🔍 搜索宝可梦…" value="${iq.q}" style="flex:1;background:var(--panel3);border:1px solid var(--line);border-radius:7px;color:var(--txt);padding:5px 9px;font-size:12px;min-width:110px"></div>
@@ -362,12 +365,16 @@ function renderIvQuery(){
 let _iqT;function debouncedQuery(){clearTimeout(_iqT);_iqT=setTimeout(runIvQuery,130);}
 function sortIq(k){if(iq.sort===k)iq.asc=!iq.asc;else{iq.sort=k;iq.asc=true;}runIvQuery();}
 function toggleLg(k){iq.lg[k]=!iq.lg[k];if(!IQL.some(l=>iq.lg[l[0]]))iq.lg[k]=true;const el=$('lgbtn_'+k);if(el)el.classList.toggle('off',!iq.lg[k]);runIvQuery();}
+function toggleBadge(b){iq.badge[b]=!iq.badge[b];if(!BADGES.some(x=>iq.badge[x]))iq.badge[b]=true;const el=$('bdg_'+b);if(el)el.classList.toggle('off',!iq.badge[b]);runIvQuery();}
 function runIvQuery(){
   const act=IQL.filter(l=>iq.lg[l[0]]);
   if(iq.sort!=='dex' && !iq.lg[iq.sort]) iq.sort=act[0][0];
   const q=iq.q.toLowerCase().trim();
-  const rows=ALLP.filter(p=>!q||p.cn.toLowerCase().includes(q)||p.en.toLowerCase().includes(q)||(''+p.dex).includes(q))
-    .map(p=>{const o={p};for(const [key,cap] of act)o[key]=rankCell(p.base,cap);return o;});
+  const rows=ALLP.filter(p=>{
+    if(q && !(p.cn.toLowerCase().includes(q)||p.en.toLowerCase().includes(q)||(''+p.dex).includes(q))) return false;
+    const bs=new Set(p.where.map(w=>shortLeague(DATA.leagues[w[0]])));
+    return BADGES.some(b=>iq.badge[b]&&bs.has(b));
+  }).map(p=>{const o={p};for(const [key,cap] of act)o[key]=rankCell(p.base,cap);return o;});
   const key=iq.sort;
   rows.sort((x,y)=>{const a=key==='dex'?(x.p.dex||9999):x[key].rank,b=key==='dex'?(y.p.dex||9999):y[key].rank;return iq.asc?a-b:b-a;});
   const arrow=k=>iq.sort===k?(iq.asc?' ▲':' ▼'):'';
