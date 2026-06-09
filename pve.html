@@ -196,7 +196,8 @@ const BOSSUPDATED='2026-06-09';
 const TIER_ORDER=['5★ 传说','超进化 Mega','5★ 暗影','3★','3★ 暗影','1★','1★ 暗影'];
 function selBosses(){mode='bosses';renderSide();renderBosses();scrollTo(0,0);}
 function renderBosses(){
-  let h=`<div class="lg-head"><h2>团战 Boss 日历</h2></div><div class="muted" style="margin-bottom:6px">更新于 ${BOSSUPDATED} · 每天自动同步 leekduck/ScrapedDuck。点 boss → 看推荐 counter + 详情。找不到的用「克制查询」搜名字。</div>`;
+  let h=`<div class="lg-head"><h2>团战 Boss 日历</h2></div><div class="muted" style="margin-bottom:6px">更新于 ${BOSSUPDATED} · 每天自动同步 leekduck/ScrapedDuck。点 boss → 看推荐 counter + 详情。找不到的用「克制查询」搜名字。</div>
+  <div class="box" style="margin-bottom:12px;line-height:1.75"><b>🕐 团战时段（当地时间）</b><br>· 日常团战：约 <b>5:00 – 21:30</b>（道馆全天刷团战蛋/团战，傍晚渐少）<br>· <b>团战时刻 Raid Hour</b>：每周三 <b>18:00 – 19:00</b> —— 5★ 传说大量刷新，<b>线下保底 XL 糖</b><br>· 超进化时刻 Mega Raid Hour、特殊团战日/团战周末：另有官方公告时段</div>`;
   for(const tier of TIER_ORDER){
     const list=CURRENTBOSSES.filter(b=>b.tier===tier);if(!list.length)continue;
     h+=`<div class="secttl">${tier}</div><div class="agrid">`;
