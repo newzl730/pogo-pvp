@@ -137,6 +137,8 @@
   .lgb-cup{background:var(--cup);color:#06241d}
   .cbx{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--dim);cursor:pointer;white-space:nowrap}
   .cbx input{accent-color:var(--accent);margin:0}
+  .lgtog{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border:1px solid var(--line);border-radius:14px;font-size:12px;cursor:pointer;background:var(--panel3);user-select:none}
+  .lgtog.off{opacity:.38;filter:grayscale(1)}
   .basics-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
   .btab{padding:7px 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:12.5px}
   .btab.on{border-color:var(--accent);background:var(--panel3)}
@@ -195,7 +197,8 @@ const normEn=s=>(s||'').toLowerCase().replace(/[^a-z]/g,'');
 // unique pokemon across all leagues (for IV reverse lookup); remember which leagues each appears in
 const ALLP=(()=>{const m=new Map();DATA.leagues.forEach((lg,li)=>lg.pokemon.forEach((p,pi)=>{if(!p.base)return;const k=normEn(p.en);if(!m.has(k))m.set(k,{cn:p.cn,en:p.en,dex:p.dex,base:p.base,where:[]});m.get(k).where.push([li,pi]);}));return[...m.values()].sort((a,b)=>(a.dex||9999)-(b.dex||9999));})();
 let mode='league',curLeague=0,teamView='best';
-let iq={a:0,d:15,h:15,maxL:50,sort:'c1500',asc:true,q:''};
+let iq={a:0,d:15,h:15,maxL:50,sort:'c1500',asc:true,q:'',lg:{c1500:true,c2500:true,cM:true}};
+const IQL=[['c1500',1500,'超级1500','var(--great)'],['c2500',2500,'高级2500','var(--ultra)'],['cM',null,'大师∞','var(--master)']];
 
 function cleanTitle(t){return (t||'').replace(/^(\d+[\.、]\s*|阵容[一二三四五六]?\s*[:：]?\s*|上分[一二三四五六]?\s*[:：]?\s*)/,'').trim();}
 function parseMoves(s){s=s||'';const i=s.indexOf('+');let fast='',charged=[];if(i>=0){fast=s.slice(0,i).trim();charged=s.slice(i+1).split(/[\/、,]/).map(x=>x.trim()).filter(Boolean);}else{charged=s.split(/[\/、,]/).map(x=>x.trim()).filter(Boolean);}return{fast,charged};}
@@ -343,6 +346,7 @@ function renderIvQuery(){
     <div class="ivrow"><label>攻击 Atk</label><input type="range" id="qa" min="0" max="15" value="${iq.a}"><div class="v" id="qav">${iq.a}</div></div>
     <div class="ivrow"><label>防御 Def</label><input type="range" id="qd" min="0" max="15" value="${iq.d}"><div class="v" id="qdv">${iq.d}</div></div>
     <div class="ivrow"><label>体力 HP</label><input type="range" id="qh" min="0" max="15" value="${iq.h}"><div class="v" id="qhv">${iq.h}</div></div>
+    <div class="opt"><span>联赛(可多选)</span>${IQL.map(([key,cap,label,color])=>`<span class="lgtog${iq.lg[key]?'':' off'}" id="lgbtn_${key}" onclick="toggleLg('${key}')"><span class="lgdot" style="background:${color}"></span>${label}</span>`).join('')}</div>
     <div class="opt"><span>强化</span><select id="qlv"><option value="40">L40 无XL</option><option value="50" selected>L50 XL</option></select>
       <label class="cbx"><input type="checkbox" id="qbb"> 最佳搭档<small style="color:var(--dim)">+1级</small></label>
       <input id="qsearch" placeholder="🔍 搜索宝可梦…" value="${iq.q}" style="flex:1;background:var(--panel3);border:1px solid var(--line);border-radius:7px;color:var(--txt);padding:5px 9px;font-size:12px;min-width:110px"></div>
@@ -357,21 +361,24 @@ function renderIvQuery(){
 }
 let _iqT;function debouncedQuery(){clearTimeout(_iqT);_iqT=setTimeout(runIvQuery,130);}
 function sortIq(k){if(iq.sort===k)iq.asc=!iq.asc;else{iq.sort=k;iq.asc=true;}runIvQuery();}
+function toggleLg(k){iq.lg[k]=!iq.lg[k];if(!IQL.some(l=>iq.lg[l[0]]))iq.lg[k]=true;const el=$('lgbtn_'+k);if(el)el.classList.toggle('off',!iq.lg[k]);runIvQuery();}
 function runIvQuery(){
+  const act=IQL.filter(l=>iq.lg[l[0]]);
+  if(iq.sort!=='dex' && !iq.lg[iq.sort]) iq.sort=act[0][0];
   const q=iq.q.toLowerCase().trim();
   const rows=ALLP.filter(p=>!q||p.cn.toLowerCase().includes(q)||p.en.toLowerCase().includes(q)||(''+p.dex).includes(q))
-    .map(p=>({p,c1500:rankCell(p.base,1500),c2500:rankCell(p.base,2500),cM:rankCell(p.base,null)}));
+    .map(p=>{const o={p};for(const [key,cap] of act)o[key]=rankCell(p.base,cap);return o;});
   const key=iq.sort;
   rows.sort((x,y)=>{const a=key==='dex'?(x.p.dex||9999):x[key].rank,b=key==='dex'?(y.p.dex||9999):y[key].rank;return iq.asc?a-b:b-a;});
   const arrow=k=>iq.sort===k?(iq.asc?' ▲':' ▼'):'';
-  let t=`<table class="iqtable"><thead><tr>
-    <th onclick="sortIq('dex')" style="text-align:left">宝可梦${arrow('dex')}</th>
-    <th onclick="sortIq('c1500')"><span class="lgdot" style="background:var(--great)"></span>超级1500${arrow('c1500')}</th>
-    <th onclick="sortIq('c2500')"><span class="lgdot" style="background:var(--ultra)"></span>高级2500${arrow('c2500')}</th>
-    <th onclick="sortIq('cM')"><span class="lgdot" style="background:var(--master)"></span>大师∞${arrow('cM')}</th></tr></thead><tbody>`;
+  let t=`<table class="iqtable"><thead><tr><th onclick="sortIq('dex')" style="text-align:left">宝可梦${arrow('dex')}</th>`;
+  for(const [key,cap,label,color] of act) t+=`<th onclick="sortIq('${key}')"><span class="lgdot" style="background:${color}"></span>${label}${arrow(key)}</th>`;
+  t+=`</tr></thead><tbody>`;
   for(const r of rows){
     const w=r.p.where[0];
-    t+=`<tr><td class="pname" onclick="openPoke(${w[0]},${w[1]})"><img loading="lazy" src="${sprite(r.p.dex)}" onerror="this.src=FB"><span class="pnm"><span class="pcn">${esc(r.p.cn)}</span><small>${esc(r.p.en)} #${r.p.dex}</small></span><span class="lgbadges">${leagueBadges(r.p.where)}</span></td>${cellHtml(r.c1500)}${cellHtml(r.c2500)}${cellHtml(r.cM)}</tr>`;
+    t+=`<tr><td class="pname" onclick="openPoke(${w[0]},${w[1]})"><img loading="lazy" src="${sprite(r.p.dex)}" onerror="this.src=FB"><span class="pnm"><span class="pcn">${esc(r.p.cn)}</span><small>${esc(r.p.en)} #${r.p.dex}</small></span><span class="lgbadges">${leagueBadges(r.p.where)}</span></td>`;
+    for(const [key] of act) t+=cellHtml(r[key]);
+    t+=`</tr>`;
   }
   t+=`</tbody></table>`;
   if(!rows.length)t='<div class="muted">没有匹配的宝可梦</div>';
