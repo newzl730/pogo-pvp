@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon GO 极巨对战指南 · Max Battles</title>
+<style>
+:root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--panel3:#272c3b;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--gold:#ffcb05;--dmax:#ff3d6e;--dmax2:#ff7aa2;--good:#27c08a;--warn:#ff9f43}
+*{box-sizing:border-box}html{overflow-x:hidden}
+body{margin:0;background:radial-gradient(900px 500px at 50% -10%,rgba(255,61,110,.16),transparent 60%),radial-gradient(1200px 700px at 80% -15%,#1c1430,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.top{padding:13px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.92);backdrop-filter:blur(8px);z-index:20}
+.top h1{margin:0;font-size:18px}.top h1 b{color:var(--dmax)}
+.top nav{display:flex;gap:10px;flex-wrap:wrap;font-size:12px}
+.top nav a{color:var(--accent);text-decoration:none;white-space:nowrap}
+.beam{height:3px;background:linear-gradient(90deg,transparent,var(--dmax),var(--dmax2),var(--dmax),transparent);opacity:.8}
+.main{max-width:900px;margin:0 auto;padding:16px 14px 90px}
+.tabs{display:flex;gap:7px;margin:6px 0 16px;flex-wrap:wrap}
+.tabs button{background:var(--panel2);color:var(--dim);border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:13.5px;cursor:pointer;font-family:inherit}
+.tabs button.on{background:rgba(255,61,110,.16);border-color:var(--dmax);color:var(--dmax2);font-weight:700}
+.sect{display:none}.sect.on{display:block}
+.secttl{font-size:13px;color:var(--dim);margin:18px 0 9px;border-bottom:1px solid var(--line);padding-bottom:5px;letter-spacing:.5px}
+.rcard{display:flex;gap:11px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px;align-items:flex-start}
+.rcard.next{opacity:.85;border-style:dashed}
+.rcard img{width:58px;height:58px;object-fit:contain;background:var(--panel2);border-radius:11px;flex:none}
+.noimg{width:58px;height:58px;border-radius:11px;background:var(--panel2);display:flex;align-items:center;justify-content:center;color:var(--dmax);font-size:22px;flex:none}
+.rt{font-weight:700;font-size:14.5px;line-height:1.45}.re{font-size:11px;color:var(--dim);margin:2px 0 5px}
+.rm{display:flex;gap:5px;flex-wrap:wrap}.rn{font-size:12px;color:#cdd2df;margin-top:6px;line-height:1.6}
+.chip{font-size:10.5px;padding:2px 8px;border-radius:10px;background:var(--panel3);color:var(--txt)}
+.chip.hot{background:rgba(255,61,110,.18);border:1px solid var(--dmax);color:var(--dmax2);font-weight:700}
+.chip.dim{color:var(--dim)}
+.tcard{display:flex;gap:11px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;margin-bottom:9px}
+.tcard img{width:54px;height:54px;object-fit:contain;background:var(--panel2);border-radius:10px;flex:none}
+.tc-n{font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tc-e{font-size:11px;color:var(--dim);margin:3px 0 5px}
+.tc-w{font-size:12.5px;color:#cdd2df;line-height:1.65}
+.tb{font-size:10px;font-weight:800;color:#0e1016;border-radius:9px;padding:1px 8px}
+.tb.gmax{background:linear-gradient(90deg,var(--dmax),#a855f7);color:#fff}
+.advice{background:linear-gradient(135deg,rgba(255,61,110,.12),rgba(59,108,255,.08));border:1px solid var(--dmax);border-radius:13px;padding:14px;font-size:13px;line-height:1.8;margin:14px 0}
+.btabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.btab{font-size:12px;padding:6px 12px;border-radius:16px;background:var(--panel2);border:1px solid var(--line);color:var(--dim);cursor:pointer}
+.btab.on{background:rgba(255,61,110,.16);border-color:var(--dmax);color:var(--dmax2);font-weight:700}
+.rich{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:6px 18px 14px;line-height:1.8;font-size:13.5px}
+.rich h2{font-size:16px;color:var(--dmax2);border-bottom:1px solid var(--line);padding-bottom:7px}
+.rich table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12.5px}
+.rich th,.rich td{border:1px solid var(--line);padding:6px 9px;text-align:left}
+.rich th{background:var(--panel2);color:var(--dim)}
+.rich ul{padding-left:20px}.rich li{margin:5px 0}
+.rich strong{color:var(--gold)}
+.hide{display:none}
+.upd{font-size:11px;color:var(--dim);margin-top:30px;text-align:center}
+@media(max-width:520px){.main{padding:12px 10px 80px}.rich{padding:4px 13px 12px}}
+</style>
+</head>
+<body>
+<div class="top"><h1>Pokémon GO <b>极巨对战</b> 指南</h1>
+<nav><a href="index.html">⚔️ PvP 攻略</a><a href="pve.html">🏟 团战 PvE</a><a href="sim.html">🎮 对战模拟</a></nav></div>
+<div class="beam"></div>
+<div class="main">
+<div class="tabs">
+<button class="on" onclick="tab(0,this)">📅 当前轮替</button>
+<button onclick="tab(1,this)">📖 机制详解</button>
+<button onclick="tab(2,this)">🏆 养成梯度</button>
+</div>
+
+<div class="sect on" id="s0">
+<div class="secttl">▶ 当前可打（截至 2026-06-10）</div>
+<div class="rcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/125.png" onerror="this.style.display='none'">
+  <div class="rb">
+    <div class="rt">电击兽（繁中：電擊獸）</div>
+    <div class="re">Dynamax Electabuzz (本周主打/Featured)</div>
+    <div class="rm"><span class="chip hot">3星</span><span class="chip">Electric 电</span><span class="chip dim">2026-06-08 ~ 2026-06-14（玩家本地时间；其 Max Monday 主推日为6月8日已过，本周内仍在蓄力点出现）</span></div>
+    <div class="rn">可遇见闪光（Shiny）。仅弱地面系；推荐打手 Dynamax Excadrill（极巨龙头地鼠）。星级说明：常驻池中为3星（GO Hub 与 SnackNap 实时数据确认）；但 Leek Duck/GO Hub 的 6月8日 Max Monday 活动指南将当小时头目标为 Tier 1，即主推时段曾以1星低难度投放——日常遇到按3星数据准备。</div>
+  </div></div><div class="rcard">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">3星常驻池：飞腿郎、快拳郎、列阵兵、铁哑铃、勾魂眼、投掷猴、老翁龙、几何雪花、吉利蛋、电击兽</div>
+    <div class="re">Standard Dynamax pool — 3★ (10 species): Hitmonlee, Hitmonchan, Falinks, Beldum, Sableye, Passimian, Drampa, Cryogonal, Chansey, Electabuzz</div>
+    <div class="rm"><span class="chip hot">3星</span><span class="chip">多系（格斗居多）</span><span class="chip dim">常驻轮换池，2026-06-10 实时确认在线（SnackNap 每5分钟自动更新）</span></div>
+    <div class="rn">非本周主打的常驻3星池，蓄力点随机刷出。Beldum（铁哑铃）是练巨金怪钢系攻坦的重点目标；Chansey（吉利蛋）是平民奶妈核心素材。</div>
+  </div></div><div class="rcard">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">2星常驻池：伊布、腕力、达摩狒狒（火红不倒翁）、壶壶、吼吼鲸</div>
+    <div class="re">Standard Dynamax pool — 2★ (5 species): Eevee, Machop, Darumaka, Shuckle, Wailmer</div>
+    <div class="rm"><span class="chip hot">2星</span><span class="chip">多系</span><span class="chip dim">常驻轮换池，2026-06-10 实时确认在线</span></div>
+    <div class="rn">Machop（腕力）→怪力是公认最佳极巨坦克/输出双修素材，新人优先；Eevee（伊布）糖通吃冰伊布/水伊布两只平民卡；Wailmer（吼吼鲸）→吼鲸王是实惠专职奶。</div>
+  </div></div><div class="rcard">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">1星常驻池：妙蛙种子、小火龙、杰尼龟、皮卡丘、敲音猴、炎兔儿、泪眼蜥、毛辫羊、贪心栗鼠、稚山雀、绿毛虫、鬼斯、凯西、拉鲁拉丝、迷布莉姆、大钳蟹、化石盔、菊石兽、卡蒂狗、海豹球、大颚蚁、螺钉地鼠、破破袋、木棉球、甜竹竹、三蜜蜂、滚滚蝙蝠、石丸子、豆豆鸽、好啦鱿</div>
+    <div class="re">Standard Dynamax pool — 1★ (~30 species): Bulbasaur, Charmander, Squirtle, Pikachu, Grookey, Scorbunny, Sobble, Wooloo, Skwovet, Rookidee, Caterpie, Gastly, Abra, Ralts, Hatenna, Krabby, Kabuto, Omanyte, Growlithe, Spheal, Trapinch, Drilbur, Trubbish, Cottonee, Bounsweet, Combee, Woobat, Roggenrola, Pidove, Inkay</div>
+    <div class="rm"><span class="chip hot">1星</span><span class="chip">多系</span><span class="chip dim">常驻轮换池，2026-06-10 实时确认在线</span></div>
+    <div class="rn">单人可solo，刷糖/刷极巨粒子用。Drilbur（螺钉地鼠）→龙头地鼠是顶级地/钢平民打手素材；Gastly（鬼斯）→耿鬼为日后 G-Max 耿鬼攒糖；Abra（凯西）→胡地是平民双面输出。</div>
+  </div></div><div class="rcard">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">当前无5星传说极巨或超极巨Boss</div>
+    <div class="re">(None) 5★ / Gigantamax — no legendary Dynamax or Gmax boss active</div>
+    <div class="rm"><span class="chip hot">5星/Gmax：无</span><span class="chip dim">截至 2026-06-10</span></div>
+    <div class="rn">超极巨内容近期均以单日 Max Battle Day 形式投放（2/15 Gmax喵喵、3/28 Gmax皮卡丘、4/25 Replay: GO Bigger 的 Gmax 御三家+耿鬼），6月暂无在档 Gmax 活动。</div>
+  </div></div>
+<div class="secttl">⏭ 即将到来</div>
+<div class="rcard next">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/524.png" onerror="this.style.display='none'">
+  <div class="rb">
+    <div class="rt">石丸子</div>
+    <div class="re">Dynamax Roggenrola (Max Monday featured)</div>
+    <div class="rm"><span class="chip hot">1星</span><span class="chip dim">2026-06-15（Max Monday 加成 06:00–21:00，主推时段 18:00–19:00 本地时间）；当周 6/15–6/21 持续可打</span></div>
+    <div class="rn">可闪光。岩系，弱水/草/格斗/地面/钢。进化型滚滚岩→庞岩怪可作岩系备选。</div>
+  </div></div><div class="rcard next">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/163.png" onerror="this.style.display='none'">
+  <div class="rb">
+    <div class="rt">咕咕</div>
+    <div class="re">Dynamax Hoothoot (Max Monday featured)</div>
+    <div class="rm"><span class="chip hot">1星</span><span class="chip dim">2026-06-22（Max Monday）；当周 6/22–6/28 持续可打</span></div>
+    <div class="rn">可闪光。一般/飞行系。</div>
+  </div></div><div class="rcard next">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/519.png" onerror="this.style.display='none'">
+  <div class="rb">
+    <div class="rt">豆豆鸽</div>
+    <div class="re">Dynamax Pidove (Max Monday featured)</div>
+    <div class="rm"><span class="chip hot">1星</span><span class="chip dim">2026-06-29（Max Monday）；当周 6/29–7/5 持续可打</span></div>
+    <div class="rn">可闪光。一般/飞行系。6月官宣到此为止，7月轮替尚未公布。</div>
+  </div></div><div class="rcard next">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">GO Fest 2026 全球场</div>
+    <div class="re">GO Fest 2026: Global — no Max Battle content announced</div>
+    <div class="rm"><span class="chip hot">N/A</span><span class="chip dim">2026-07-11 10:00 ~ 2026-07-12 19:00（本地时间）</span></div>
+    <div class="rn">首次免费开放。已公布内容为超级超梦X/Y（Super Mega Raids）、捷拉奥拉特殊调查、6个轮换栖地——截至6/10官方未公布任何极巨/超极巨内容（去年 GO Fest 2025 曾有无极汰那 Max Finale，今年若有类似压轴预计后续另行官宣，值得留意）。</div>
+  </div></div><div class="rcard next">
+  <div class="noimg">★</div>
+  <div class="rb">
+    <div class="rt">下一次极巨对战日/超极巨活动未官宣</div>
+    <div class="re">Next Max Battle Day / Gigantamax event — not yet announced</div>
+    <div class="rm"><span class="chip hot">6星/Gmax（历史规律）</span><span class="chip dim">待官宣（历史节奏约每1–2月一次，周六或周日 14:00–17:00 本地时间）</span></div>
+    <div class="rn">参考近期节奏：2/15 Gmax喵喵、3/28 Gmax皮卡丘、4/25 Replay: GO Bigger（Gmax妙蛙花/喷火龙/水箭龟/耿鬼，6星，配8×粒子与收集上限1,600加成）。</div>
+  </div></div>
+<div class="rn" style="background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px;margin-top:14px;line-height:1.75">轮替规律（均为玩家本地时间）：1) 周轮替：每周一开始换一只"主打"极巨宝可梦，持续至周日（6/8–6/14 电击兽 → 6/15 石丸子 → 6/22 咕咕 → 6/29 豆豆鸽），本月所有主打均可闪光。2) Max Monday（极巨星期一）：每周一为加成日，06:00–21:00 蓄力点（Power Spot）刷新更频繁、数量比平日更多；多数媒体（Dexerto/GO Hub）标注 18:00–19:00 为主打宝可梦集中时段（类似团战时刻）。3) 每日窗口：极巨对战每天仅 06:00–21:00 开放，非周一/非活动日蓄力点数量受限。4) 常驻池：主打之外另有约 30 只 1星、5 只 2星、10 只 3星的常驻随机池在蓄力点轮刷（SnackNap 实时页 2026-06-10 确认）。5) Gmax 节奏：超极巨不进周常轮替，改为不定期单日 Max Battle Day / 特别活动投放（通常周六/日 14:00–17:00，6星难度，配 8× 粒子、每日收集上限提至 1,600 等加成），2026 年已有 2/15、3/28、4/25 三场；6–7 月暂无官宣，GO Fest 2026 全球场（7/11–12）目前也未公布极巨内容。6) 远程参与：2025-05-19 起可用远程团体战券+正常 MP 远程加入任意极巨对战（现场参战另有 +2 纪念球 +2,500 XP 加成）。数据源：LeekDuck 活动页与 ScrapedDuck 数据（leekduck.com/max-battles/ 专页已下线返回404）、SnackNap 实时极巨页、Pokémon GO Hub、Dexerto、Nintendo Wire、pokemongo.com 官方公告。星级口径说明：电击兽常驻池为3星（GO Hub/SnackNap），但 6/8 Max Monday 主推小时按 Tier 1 投放（Leek Duck/GO Hub 活动指南），引用难度/费用数据时注意区分场景。</div>
+</div>
+
+<div class="sect" id="s1">
+<div class="btabs"><div class="btab on" onclick="btab(0,this)">概览</div><div class="btab" onclick="btab(1,this)">如何获得化宝可梦</div><div class="btab" onclick="btab(2,this)">粒子经济</div><div class="btab" onclick="btab(3,this)">招式系统</div><div class="btab" onclick="btab(4,this)">对战流程</div><div class="btab" onclick="btab(5,this)">星级体系、蘑菇与超的区别</div><div class="btab" onclick="btab(6,this)">化宝可梦的使用限制</div><div class="btab" onclick="btab(7,this)">活动节奏</div><div class="btab" onclick="btab(8,this)">养成优先级</div></div>
+<div class="rich" id="b0"><h2>概览：什么是极巨对战</h2><p>极巨对战（Max Battles）于 2024 年 9 月随"Max Out"赛季上线 Pokémon GO，是独立于团体战（Raid）的协作玩法。玩家在地图上的<strong>蓄力点（Power Spot，紫色地标）</strong>挑战极巨化（Dynamax）或超极巨化（Gigantamax）头目，胜利后可捕捉该宝可梦。截至 2026 年 6 月（当前赛季 Forever Forward，2026-06-02 至 2026-09-08），可极巨化物种<strong>约 120 种</strong>（Serebii 现行列表 119 种，计入 6 月新增的电击兽系后约 120–125 种），超极巨约 16–17 种，并已加入无极汰那（Eternatus）与王者剑苍响、王者盾藏玛然特等特殊参战者。</p><ul><li><strong>蓄力点刷新</strong>：随机出现/消失，2026 年 2 月 24 日起刷新周期由 2 天缩短为 <strong>1 天</strong>，每日 5:00（当地时间）重置。</li><li><strong>开放时段</strong>：蓄力点对战仅在 <strong>6:00–21:00（当地时间）</strong>开放，21:00 后只能收集粒子。</li><li><strong>支持远程参与</strong>：自 <strong>2025 年 5 月 19 日</strong>起，极巨对战可使用<strong>远程团体战券（Remote Raid Pass）</strong>+ 正常 MP 远程加入（进入大厅即消耗远程券），该功能已永久保留。现场（in-person）参战另有额外纪念球与 XP 加成（见下节）。</li><li><strong>无时间限制</strong>：与团体战 5 分钟倒计时不同，极巨对战不限时，拼的是队伍存活而非 DPS 竞速。</li></ul></div><div class="rich hide" id="b1"><h2>如何获得极巨化宝可梦</h2><p>与主系列不同，<strong>普通个体无法"变成"极巨化个体</strong>——只有在极巨对战中捕获的宝可梦才具备极巨化能力。获取路径：</p><ul><li><strong>首只极巨化宝可梦</strong>：完成特殊调查《To the Max!》，或首次访问蓄力点引导获得。</li><li><strong>常规途径</strong>：在蓄力点击败极巨头目后进入捕捉环节（投球时精灵球带"强化"特效）。<strong>现场（in-person）参战相对远程参战</strong>另有 <strong>+2 个纪念球（Premier Ball）与 +2,500 XP</strong> 加成（Serebii；该加成与 2025 年 5 月远程开放同步引入）。</li><li><strong>捕获后</strong>：宝可梦在仓库中恢复普通大小，但<strong>永久保留极巨化能力</strong>，之后可在任意极巨对战中再次极巨化。</li><li><strong>特殊个体</strong>：无极汰那、王者剑苍响/王者盾藏玛然特本身"不能极巨化"，但被特许编入极巨对战队伍（来自 GO Fest 等限定活动），并自带专属招式（巨兽斩/巨兽弹、极巨炮）。</li></ul><p><strong>通关奖励</strong>（可用 PokéCoins 付费升级奖励档位）：黄金蔓莓果、快速/特殊招式学习器、神奇糖果等；通关 XP 按星级为 1★ 5,000 / 2–3★ 7,500 / 5–6★ 25,000。</p><p><strong>驻守机制</strong>：胜利后可从本场队伍中留 1 只驻守该蓄力点。驻守宝可梦越多，后续挑战者的"攻击加成（Attack Bonus）"越强；宝可梦协助若干场对战或蓄力点关闭后"回家"，按协助场次给糖果。</p></div><div class="rich hide" id="b2"><h2>极巨粒子（Max Particle / MP）经济</h2><table border="1"><tr><th>项目</th><th>数值</th><th>说明</th></tr><tr><td>蓄力点收集</td><td>100 MP / 点 / 天</td><td>每个蓄力点每天可收集 1 次；首次发现该蓄力点额外 +20 MP</td></tr><tr><td>步行获取</td><td>300 MP / 2 km</td><td>支持冒险同步（Adventure Sync）后台计步</td></tr><tr><td>每日收集上限</td><td>800 MP</td><td>蓄力点+步行合计；每日 5:00 当地时间重置；为软上限，单次收集可少量溢出（如已收 700 再步行 +300 可到 1,000）。活动可临时提高：2026-04-25 Replay: GO Bigger 将<strong>每日收集上限</strong>提至 1,600（配套 8× 蓄力点粒子加成）</td></tr><tr><td>储存上限</td><td>1,500 MP</td><td>2025-05-19 由 1,000 上调至 1,500；活动期间储存上限不变（前述 1,600 指收集上限而非储存上限）</td></tr></table><p><strong>对战入场消耗（按星级）</strong>——关键规则：<strong>MP 只在胜利时扣除</strong>（官方原文：Max Particles are only spent upon the successful defeat of the boss），失败可无限重试不扣粒子：</p><table border="1"><tr><th>星级</th><th>入场消耗</th><th>通关 XP</th></tr><tr><td>1★</td><td>250 MP</td><td>5,000</td></tr><tr><td>2★</td><td>400 MP</td><td>7,500</td></tr><tr><td>3★</td><td>400 MP</td><td>7,500</td></tr><tr><td>4★（极少启用）</td><td>Serebii 现行费用表未列此档；Bulbapedia 记为 800 MP</td><td>—</td></tr><tr><td>5★（传说）</td><td>800 MP</td><td>25,000</td></tr><tr><td>6★（超极巨）</td><td>800 MP</td><td>25,000</td></tr></table><p><strong>MP 可少量付费获取</strong>：商店/活动礼盒含 <strong>Max Particle Pack（每包 800 MP）</strong>；活动付费票也会直接发放（如 Replay: GO Bigger 付费票限时调查发 6,400 MP）。但日常仍以收集为主，且升级极巨招式同样消耗 MP（见下节），800/天的上限是该玩法的核心节流阀——打一场 6★ 约需一天的收集量。</p></div><div class="rich hide" id="b3"><h2>极巨招式系统</h2><p>每只极巨化宝可梦最多 3 个极巨招式，各分 1/2/3 级（满级显示"MAX!"）：</p><ul><li><strong>极巨攻击（Max Attack）</strong>：默认解锁 1 级。<strong>属性 = 当前快速招式（小招）的属性</strong>，用快速招式学习器/精英学习器更换小招即可改变极巨攻击属性，且<strong>不会重置等级</strong>；小招为"觉醒力量"时极巨攻击固定为一般属性 Max Strike。超极巨个体改用按<strong>物种</strong>固定的专属 G-Max 招式。</li><li><strong>极巨防壁（Max Guard）</strong>：初始未解锁。给自己叠最多 3 层护盾减伤，每层护盾吸收 <strong>20 / 40 / 60 HP</strong>（1/2/3 级）。官方仅说明"减少所受伤害"，社区流传的"嘲讽/吸引头目单体攻击"效果<strong>未获官方与权威资料支持</strong>，请勿当作机制依赖。藏玛然特特例：解锁后入场自带 1 层盾、最多可叠 4 层。</li><li><strong>极巨复苏（Max Spirit，GO 独有招式）</strong>：初始未解锁。为<strong>全场所有友方</strong>回复"使用者最大 HP"的 <strong>8% / 12% / 16%</strong>（1/2/3 级）——因此 HP 越高的奶妈回复量越大。</li></ul><p><strong>威力</strong>（普通特殊招式威力多在 90–150，极巨攻击远高于此）：</p><table border="1"><tr><th>招式</th><th>1 级</th><th>2 级</th><th>3 级</th><th>4 级*</th></tr><tr><td>极巨攻击（普通 Dynamax）</td><td>250</td><td>300</td><td>350</td><td>450</td></tr><tr><td>G-Max 招式（超极巨）</td><td>350</td><td>400</td><td>450</td><td>550</td></tr></table><p>*4 级平时不可达，仅当场上处于无极汰那"极巨炮（Dynamax Cannon）"冒险效果时，全队极巨招式临时 +1 级。</p><p><strong>解锁/升级成本</strong>（糖果数按物种成本组浮动）：</p><table border="1"><tr><th>操作</th><th>极巨粒子</th><th>糖果</th><th>训练奖励 XP</th></tr><tr><td>极巨攻击 1 级</td><td>免费（自带）</td><td>—</td><td>—</td></tr><tr><td>解锁 Max Guard / Max Spirit（1 级）</td><td>400 MP</td><td>50–80 糖</td><td>+4,000</td></tr><tr><td>任意招式升 2 级</td><td>600 MP</td><td>100–130 糖</td><td>+6,000</td></tr><tr><td>任意招式升 3 级</td><td>800 MP</td><td>40–55 <strong>XL 糖</strong></td><td>+8,000</td></tr></table><p><strong>特例</strong>：王者剑苍响/王者盾藏玛然特的所有 MP 消耗改为<strong>星尘</strong>（解锁防/复 25,000 星尘+80 糖；升 2 级 50,000 星尘+130 糖；升 3 级 100,000 星尘+55 XL 糖）；无极汰那糖果需求暴涨（升 2 级 600 MP+1,200 糖；升 3 级 800 MP+1,200 糖+320 XL 糖），但其"极巨炮"威力按 G-Max 档（350/400/450）计算。</p></div><div class="rich hide" id="b4"><h2>对战流程与机制</h2><p><strong>组队</strong>：1–4 名训练家，每人带 <strong>3 只</strong>宝可梦，必须全部为可极巨化/超极巨化个体（或苍响/藏玛然特/无极汰那）。进入蓄力点点击 Battle 进大厅（远程参与者进大厅即消耗远程团体战券），4 人满员或倒计时归零后开战。低星可单人挑战。</p><p><strong>基础操作</strong>：与团体战类似——点按使用快速招式、攒能量放特殊招式、滑动闪避。头目的单体大招会在目标头上出现预警标记，及时侧滑可大幅减伤；头目蓄力的<strong>全体大招不可闪避</strong>。</p><p><strong>极巨蓄力槽（Max Meter，共 100 点）充能方式</strong>：</p><ul><li><strong>攻击充能</strong>：充能量与该次攻击伤害占头目总 HP 的比例挂钩，<strong>每次攻击最低 1 点</strong>。高星对战中快攻基本只有 1 点，因此社区主流策略是用 <strong>0.5 秒级超短快攻</strong>（电击、水枪、舔舔等）刷次数充能，约几十次快攻充满（约值，社区实测）。</li><li><strong>能量泡泡</strong>：战场随机出现能量图标，滑动撞上去收集，<strong>每个 +10%</strong> 蓄力槽。</li><li><strong>队友助威</strong>（见下）。</li></ul><p><strong>极巨化阶段</strong>：蓄力槽满后全队同时极巨化，持续 <strong>3 回合</strong>——每名玩家可释放 <strong>3 次极巨招式</strong>（攻/防/复任选组合），期间头目暂停常规进攻。结束后变回原样，重新充能循环。</p><p><strong>濒死/治疗规则</strong>：</p><ul><li>战斗中可在自己 3 只之间切换，但濒死的宝可梦本场不能再上；<strong>与团体战不同，全灭后不能换新队伍中途重进</strong>。</li><li>3★ 及以上对战中，全灭玩家可转为<strong>助威（Cheer）</strong>：连点助威按钮帮队友加速充能蓄力槽（官方未公布单次数值）。</li><li>团灭失败后可立即重试，<strong>不扣 MP、次数不限</strong>（蓄力点关闭前）。</li><li>极巨对战<strong>不消耗药剂/活力碎片</strong>，战斗结束后自动恢复；场内治疗手段是 Max Spirit、Max Guard 护盾与闪避。</li><li>驻守加成：该蓄力点驻守的宝可梦越多，挑战者全程攻击加成越高。</li></ul></div><div class="rich hide" id="b5"><h2>星级体系（1–6★）与极巨蘑菇</h2><table border="1"><tr><th>星级</th><th>典型头目</th><th>入场 MP</th><th>建议人数（满级招式、高配队）</th></tr><tr><td>1★</td><td>御三家、皮卡丘、可达鸭等常驻</td><td>250</td><td>1 人轻松单刷</td></tr><tr><td>2★</td><td>伊布、腕力等</td><td>400</td><td>1 人</td></tr><tr><td>3★</td><td>卡比兽、连击组、电击兽等</td><td>400</td><td>1–2 人（满配可单刷）</td></tr><tr><td>4★</td><td>极少启用的过渡档</td><td>权威来源未列（Bulbapedia 记 800）</td><td>2–3 人</td></tr><tr><td>5★</td><td>传说：三圣鸟（极巨）、雷吉系列、无极汰那等</td><td>800</td><td>2–4 人（顶配 1–2 人可压线）</td></tr><tr><td>6★</td><td>超极巨（G-Max）头目</td><td>800</td><td>官方按 4 人一小队、多小队共享同一头目血量（官方宣传上限约 40 人，部分资料称已扩至 100）；社区实测建议 <strong>15–25 人</strong>，顶配齐 3 级招式约 8–15 人</td></tr></table><p><strong>Max Mushroom（极巨蘑菇）</strong>——为缓解 G-Max 难度争议（2024 年 11 月 G-Max 首周过难，Niantic 随后下调）推出的增益道具：</p><ul><li><strong>效果</strong>：己方宝可梦造成的全部伤害 <strong>×2</strong>，持续 <strong>30 分钟</strong>（特殊活动可能延长）。</li><li><strong>叠加</strong>：可连用多个蘑菇<strong>叠加时长</strong>（2 个 = 60 分钟），倍率固定 2x 不会变 4x；只对自己的宝可梦生效。</li><li><strong>获取</strong>：商店单个 <strong>400 PokéCoins</strong>、3 个捆绑包 <strong>1,000 PokéCoins</strong>，活动限时调查/礼盒也会赠送。</li></ul><h2>超极巨（Gigantamax）与普通极巨的区别</h2><table border="1"><tr><th>维度</th><th>普通极巨化（Dynamax）</th><th>超极巨化（Gigantamax）</th></tr><tr><td>外观</td><td>只变大、带红色能量云</td><td>变大且<strong>形态外观改变</strong>（专属造型）</td></tr><tr><td>攻击招式</td><td>Max Attack，属性随快速招式</td><td>专属 <strong>G-Max 招式</strong>（属性按物种固定，如 G-Max 火球术）</td></tr><tr><td>招式威力</td><td>250/300/350（1/2/3 级）</td><td><strong>350/400/450</strong>，每级比同级高 100</td></tr><tr><td>出场对战</td><td>1–5★ 蓄力点常驻轮换</td><td>仅 <strong>6★ 对战</strong>，基本只在 Max Battle Day/周末活动限时开放</td></tr><tr><td>入场费</td><td>250–800 MP</td><td>800 MP</td></tr><tr><td>HOME 传输</td><td>可（丢失极巨招式）</td><td><strong>不可</strong></td></tr><tr><td>交换</td><td>普通交换（招式等级重置）</td><td>必为<strong>特殊交换</strong>（每天 1 次额度）</td></tr></table><p><strong>如何获得 G-Max 形态</strong>：只能在 6★ 超极巨对战胜利后捕捉——捕到的个体<strong>永久具备超极巨形态</strong>。已有的普通极巨化个体（哪怕同物种）<strong>不能转化</strong>为超极巨；GO 中没有主系列"极巨汤"机制。截至 2026 年中已登场约 16–17 种 G-Max：妙蛙花、喷火龙、水箭龟、皮卡丘、伊布、卡比兽、耿鬼、拉普拉斯、巴大蝶、铝钢龙、灰尘山及伽勒尔御三家轰擂金刚猩/闪焰王牌/千面避役、巨钳蟹、颤弦蝾螈、长毛巨魔等，按活动陆续复刻（如 2026-04-25 Replay: GO Bigger 复刻 G-Max 御三家+耿鬼，14:00–17:00）。</p></div><div class="rich hide" id="b6"><h2>极巨化宝可梦的使用限制（官方帮助中心口径）</h2><table border="1"><tr><th>场景</th><th>能否使用</th><th>限制说明</th></tr><tr><td>极巨对战</td><td>仅限可极巨化个体</td><td>普通宝可梦完全不能进；苍响/藏玛然特/无极汰那为特许例外</td></tr><tr><td>道馆驻防</td><td>可以</td><td>以普通形态驻防，不会显示巨大化</td></tr><tr><td>团体战（含暗影团战）</td><td>可以</td><td>当普通宝可梦用，不能极巨化</td></tr><tr><td>GBL / 训练家对战</td><td>可以上场</td><td><strong>不能极巨化、不能使用极巨招式</strong>，等同普通个体</td></tr><tr><td>Mega 进化</td><td>可以</td><td>Mega 激活期间不能同时极巨化</td></tr><tr><td>交换</td><td>可以</td><td>仓库须<strong>至少保留 1 只</strong>极巨化宝可梦；交换后<strong>极巨招式等级全部重置为 1 级</strong>（解锁保留）；G-Max 必为特殊交换</td></tr><tr><td>传送给博士</td><td>可以</td><td>同样须保留至少 1 只</td></tr><tr><td>Pokémon HOME</td><td>Dynamax 可 / G-Max 不可</td><td>传输后丢失极巨招式数据</td></tr></table><p>实务建议：极巨招式升级投入（XL 糖+MP/星尘）在交换时会大幅贬值（等级清零），<strong>先交换、后练招</strong>。</p></div><div class="rich hide" id="b7"><h2>定期活动节奏</h2><ul><li><strong>Max Monday（极巨周一）</strong>：每周一为加成日，06:00–21:00 蓄力点刷新更频繁、数量比平日更多，<strong>18:00–19:00 当地时间</strong>为主打物种集中时段（类似团战时刻），是攒糖/刷个体的主要窗口。近期排期（Leek Duck 逐场验证）：2026-03-16 连击组、03-23 雷吉艾斯（5★）、04-20 雷吉洛克（5★）、05-11 卡蒂狗、05-18 雷吉斯奇鲁（5★）、05-25 三蜜蜂、06-01 豪喇花枝、<strong>06-08 电击兽（首登场、可闪光）</strong>，后续 06-15 石丸子、06-22 咕咕、06-29 豆豆鸽。传说级（800 MP）以"传说极巨周一"形式插入。</li><li><strong>Max Battle Day / 周末活动</strong>：约每 1–2 个月一次，周六/日 14:00–17:00 等 3 小时档限时投放 6★ G-Max 或新极巨物种（2026 年已有 2/15 G-Max 喵喵、3/28 G-Max 皮卡丘、4/25 Replay: GO Bigger 的 G-Max 妙蛙花/喷火龙/水箭龟/耿鬼），常配套 8× 粒子、收集上限提至 1,600、额外蓄力点等加成。</li><li><strong>赛季轮换</strong>：每赛季（3 个月）更新蓄力点头目池并新增物种。当前 Forever Forward 赛季（2026-06-02 10:00 至 2026-09-08 10:00）新增极巨化电击兽，鲤鱼王、丑丑鱼等待登场；GO Fest 2026 全球场（7/11–12）截至 6/10 尚未公布极巨内容。</li><li><strong>常驻节奏</strong>：非活动时段蓄力点头目按周轮换主打物种 + 约 30 只 1★ / 5 只 2★ / 10 只 3★ 常驻随机池，每日 6:00–21:00 可战；蓄力点本体 1 天刷新。</li></ul><h2>主要数据来源</h2><ul><li>Niantic 官方帮助中心：Max Pokémon / Power Spots / Max Particles / Max Battles 四篇 FAQ（2026 年版本）；pokemongo.com 2025-05-19 远程开放公告</li><li>Bulbapedia "Max Move"/"Max Particle"（威力 250–550、护盾 20–60、回复 8–16%、升级费用与粒子包）</li><li>Serebii.net Max Battles 页（入场费/XP 表、远程券消耗、Dynamax 物种列表）</li><li>Leek Duck（Max Monday 排期、活动加成）；pokemon.com 官方攻略（G-Max 组队结构）</li><li>Pokémon GO Hub / esports.gg / Dexerto / SnackNap 实时数据；r/TheSilphRoad 社区实测（蓄力槽充能比例、最低 1 点、能量泡泡 +10%）</li></ul><p>注：标"约"处（G-Max 大厅人数上限 40/100、充满蓄力槽所需快攻次数、4★ 入场费）各来源存在出入或官方未公布精确值。</p></div><div class="rich hide" id="b8"><h2>养成优先级（2026 年 6 月社区共识）</h2><p>综合 GO Hub 六月梯度榜、Doctor Pokegogo 耐久榜（2026-06-03）、Dittobase 伤害模拟，平民投资顺序：</p><ul><li><strong>第一步·生存核心</strong>：先把一只高 IV <strong>幸福蛋</strong>（没有就用<strong>吉利蛋</strong>，成本低一半以上）练到 40 级左右，<strong>Max Spirit 解锁并升到 2 级</strong>（3 级要 XL 糖，土豪再说），再点 Max Guard。Max Spirit 按使用者最大 HP 计算回复量（8%/12%/16%），幸福蛋 496 HP 无人能及——有奶有坦才打得动 5★/传说级，这是回报率最高的投资。</li><li><strong>第二步·专职坦</strong>：第二只练<strong>藏玛然特（盾之王）</strong>或<strong>雷吉斯奇鲁</strong>，Max Guard 优先升 3 级——开盾保全队比多一只输出更值；没有传说就练 <strong>G-Max 卡比兽</strong>（糖最便宜的准一线坦，G-Max Replenish 还能回树果）。</li><li><strong>第三步·三只核心输出</strong>：按出场率①<strong>超极巨耿鬼</strong>（幽灵打击面最广，约 426 伤害）→②<strong>苍响剑之王</strong>（巨兽斩+坦输出双修）→③<strong>无极汰那</strong>（最高单发约 428、龙系通用）。极巨攻击优先升 2 级，3 级 XL 糖只给这三只。</li><li><strong>第四步·属性补全</strong>：按未来 Boss 轮换补——水（G-Max 千面避役/巨钳蟹）、草（G-Max 轰擂金刚猩）、火（G-Max 闪焰王牌）、格斗（G-Max 怪力）、电（G-Max 颤弦蝾螈）。已有 G-Max 喷火龙/妙蛙花/水箭龟练度的不必推倒重来。</li><li><strong>平民神卡</strong>：龙头地鼠（地/钢双面、糖白菜价）、冰伊布（伊布糖零成本、冰系裸伤第一）、胡地（超能/格斗双面）、水伊布（过渡奶）——这四只不花传说糖就能撑起半个阵容。</li><li><strong>粒子（MP）纪律</strong>：每日收集上限 800（活动可提至 1,600），优先级：奶/坦的 Max Spirit·Guard 解锁 ＞ S 级输出的极巨攻击 2 级 ＞ 其他解锁；不要给低梯度宝可梦解锁招式；1–3★ 战用低配队清，把糖和 MP 留给高难战。</li><li><strong>避坑</strong>：只练已实装个体——G-Max 巨钳螳螂、超梦等尚未进入 GO 极巨池，勿信营销号榜单；交换会把招式等级清零，<strong>先交换、后练招</strong>。</li></ul></div>
+</div>
+
+<div class="sect" id="s2">
+<div class="advice"><b style="color:var(--dmax2)">💰 平民投资顺序</b><br>平民投资顺序(2026年6月社区共识，综合GO Hub六月梯度榜、Doctor Pokegogo耐久榜、Dittobase伤害模拟)：
+【第一步·生存核心】先把一只高IV幸福蛋(没有就用吉利蛋，便宜一半以上，且吉利蛋就在当前3星常驻池可刷)练到40级左右，Max Spirit解锁并升到Lv2(Lv3要XL糖，土豪再说)，再点Max Guard。有奶有坦才打得动5星/传说级极巨战，这是回报率最高的投资。
+【第二步·专职坦】第二只练藏玛然特(盾之王)或雷吉斯奇鲁，Max Guard优先Lv3——开盾保全队比多一只输出更值(注意Max Guard官方效果仅为减伤护盾20/40/60 HP，社区流传的"嘲讽"机制无官方依据，勿据此排队形)；没有传说就练Gmax卡比兽(糖最便宜的准一线坦)。
+【第三步·三只核心输出】按出场率顺序：①超极巨耿鬼(幽灵打击面最广)→②苍响剑之王(巨兽斩+坦输出双修，注意用星尘升招)→③无极汰那(最高单发、龙系通用，糖耗极高量力而行)。极巨攻击招优先升Lv2(Lv3需XL糖，只给这三只)。
+【第四步·属性补全】按未来Boss轮换补：水(千面避役/巨钳蟹)、草(轰擂金刚猩)、火(闪焰王牌)、格斗(怪力)、电(颤弦蝾螈)。已有Gmax喷火龙/妙蛙花/水箭龟练度的不必推倒重来。
+【平民神卡】龙头地鼠(地/钢双面、糖白菜价)、冰伊布(伊布糖零成本、冰系裸伤第一)、胡地(超能/格斗双面)、水伊布(过渡奶)——这四只的素材(螺钉地鼠/伊布/凯西)全在当前1–2星常驻池，不花传说糖就能撑起半个阵容。
+【粒子(MP)纪律】每日收集上限800(软上限，活动可提至1,600；商店另有800 MP/包的粒子包可少量补充)，优先级：奶/坦的Max Spirit·Guard解锁 &gt; S级输出的极巨攻击Lv2 &gt; 其他解锁；不要给D/E级宝可梦解锁招式；1-3星战用低配队清，把糖和MP留给6星高难战。
+【交换贬值】交换后极巨招式等级全部重置为Lv1(解锁保留)——先交换、后练招。
+主要来源：pokemongohub.net Max Attackers/Defenders/Healers Tier List (2026年6月)、doctorpokegogo.com 防御耐久榜(2026-06-03)与分属性输出榜(2026-04-29)、dittobase.com Max Battle伤害排行。注意只练已实装个体；Gmax巨钳螳螂、超梦等尚未进入GO极巨池，勿信营销号榜单。</div>
+<div class="secttl">⚔️ 输出 · S 级</div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨耿鬼 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Gengar · G-Max Terror (幽灵) · ⚡Lick 舔舔 (0.5s) / Shadow Claw 影子爪</div>
+    <div class="tc-w">全游戏第二高极巨面板伤害(约426)，幽灵打击面极广(超能/幽灵Boss都克)，GO Hub 2026年6月榜S级，社区公认第一只该满配的Gmax输出。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/818.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨千面避役 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Inteleon · G-Max Hydrosnipe (水) · ⚡Water Gun 水枪 (0.5s)</div>
+    <div class="tc-w">262攻击为Gmax最高，水系极巨第一输出(约421伤害)，水枪0.5s充能快，火/地/岩Boss通用，泛用性极强。</div>
+  </div></div><div class="tcard">
+  
+  <div class="tc-b">
+    <div class="tc-n">苍响（剑之王） <span class="tb" style="background:#ff3d6e">S</span></div>
+    <div class="tc-e">Crowned Sword Zacian · Behemoth Blade 巨兽斩 (钢) · ⚡Metal Claw 金属爪 (0.5s)</div>
+    <div class="tc-w">唯一进S级的非Gmax，专属巨兽斩是最强钢系极巨招，妖/冰/岩Boss最优解，同时还是A级坦(对龙三重抗性)，一只双修，传说糖贵但值。注意其招式升级消耗星尘而非MP(25,000/50,000/100,000)。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/68.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨怪力 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Machamp · G-Max Chi Strike (格斗) · ⚡Karate Chop 空手劈 (0.5s) / Counter 反击</div>
+    <div class="tc-w">格斗系极巨最优，打卡比兽/幸福蛋/雷吉系/拉普拉斯等普/冰/钢Boss的核心，G-Max Chi Strike还给全队加暴击。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/99.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨巨钳蟹 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Kingler · G-Max Foam Burst (水) · ⚡Bubble 泡泡 / Mud Shot 泥巴射击 (0.5s充能)</div>
+    <div class="tc-w">水系第二输出(约388)，平民友好(大钳蟹野生常见、糖便宜)，没有千面避役时的水系主力，GO Hub S级。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/812.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨轰擂金刚猩 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Rillaboom · G-Max Drum Solo (草) · ⚡Scratch 抓 (0.5s)</div>
+    <div class="tc-w">草系极巨独一档，打水/地/岩Boss(如未来的盖欧卡类、巨沼怪日)必备，GO Hub S级。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/815.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨闪焰王牌 <span class="tb" style="background:#ff3d6e">S</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Cinderace · G-Max Fireball (火) · ⚡Tackle 撞击 (0.5s)</div>
+    <div class="tc-w">火系极巨第一，克制冰/草/虫/钢，对雷吉斯奇鲁、巨钳螳螂类钢Boss和拉普拉斯都好用，GO Hub S级。</div>
+  </div></div><div class="secttl">⚔️ 输出 · A 级</div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/890.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">无极汰那 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Eternatus · Dynamax Cannon 极巨炮 (龙，威力按G-Max档350/400/450) · ⚡Dragon Tail 龙尾</div>
+    <div class="tc-w">全游戏最高单发极巨伤害(约428)，龙系泛用打手+对龙Boss核心；冒险效果可使全队极巨招式临时+1级；自身毒/龙双属性抗性多还能兼职奶(奶妈A级)。已于2025年底实装。升级糖耗极高(2级1,200糖/3级再加320 XL糖)。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/849.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨颤弦蝾螈 <span class="tb" style="background:#3b6cff">A</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Toxtricity · G-Max Stun Shock (电) · ⚡Spark 电光</div>
+    <div class="tc-w">电系极巨第一(约389)，打水/飞Boss(急冻鸟、洛奇亚、吼鲸王类)的最优解，且自带麻痹效果。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨喷火龙 <span class="tb" style="background:#3b6cff">A</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Charizard · G-Max Wildfire (火) · ⚡Fire Spin 火之漩涡 / Dragon Breath 龙息</div>
+    <div class="tc-w">老牌Gmax火打手，略逊闪焰王牌但获取早、普及率高，G-Max Wildfire带持续灼烧；已有练度的不亏，没有的优先闪焰王牌。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨妙蛙花 <span class="tb" style="background:#3b6cff">A</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Venusaur · G-Max Vine Lash (草) · ⚡Vine Whip 藤鞭 (0.5s)</div>
+    <div class="tc-w">草系二号位，轰擂金刚猩的平替，G-Max Vine Lash带持续伤害，糖便宜(社区日常见妙蛙种子)。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/569.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨灰尘山 <span class="tb" style="background:#3b6cff">A</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Garbodor · G-Max Malodor (毒) · ⚡Take Down 猛撞</div>
+    <div class="tc-w">毒系极巨第一，打妖精Boss(如未来妖系传说/长毛巨魔类)的针对性投资，平时出场少，按需培养。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/861.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨长毛巨魔 <span class="tb" style="background:#3b6cff">A</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Grimmsnarl · G-Max Snooze (恶) · ⚡Bite 咬住 (0.5s)</div>
+    <div class="tc-w">恶系极巨第一，专打超能/幽灵Boss(拉帝欧斯/拉帝亚斯、未来超梦类)，G-Max Snooze带催眠干扰。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/65.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">胡地（极巨化） <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Dynamax Alakazam · Max Mindstorm (超能) / Max Knuckle (格斗) · ⚡Confusion 念力 / Counter 反击</div>
+    <div class="tc-w">非Gmax里攻击面板顶尖，超能+格斗双招式面，打毒/格斗和普/冰/钢两类Boss都能上，凯西糖好攒(凯西在1星常驻池)，平民性价比高。</div>
+  </div></div><div class="secttl">⚔️ 输出 · B 级</div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/530.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">龙头地鼠（极巨化） <span class="tb" style="background:#9aa1b4">B</span></div>
+    <div class="tc-e">Dynamax Excadrill · Max Quake (地) / Max Steelspike (钢) · ⚡Mud-Slap 泼泥 / Metal Claw 金属爪</div>
+    <div class="tc-w">地面系极巨第一(Max Quake无人能敌)兼钢系备胎，打电/毒/火/岩Boss全能；螺钉地鼠在1星常驻池、野外好抓糖便宜，公认平民神卡。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/471.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">冰伊布（极巨化） <span class="tb" style="background:#9aa1b4">B</span></div>
+    <div class="tc-e">Dynamax Glaceon · Max Hailstorm (冰) · ⚡Frost Breath 冰冻之风 / Ice Shard 冰砾</div>
+    <div class="tc-w">冰系裸伤害甚至超过超极巨拉普拉斯，伊布糖极易获取(伊布在2星常驻池)，是打龙/飞Boss(无极汰那、龙系传说)的平民冰打手。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/131.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨拉普拉斯 <span class="tb" style="background:#9aa1b4">B</span><span class="tb gmax">G-MAX</span></div>
+    <div class="tc-e">Gigantamax Lapras · G-Max Resonance (冰) · ⚡Ice Shard 冰砾</div>
+    <div class="tc-w">输出仅B级但G-Max Resonance给全队减伤debuff，且自身是优秀副坦(水/冰双抗)，输出/承伤一体的功能位。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/376.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">巨金怪（极巨化） <span class="tb" style="background:#9aa1b4">B</span></div>
+    <div class="tc-e">Dynamax Metagross · Max Steelspike (钢) / Max Mindstorm (超能) · ⚡Bullet Punch 子弹拳 (0.5s)</div>
+    <div class="tc-w">输出B级但身板硬(防御坦A级)，钢/超双修、抗性10项，是攻坦一体的过渡选择；铁哑铃在3星常驻池可攒糖，已有练度直接用。</div>
+  </div></div>
+<div class="secttl">🛡 承伤坦</div>
+<div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/242.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">幸福蛋 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Blissey</div>
+    <div class="tc-w">496 HP全游戏第一，对绝大多数Boss承伤都顶尖(只怕格斗)，Doctor Pokegogo 2026耐久榜第一；坦克+奶妈双职业，社区公认极巨化第一优先培养。</div>
+  </div></div><div class="tcard">
+  
+  <div class="tc-b">
+    <div class="tc-n">藏玛然特（盾之王） <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Crowned Shield Zamazenta</div>
+    <div class="tc-w">GO Hub防御榜S级。解锁Max Guard后入场自带1层护盾、最多可叠4层(普通宝可梦3层)，格斗/钢属性抗性极多，承伤同时还能输出，是高难传说战(汰那级)的顶级专职坦。招式升级用星尘而非MP。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/379.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">雷吉斯奇鲁 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Registeel</div>
+    <div class="tc-w">GO Hub防御榜S级。钢系12项抗性+超高双防，0.5s快攻充能效率高，几乎对任何Boss都能站得住的万金油硬坦。2026-05-18 Max Monday曾投放，错过等复刻。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">超极巨卡比兽 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Gigantamax Snorlax</div>
+    <div class="tc-w">接近幸福蛋的体格，非传说糖果曲线培养便宜；G-Max Replenish能回树果，坦克位上还能打出普系输出，平民最易成型的Gmax坦。</div>
+  </div></div><div class="tcard">
+  
+  <div class="tc-b">
+    <div class="tc-n">苍响（剑之王） <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Crowned Sword Zacian</div>
+    <div class="tc-w">对龙系伤害三重抗性，打龙Boss(无极汰那等)时的最优坦，且同一只可兼任S级钢系输出，一卡两用。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/823.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">钢铠鸦 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Corviknight</div>
+    <div class="tc-w">钢/飞独特抗性组合(免地面、双抗草/虫)，对特定Boss(格斗/草系)续航甚至超过幸福蛋，稚山雀在1星常驻池糖便宜，针对性副坦。</div>
+  </div></div>
+<div class="secttl">💚 奶妈（Max Spirit）</div>
+<div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/242.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">幸福蛋 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Blissey</div>
+    <div class="tc-w">Max Spirit回复量按使用者最大HP的8%/12%/16%计算，幸福蛋496 HP无人能及，GO Hub奶妈榜唯一S级；Max Spirit至少升到Lv2，是组队打高难的灵魂。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/113.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">吉利蛋 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Chansey</div>
+    <div class="tc-w">487 HP仅次于幸福蛋，但强化和解锁招式成本低得多(无需进化也能用)，且就在当前3星常驻池可刷，GO Hub专文推荐——平民首选奶。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/321.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">吼鲸王 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Wailord</div>
+    <div class="tc-w">347 HP奶妈榜A级第二名，吼吼鲸在2星常驻池/野外/12km蛋易得糖便宜，水属性抗火/冰，幸福蛋之外最实惠的专职奶。</div>
+  </div></div><div class="tcard">
+  
+  <div class="tc-b">
+    <div class="tc-n">卡比兽 / 超极巨卡比兽 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Snorlax / Gigantamax Snorlax</div>
+    <div class="tc-w">330 HP，A级奶；Gmax形态的G-Max Replenish还能回收树果，坦/奶/输出三位一体，一只顶三只。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/134.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">水伊布 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Vaporeon</div>
+    <div class="tc-w">277 HP，伊布糖几乎零成本(伊布在2星常驻池)，入坑玩家第一只过渡奶妈的不二之选(GO Hub奶妈榜A级)。</div>
+  </div></div><div class="tcard">
+  <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/820.png" onerror="this.style.display='none'">
+  <div class="tc-b">
+    <div class="tc-n">藏饱栗鼠 <span class="tb" style="background:#3b6cff">A</span></div>
+    <div class="tc-e">Greedent</div>
+    <div class="tc-w">HP高、获取容易(贪心栗鼠常驻1星池)，A级平民奶备选，多人多队轮换时凑数好用。</div>
+  </div></div>
+</div>
+<div class="upd">数据：官方公告 / Serebii / LeekDuck / GamePress / r/TheSilphRoad · 经多源交叉核查 · 生成于 2026-06-10</div>
+</div>
+<script>
+function tab(i,el){document.querySelectorAll(".sect").forEach((s,j)=>s.classList.toggle("on",j===i));document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("on"));el.classList.add("on");scrollTo(0,0);}
+function btab(i,el){document.querySelectorAll(".rich").forEach((s,j)=>s.classList.toggle("hide",j!==i));document.querySelectorAll(".btab").forEach(b=>b.classList.remove("on"));el.classList.add("on");}
+</script>
+</body>
+</html>
