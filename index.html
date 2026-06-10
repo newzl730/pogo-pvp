@@ -67,11 +67,14 @@
   .secttl{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin:26px 0 10px;display:flex;align-items:center;gap:8px}
   .secttl::after{content:"";flex:1;height:1px;background:var(--line)}
   .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(104px,100%),1fr));gap:9px}
-  .pcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center;cursor:pointer;transition:.12s}
+  .pcard{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center;cursor:pointer;transition:.12s}
   .pcard:hover{border-color:var(--accent);transform:translateY(-2px);background:var(--panel2)}
   .pcard img{width:58px;height:58px;object-fit:contain;margin:0 auto;display:block}
   .pcard .cn{font-size:12.5px;margin-top:3px}.pcard .en{font-size:9.5px;color:var(--dim)}
   .pcard .rb{margin-top:4px}
+  .pcard .ivcol{position:absolute;top:6px;right:5px;display:flex;flex-direction:column;gap:2px;font-size:9px;font-weight:800;line-height:1;text-align:right}
+  .pcard .ivcol b{font-weight:400;color:var(--dim);font-size:7.5px;margin-right:1px}
+  .pcard .ivcol .a{color:#ff8f6b}.pcard .ivcol .d{color:#5ab0ff}.pcard .ivcol .h{color:#46d39a}
   .ov{position:fixed;inset:0;background:rgba(6,8,12,.74);backdrop-filter:blur(4px);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow-y:auto}
   .ov.show{display:flex}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:18px;max-width:640px;width:100%;padding:20px;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.5)}
@@ -186,6 +189,17 @@ function bestFor(b,ia,id,is,cap,maxL){
   return{L,CP:cpOf(A,D,S,m),SP:A*m*D*m*Math.floor(S*m)};
 }
 function rankAll(b,cap,maxL){const arr=[];for(let a=0;a<=15;a++)for(let d=0;d<=15;d++)for(let s=0;s<=15;s++){const r=bestFor(b,a,d,s,cap,maxL);arr.push({a,d,s,SP:r.SP,L:r.L,CP:r.CP});}arr.sort((x,y)=>y.SP-x.SP);return arr;}
+// rank-1 (optimal) IV for a pokemon in a league, cached by (dex|en, cap)
+const _bestIvCache={};
+function bestIv(p,lg){
+  if(!p||!p.base)return null;
+  const cap=lg.cap===null?Infinity:lg.cap;
+  const k=(p.dex||p.en)+'_'+cap;
+  if(k in _bestIvCache)return _bestIvCache[k];
+  const r=rankAll(p.base,cap,50)[0];
+  const v=r?{a:r.a,d:r.d,s:r.s}:null;
+  _bestIvCache[k]=v;return v;
+}
 // fast single-IV rank by counting (no sort/alloc) — for the bulk reverse-lookup table
 function spOnly(b,ia,id,is,cap,hiCap){const A=b.a+ia,D=b.d+id,S=b.h+is;let lo=0,hi=hiCap,ans=-1;while(lo<=hi){const mid=(lo+hi)>>1;if(cpOf(A,D,S,CPM[LEVELS[mid]])<=cap){ans=mid;lo=mid+1;}else hi=mid-1;}if(ans<0)return[0,0,0];const m=CPM[LEVELS[ans]];return[A*m*D*m*Math.floor(S*m),LEVELS[ans],cpOf(A,D,S,m)];}
 function fastRank(b,cap,maxL,ia,id,is){let hiCap=LEVELS.length-1;while(hiCap>=0&&LEVELS[hiCap]>maxL)hiCap--;const mine=spOnly(b,ia,id,is,cap,hiCap);const my=mine[0];let gt=0,mx=0;for(let a=0;a<=15;a++)for(let d=0;d<=15;d++)for(let s=0;s<=15;s++){const sp=spOnly(b,a,d,s,cap,hiCap)[0];if(sp>mx)mx=sp;if(sp>my)gt++;}return{rank:gt+1,L:mine[1],CP:mine[2],pct:mx>0?my/mx*100:0,master:cap===null};}
@@ -244,7 +258,7 @@ function renderLeague(){
   h+=`<div class="secttl">宝可梦图鉴 · ${shown.length}${shown.length!==lg.pokemon.length?' / '+lg.pokemon.length:''} 只</div>`;
   h+=`<div class="seg" style="margin:4px 0 10px"><button class="${fNoElite?'on':''}" onclick="fNoElite=!fNoElite;renderLeague()">🔑 不需要特殊招式</button><button class="${fNoXL?'on':''}" onclick="fNoXL=!fNoXL;renderLeague()">🍬 不需要XL糖果</button></div>`;
   h+=`<div class="pgrid">`;
-  lg.pokemon.forEach((p,j)=>{if(p._adhoc||(fNoElite&&p.elite)||(fNoXL&&p.needsXL))return;h+=`<div class="pcard" onclick="openPoke(${curLeague},${j})"><img loading="lazy" src="${sprite(p.dex)}" onerror="this.src=FB"><div class="cn">${esc(p.cn)}</div><div class="en">${esc(p.en)}${p.dex?' #'+p.dex:''}</div><div class="rb"><span class="rbadge r-${roleCat(p.role)}">${catLabel[roleCat(p.role)]}</span>${p.elite?'<span class="rbadge" style="background:#a878ff" title="需特殊招式">🔑</span>':''}${p.needsXL?'<span class="rbadge" style="background:var(--warn)" title="需XL糖果">🍬</span>':''}</div></div>`;});
+  lg.pokemon.forEach((p,j)=>{if(p._adhoc||(fNoElite&&p.elite)||(fNoXL&&p.needsXL))return;const iv=bestIv(p,lg);h+=`<div class="pcard" onclick="openPoke(${curLeague},${j})">${iv?`<div class="ivcol" title="本联赛最优(rank1) IV 攻/防/体"><span class="a"><b>攻</b>${iv.a}</span><span class="d"><b>防</b>${iv.d}</span><span class="h"><b>体</b>${iv.s}</span></div>`:''}<img loading="lazy" src="${sprite(p.dex)}" onerror="this.src=FB"><div class="cn">${esc(p.cn)}</div><div class="en">${esc(p.en)}${p.dex?' #'+p.dex:''}</div><div class="rb"><span class="rbadge r-${roleCat(p.role)}">${catLabel[roleCat(p.role)]}</span>${p.elite?'<span class="rbadge" style="background:#a878ff" title="需特殊招式">🔑</span>':''}${p.needsXL?'<span class="rbadge" style="background:var(--warn)" title="需XL糖果">🍬</span>':''}</div></div>`;});
   h+='</div>';
   $("main").innerHTML=h;
 }
