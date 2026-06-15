@@ -48,6 +48,31 @@ body{margin:0;background:radial-gradient(900px 500px at 50% -10%,rgba(255,61,110
 .hide{display:none}
 .upd{font-size:11px;color:var(--dim);margin-top:30px;text-align:center}
 @media(max-width:520px){.main{padding:12px 10px 80px}.rich{padding:4px 13px 12px}}
+
+.rmwrap{margin:14px 0 6px}
+.rmhead{font-size:16px;font-weight:800;margin-bottom:14px;line-height:1.4}
+.rmhead span{display:block;font-size:11.5px;color:var(--dim);font-weight:400;margin-top:2px}
+.rmsteps{list-style:none;margin:0;padding:0;position:relative}
+.rmsteps::before{content:"";position:absolute;left:17px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--good),#4aa3ff,var(--dmax),var(--warn));opacity:.4}
+.rmstep{position:relative;display:flex;gap:11px;align-items:flex-start;padding:0 0 14px 0}
+.rmstep>.rmnum{flex:none;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#0e1016;z-index:1;box-shadow:0 0 0 4px var(--bg)}
+.rmstep.heal>.rmnum{background:var(--good)}.rmstep.tank>.rmnum{background:#4aa3ff}.rmstep.dps>.rmnum{background:var(--dmax)}.rmstep.fill>.rmnum{background:var(--warn)}
+.rmsprite{flex:none;width:46px;height:46px;object-fit:contain;margin-top:-3px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))}
+.rmb{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.rmstep.heal .rmb{border-left:3px solid var(--good)}.rmstep.tank .rmb{border-left:3px solid #4aa3ff}.rmstep.dps .rmb{border-left:3px solid var(--dmax)}.rmstep.fill .rmb{border-left:3px solid var(--warn)}
+.rmrole{font-size:13.5px;font-weight:800;margin-bottom:5px}
+.rmmon{font-size:14px;font-weight:700;margin:4px 0;line-height:1.5}.rmmon .alt{display:block;font-size:11.5px;color:var(--dim);font-weight:400}
+.rmdo,.rmwhy{font-size:12.5px;line-height:1.7;margin-top:6px;color:#cdd2df}
+.rmdo b:first-child,.rmwhy b:first-child{display:inline-block;background:var(--panel3);color:var(--dim);font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;margin-right:5px}
+.rmsub{margin:5px 0 0;padding-left:2px;list-style:none;font-size:13px;line-height:1.9}
+.rmtags{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}.rmtags span{font-size:11.5px;background:var(--panel3);border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+.rmextras{display:grid;gap:9px;margin:16px 0 4px}
+.rmcard{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:12.5px;line-height:1.75}
+.rmcard .rmct{font-weight:800;font-size:13px;margin-bottom:4px}
+.rmcard.cash{border-color:#46d39a55}.rmcard.mp{border-color:#4aa3ff55}.rmcard.warn{border-color:var(--warn)}
+.rmsrc{font-size:10.5px;color:var(--dim);margin-top:12px;text-align:center;line-height:1.6}
+@media(min-width:640px){.rmextras{grid-template-columns:1fr 1fr}.rmcard.warn{grid-column:1/-1}}
+
 </style>
 </head>
 <body>
@@ -145,15 +170,49 @@ body{margin:0;background:radial-gradient(900px 500px at 50% -10%,rgba(255,61,110
 </div>
 
 <div class="sect" id="s2">
-<div class="advice"><b style="color:var(--dmax2)">💰 平民投资顺序</b><br>平民投资顺序(2026年6月社区共识，综合GO Hub六月梯度榜、Doctor Pokegogo耐久榜、Dittobase伤害模拟)：
-【第一步·生存核心】先把一只高IV幸福蛋(没有就用吉利蛋，便宜一半以上，且吉利蛋就在当前3星常驻池可刷)练到40级左右，Max Spirit解锁并升到Lv2(Lv3要XL糖，土豪再说)，再点Max Guard。有奶有坦才打得动5星/传说级极巨战，这是回报率最高的投资。
-【第二步·专职坦】第二只练藏玛然特(盾之王)或雷吉斯奇鲁，Max Guard优先Lv3——开盾保全队比多一只输出更值(注意Max Guard官方效果仅为减伤护盾20/40/60 HP，社区流传的"嘲讽"机制无官方依据，勿据此排队形)；没有传说就练Gmax卡比兽(糖最便宜的准一线坦)。
-【第三步·三只核心输出】按出场率顺序：①超极巨耿鬼(幽灵打击面最广)→②苍响剑之王(巨兽斩+坦输出双修，注意用星尘升招)→③无极汰那(最高单发、龙系通用，糖耗极高量力而行)。极巨攻击招优先升Lv2(Lv3需XL糖，只给这三只)。
-【第四步·属性补全】按未来Boss轮换补：水(千面避役/巨钳蟹)、草(轰擂金刚猩)、火(闪焰王牌)、格斗(怪力)、电(颤弦蝾螈)。已有Gmax喷火龙/妙蛙花/水箭龟练度的不必推倒重来。
-【平民神卡】龙头地鼠(地/钢双面、糖白菜价)、冰伊布(伊布糖零成本、冰系裸伤第一)、胡地(超能/格斗双面)、水伊布(过渡奶)——这四只的素材(螺钉地鼠/伊布/凯西)全在当前1–2星常驻池，不花传说糖就能撑起半个阵容。
-【粒子(MP)纪律】每日收集上限800(软上限，活动可提至1,600；商店另有800 MP/包的粒子包可少量补充)，优先级：奶/坦的Max Spirit·Guard解锁 &gt; S级输出的极巨攻击Lv2 &gt; 其他解锁；不要给D/E级宝可梦解锁招式；1-3星战用低配队清，把糖和MP留给6星高难战。
-【交换贬值】交换后极巨招式等级全部重置为Lv1(解锁保留)——先交换、后练招。
-主要来源：pokemongohub.net Max Attackers/Defenders/Healers Tier List (2026年6月)、doctorpokegogo.com 防御耐久榜(2026-06-03)与分属性输出榜(2026-04-29)、dittobase.com Max Battle伤害排行。注意只练已实装个体；Gmax巨钳螳螂、超梦等尚未进入GO极巨池，勿信营销号榜单。</div>
+<div class="rmwrap">
+<div class="rmhead">💰 平民養成路線圖<span>按這個順序練，回報最高 · 先奶 → 坦 → 輸出 → 補全</span></div>
+<ol class="rmsteps">
+ <li class="rmstep heal">
+  <span class="rmnum">1</span>
+  <img class="rmsprite" loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/242.png" onerror="this.style.opacity=.15">
+  <div class="rmb"><div class="rmrole">🟢 生存核心 · 奶媽</div>
+   <div class="rmmon">幸福蛋 <span class="alt">沒有 → 吉利蛋（便宜一半，3★ 常駐池可刷）</span></div>
+   <div class="rmdo"><b>怎麼練</b>練到 ~L40 → <b>Max Spirit 解鎖升 Lv2</b>（Lv3 要 XL 糖，土豪再說）→ 再點 Max Guard</div>
+   <div class="rmwhy"><b>為什麼先練</b>幸福蛋 496 HP 全場最高，回復量按最大 HP 算（8/12/16%）；有奶有坦才打得動 5★/傳說。<b>回報率最高的一隻。</b></div>
+  </div></li>
+ <li class="rmstep tank">
+  <span class="rmnum">2</span>
+  <img class="rmsprite" loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/889.png" onerror="this.style.opacity=.15">
+  <div class="rmb"><div class="rmrole">🔵 專職坦 · Max Guard</div>
+   <div class="rmmon">藏瑪然特（盾之王） / 雷吉斯奇魯 <span class="alt">沒傳說 → G-Max 卡比獸（糖最便宜的準一線坦）</span></div>
+   <div class="rmdo"><b>怎麼練</b><b>Max Guard 優先升 Lv3</b>（護盾減傷 20/40/60 HP）→ 開盾保全隊比多一隻輸出更值</div>
+   <div class="rmwhy"><b>提醒</b>Max Guard 官方效果只是減傷護盾，社群流傳的「嘲諷吸怪」<b>無官方依據</b>，別據此排隊形。</div>
+  </div></li>
+ <li class="rmstep dps">
+  <span class="rmnum">3</span>
+  <img class="rmsprite" loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" onerror="this.style.opacity=.15">
+  <div class="rmb"><div class="rmrole">🔴 三隻核心輸出 · Max Attack</div>
+   <div class="rmmon">按出場率練這三隻：</div>
+   <ol class="rmsub"><li>① <b>超極巨耿鬼</b> — 幽靈打擊面最廣</li><li>② <b>蒼響（劍之王）</b> — 巨獸斬，坦輸出雙修（用<b>星塵</b>升招）</li><li>③ <b>無極汰那</b> — 最高單發、龍系通用（糖耗極高，量力而行）</li></ol>
+   <div class="rmdo"><b>怎麼練</b>極巨攻擊招優先升 Lv2；<b>Lv3 的 XL 糖只給這三隻</b></div>
+  </div></li>
+ <li class="rmstep fill">
+  <span class="rmnum">4</span>
+  <img class="rmsprite" loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/812.png" onerror="this.style.opacity=.15">
+  <div class="rmb"><div class="rmrole">🟠 屬性補全 · 看 Boss 輪換</div>
+   <div class="rmmon">缺哪個屬性補哪個：</div>
+   <div class="rmtags"><span>水 千面避役/巨鉗蟹</span><span>草 轟擂金剛猩</span><span>火 焰王牌</span><span>格鬥 怪力</span><span>電 顫弦蠑螈</span></div>
+   <div class="rmwhy">已有 G-Max 噴火龍/妙蛙花/水箭龜練度的<b>不必推倒重來</b>。</div>
+  </div></li>
+</ol>
+<div class="rmextras">
+ <div class="rmcard cash"><div class="rmct">🥬 平民神卡（不花傳說糖）</div><b>龍頭地鼠</b>(地/鋼雙面)、<b>冰伊布</b>(冰系裸傷第一)、<b>胡地</b>(超能/格鬥)、<b>水伊布</b>(過渡奶)——素材(螺釘地鼠/伊布/凱西)全在 1–2★ 常駐池，撐起半個陣容。</div>
+ <div class="rmcard mp"><div class="rmct">🔋 粒子(MP)紀律</div>每日收集上限 800(活動可至 1,600)。<b>優先序：奶/坦的 Spirit·Guard 解鎖 ＞ S 級輸出極巨攻擊 Lv2 ＞ 其他</b>；別給 D/E 級解鎖；1–3★ 用低配隊清，糖與 MP 留給 6★。</div>
+ <div class="rmcard warn"><div class="rmct">⚠️ 避坑</div>只練<b>已實裝</b>個體(G-Max 巨鉗螳螂、超夢尚未進 GO 極巨池,別信營銷號)；交換會把招式等級<b>清零</b>，務必<b>先交換、後練招</b>。</div>
+</div>
+<div class="rmsrc">來源：PokémonGO Hub 梯度榜 · Doctor Pokegogo 耐久榜(2026-06-03) · Dittobase 傷害排行 · 社群共識 2026-06</div>
+</div>
 <div class="secttl">⚔️ 输出 · S 级</div><div class="tcard">
   <img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" onerror="this.style.display='none'">
   <div class="tc-b">
