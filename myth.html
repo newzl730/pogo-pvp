@@ -1,243 +1,302 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pokémon GO 幻之宝可梦详解（中文）</title><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokémon GO 幻之寶可夢詳解（繁中）</title><style>
 :root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--panel3:#272c3b;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--myth:#c79bff}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#221a3a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#221a3a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang TC","PingFang SC","Microsoft JhengHei","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .top{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.94);backdrop-filter:blur(8px);z-index:20}
 .top h1{margin:0;font-size:17px}.top h1 b{color:var(--myth)}
 .top nav{display:flex;gap:10px;font-size:12px;flex-wrap:wrap}.top nav a{color:var(--accent);text-decoration:none;white-space:nowrap}
-.main{max-width:760px;margin:0 auto;padding:14px 12px 80px}
-.gh{font-size:15px;font-weight:800;margin:22px 0 3px}.ghc{font-size:12px;color:var(--dim);font-weight:400;background:var(--panel2);border-radius:8px;padding:2px 8px;margin-left:4px}
-.gd{font-size:11.5px;color:var(--dim);margin-bottom:10px}
+.main{max-width:780px;margin:0 auto;padding:14px 12px 80px}
+.intro{background:linear-gradient(135deg,rgba(199,155,255,.12),rgba(59,108,255,.06));border:1px solid #4a3a6e;border-radius:13px;padding:13px 15px;font-size:13px;line-height:1.85;margin-bottom:8px}
+.gh{font-size:15.5px;font-weight:800;margin:22px 0 3px}.ghc{font-size:12px;color:var(--dim);font-weight:400;background:var(--panel2);border-radius:8px;padding:2px 8px;margin-left:4px}
+.gd{font-size:11.5px;color:var(--dim);margin-bottom:10px;line-height:1.6}
 .m{background:var(--panel);border:1px solid var(--line);border-radius:13px;margin-bottom:9px;overflow:hidden}
 .m>summary{cursor:pointer;padding:11px 13px;display:flex;align-items:center;gap:11px;list-style:none}
 .m>summary::-webkit-details-marker{display:none}
-.m>summary img{width:52px;height:52px;object-fit:contain;background:var(--panel2);border-radius:10px;flex:none}
-.mh{flex:1;min-width:0}.mn{font-weight:700;font-size:15px}.mn small{color:var(--dim);font-weight:400;font-size:10.5px}
+.m>summary img{width:54px;height:54px;object-fit:contain;background:var(--panel2);border-radius:10px;flex:none}
+.mh{flex:1;min-width:0}.mn{font-weight:700;font-size:15.5px}.mn small{color:var(--dim);font-weight:400;font-size:10.5px}
 .badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 .tb{font-size:10px;font-weight:700;color:#0e1016;border-radius:7px;padding:1px 7px}
 .chip{font-size:10px;border-radius:8px;padding:2px 7px;white-space:nowrap}
 .arr{color:var(--myth);font-size:16px;flex:none;transition:.15s}.m[open] .arr{transform:rotate(90deg)}
-.mbody{padding:2px 14px 13px;border-top:1px solid var(--line)}
-.r{font-size:13px;line-height:1.65;margin:9px 0;color:#cdd2df}.r b{color:var(--myth);display:block;font-size:11.5px;margin-bottom:2px}
-.cmp{display:flex;gap:14px;justify-content:center;margin:10px 0 2px}
-.cmp figure{margin:0;text-align:center}.cmp img{width:78px;height:78px;object-fit:contain}
+.mbody{padding:2px 15px 14px;border-top:1px solid var(--line)}
+.r{font-size:13px;line-height:1.8;margin:11px 0;color:#dde1ea}.r b{color:var(--myth);display:block;font-size:12px;margin-bottom:3px;font-weight:700}
+.cmp{display:flex;gap:16px;justify-content:center;margin:12px 0 2px}
+.cmp figure{margin:0;text-align:center}.cmp img{width:84px;height:84px;object-fit:contain}
 .cmp figcaption{font-size:10px;color:var(--dim)}.cmp .sh figcaption{color:#ffd54a}
-.cmp .sh{background:radial-gradient(circle at 50% 40%,rgba(255,213,74,.14),transparent 70%);border-radius:12px;padding:0 6px}
+.cmp .sh{background:radial-gradient(circle at 50% 40%,rgba(255,213,74,.14),transparent 70%);border-radius:12px;padding:0 8px}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:24px;line-height:1.6}
 </style></head><body>
-<div class="top"><h1>Pokémon GO <b>幻之宝可梦</b>详解</h1>
-<nav><a href="index.html">⚔️ PvP</a><a href="pve.html">🏟 团战</a><a href="dmax.html">💥 极巨</a><a href="cal.html">📅 日历</a><a href="shiny.html">✨ 异色</a></nav></div>
+<div class="top"><h1>Pokémon GO <b>幻之寶可夢</b>詳解</h1>
+<nav><a href="index.html">⚔️ PvP</a><a href="pve.html">🏟 團戰</a><a href="dmax.html">💥 極巨</a><a href="cal.html">📅 日曆</a><a href="shiny.html">✨ 異色</a></nav></div>
 <div class="main">
-<div class="gd" style="margin:4px 0 6px;font-size:12px">幻之宝可梦多为<b style="color:var(--myth)">一生一次</b>(特殊调查专属),点每只展开看获取详情。状态按"现在还能不能拿到"分组 👇</div>
-<div class="gh">🟢 现在仍可获取 <span class="ghc">6</span></div><div class="gd">这些现在去做就能拿到（免费研究 / 团战 / 神秘箱）</div><details class="m">
+<div class="intro">「幻之寶可夢(幻のポケモン / Mythical Pokémon)」是官方設定中比傳說寶可夢更神秘的存在——傳說寶可夢多以團體戰登場、可重複捕捉,但幻之寶可夢通常透過電影、活動或特殊配信專屬發放,因此大多「一生只能拿一隻」。在 Pokémon GO 中,取得幻之寶可夢的常見途徑包括:免費的「特殊調查」、付費的「Masterwork 異色研究」、限定的團體戰(Raid),以及「神秘箱(Mystery Box)」聯動發放。它們稀有且具紀念意義,是訓練家收藏圖鑑的指標性目標。</div>
+<div class="gd" style="margin:6px 0 4px;font-size:12px">點每隻展開看<b style="color:var(--myth)">背景／為什麼是幻／厲害在哪／取得方式／怎麼培養／實戰用途</b>。狀態按「現在還能不能拿到」分組 👇</div>
+<div class="gh">🟢 現在仍可獲取 <span class="ghc">9</span></div><div class="gd">現在去做就能拿到（免費特殊調查 / 團體戰 / 神秘箱）</div><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">梦幻 <small>Mew · #151</small></div>
-        <div class="badges"><span class="tb" style="background:#ff5f9e">超能</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">夢幻 <small>Mew · #151</small></div>
+        <div class="badges"><span class="tb" style="background:#ff5f9e">超能力</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>免费 Special Research「A Mythical Discovery」(2018上线,长期可领,做完即得普通梦幻)。异色梦幻需另购付费 Masterwork「All-in-One #151」(US$5,2023七周年首发,领取窗口已过、已购者可慢慢做)。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>普通梦幻免费且仍可拿;异色靠付费一次性 Masterwork,做满151任务。PvE/PvP 多面手,更多是收藏意义。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/151.png"><figcaption>✨异色</figcaption></figure></div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>夢幻被視為所有寶可夢的始祖,傳說體內帶有所有寶可夢的基因,因此能習得幾乎任何招式。在正傳中長年只能靠官方活動配信取得,從未野生出現,這種神話色彩加限定發放正是幻之寶可夢的定義。科學家以其基因創造出超夢,使牠在世界觀中佔有奠基者地位。罕見、神秘、與創世傳說掛鉤,讓夢幻成為初代最具代表性的幻之寶可夢。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>夢幻最大特色是招式池幾乎無限,能學會橫跨各屬性的快攻與大招,是全遊戲招式最多的寶可夢。種族值三圍均衡,搭配超廣覆蓋面,在 GO 歷史上一直是萬用工具型存在,能臨時客串水、電、火、惡、格鬥等多種輸出。單屬性面板雖不及頂級專精輸出手,但泛用性無可取代。</div>
+      <div class="r"><b>📍 取得方式</b>透過免費特殊調查「神秘的發現(A Mythical Discovery)」取得,玩家達15級後自動解鎖。這是永久性、可隨時進行的調查,2026年仍開放,免付費票。每帳號只能領取一次夢幻,屬一次性獎勵,完成後解鎖後續時拉比調查線。</div>
+      <div class="r"><b>✨ 異色</b>異色夢幻已實裝但極稀有。最初僅於2021年 Pokémon GO Tour:關都的付費特殊調查中發放,之後僅少數付費活動回歸。一般的「神秘的發現」免費調查為異色鎖定,無法取得異色。</div>
+      <div class="r"><b>🔧 怎麼培養</b>夢幻只能用糖果升等,改招僅能用精英技術機。PvE 通用建議念力(Snarl)或精神強念(Confusion)配精神強念波(Psyshock)或暴風雪(Blizzard)等大招視對位選擇;留一隻滿三圍最泛用。PvP 偏好低攻、高防高耐 IV 並按聯盟微調招式。建議至少練到40級,願意投入再衝50。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 多作為補位救場角色,缺某屬性專精輸出時可臨時切招頂上,但純輸出不及頂級剋制手。真正發光在 PvP——超級與高級聯盟憑自由切換大招(龍爪、暴風雪、火焰放射、波導彈、暗影球)創造難以預判的萬變陣容,常見於進階玩家限定賽。大師聯盟因面板偏低、CP 不足較少見。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得（一隻就好）。夢幻無野生、糖果極難取得,若要當 PvP 萬用主力衝高等級,吃神奇糖果合理;但練一隻即可,別重複投。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/151.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/151.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/649.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">盖诺赛克特 <small>Genesect · #649</small></div>
-        <div class="badges"><span class="tb" style="background:#9ac930">虫</span><span class="tb" style="background:#7f97a8">钢</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>通过 5★ 团战获得,可重复挑战,随活动轮换不同卡带形态(普通/Burn/Chill/Douse/Shock,最近2025-10)。少数可重复刷、团战来源的幻。</div>
-      <div class="r"><b>🔁 次数</b>🔁 可重复</div>
-      <div class="r"><b>💡 点评</b>唯一靠团战且可重复获取的幻;异色已实装(约1/20团战);Burn Drive 形态 PvE 输出不错。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/649.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/649.png"><figcaption>✨异色</figcaption></figure></div>
-    </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/720.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">胡帕 <small>Hoopa · #720</small></div>
-        <div class="badges"><span class="tb" style="background:#ff5f9e">超能</span><span class="tb" style="background:#6a5acd">幽灵</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>束缚形态通过免费 Special Research「Misunderstood Mischief」(2021起,长期挂着);解放形态(超/恶)经活动解锁后可两形态切换。Unbound 还做过5★团战日(2025-02)。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色尚未实装;束缚/解放双形态,解放形态(超/恶)PvE 输出强,是该研究的高价值产物。</div>
-      
-    </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/807.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">捷拉奥拉 <small>Zeraora · #807</small></div>
-        <div class="badges"><span class="tb" style="background:#ffce4b">电</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>免费 Special Research,首发 GO Fest 2026(2026-05-29);2026 Global 免费,活动期间登录即可领、之后自行完成。一次性(重复领只给糖)。当下最新且仍可拿的一只。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色尚未实装(传闻后续出付费异色票);纯电高攻,PvE 电系输出值得练。</div>
-      
-    </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/808.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">美录坦 <small>Meltan · #808</small></div>
-        <div class="badges"><span class="tb" style="background:#7f97a8">钢</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>Pokémon HOME 联动「神秘箱」:从 GO 传一只到 HOME 即得箱子,开箱1小时内大量刷美录坦。每3天一次,可无限重复。长期可拿。</div>
-      <div class="r"><b>🔁 次数</b>🔁 可重复</div>
-      <div class="r"><b>💡 点评</b>异色已实装(活动期约1/125);唯一可无限重复获取的幻;攒400糖进化美录梅塔。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/808.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/808.png"><figcaption>✨异色</figcaption></figure></div>
-    </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/809.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">美录梅塔 <small>Melmetal · #809</small></div>
-        <div class="badges"><span class="tb" style="background:#7f97a8">钢</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 现可获取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免费</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>无法直接获取,由美录坦400糖进化(美录坦靠神秘箱无限刷)。可重复。另有超极巨化形态经 Max 战实装。</div>
-      <div class="r"><b>🔁 次数</b>🔁 可重复</div>
-      <div class="r"><b>💡 点评</b>异色已实装;钢系顶级坦克兼输出,超极巨 Melmetal 是 PvE/Max 战强力,非常值得练。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/809.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/809.png"><figcaption>✨异色</figcaption></figure></div>
-    </div></details><div class="gh">🟡 限定·窗口已过 <span class="ghc">9</span></div><div class="gd">付费 Masterwork 或活动研究；已领的可慢慢做，未领的等官方复刻</div><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/251.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">时拉比 <small>Celebi · #251</small></div>
-        <div class="badges"><span class="tb" style="background:#ff5f9e">超能</span><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">時拉比 <small>Celebi · #251</small></div>
+        <div class="badges"><span class="tb" style="background:#ff5f9e">超能力</span><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>普通时拉比曾通过免费 Special Research「A Ripple in Time」(2018);异色靠付费 Masterwork「Whisper in the Woods」(US$5,2024八周年)。付费窗口已过,未来或复刻。每账号一只异色。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色需付费 Masterwork,已领者可慢慢做;无野生/团战途径,纯研究专属。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/251.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/251.png"><figcaption>✨异色</figcaption></figure></div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>時拉比被稱為穿越時空的寶可夢,能自由往返過去與未來,所到之處森林便恢復生機,是自然與時間的守護者。在正傳中長年只靠活動配信取得,從未野生自然出現,符合幻之寶可夢的限定發放傳統。其與時間旅行掛鉤的神話設定,以及森林之神般的形象,讓牠充滿傳說色彩,是城都地區代表性的幻之寶可夢。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>時拉比擁有超能力/草雙屬性,三圍均衡偏防禦,在道館防守與耐久戰中表現穩健。雙屬性帶來豐富覆蓋,能同時打出草系與超能力系 STAB,還能用波導彈補格鬥面。在 GO 歷史上是第二隻開放的特殊調查幻獸,長期是 PvP 玩家眼中肉盾加多覆蓋的優質選擇。</div>
+      <div class="r"><b>📍 取得方式</b>透過免費特殊調查「時光流轉(A Ripple in Time)」取得,需先完成夢幻調查「神秘的發現」第7階段才會解鎖。這是永久性、可隨時進行的免費調查,2026年仍開放,免付費票。每帳號僅能領取一次時拉比,屬一次性獎勵。</div>
+      <div class="r"><b>✨ 異色</b>異色時拉比已實裝。最初透過2020年底至2021年初的限定特殊調查「目眩神迷(Distracted by Something Shiny)」發放,屬限時活動;一般的「時光流轉」調查為異色鎖定。之後僅少數活動回歸,取得難度偏高。</div>
+      <div class="r"><b>🔧 怎麼培養</b>PvE 建議魔法葉(Magical Leaf)或精神強念(Confusion)配飛葉風暴(Leaf Storm)衝最高草系輸出,IV 取滿攻。PvP(超級/高級聯盟)為主場,推薦精神強念快充能搭配波導彈(Aura Sphere)加飛葉風暴或魔法閃耀的雙大招,IV 取低攻高防高耐。建議至少練到40級,雙大招配置幾乎必備精英技術機。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 屬中上的草系/超能力輸出但非頂尖,多作輔助。真正價值在 PvP——超級與高級聯盟憑精神強念高充能速度與波導彈加飛葉風暴的雙大招覆蓋,能同時威脅鋼、惡、水、地面等對手,是經典安全牌與核心輸出。大師聯盟因 CP 上限與面板限制較少使用。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得。超級/高級聯盟優質肉盾輸出,糖果僅靠一次取得加夥伴散步,想衝戰力等級值得吃。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/251.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/251.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/385.png" onerror="this.style.opacity=.2">
       <div class="mh"><div class="mn">基拉祈 <small>Jirachi · #385</small></div>
-        <div class="badges"><span class="tb" style="background:#7f97a8">钢</span><span class="tb" style="background:#ff5f9e">超能</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+        <div class="badges"><span class="tb" style="background:#7f97a8">鋼</span><span class="tb" style="background:#ff5f9e">超能力</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>普通基拉祈曾通过免费 Special Research「A Thousand-Year Slumber」;异色靠付费 Masterwork「Wish Granted」(US$4.99,多次复刻,最近2025年7月九周年)。当前窗口已过、未来或再复刻。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色需付费票,每账号限一只;钢/超属性,PvE 用处一般,收藏向。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/385.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/385.png"><figcaption>✨异色</figcaption></figure></div>
-    </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/492.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">谢米 <small>Shaymin · #492</small></div>
-        <div class="badges"><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
-    <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>陆上形态曾通过免费 Special Research(Sustainability Week 活动研究);异色靠付费 Masterwork「Glimmers of Gratitude」(US$4.99,2024-02 GO Tour: Sinnoh)。付费窗口已过。有天空形态(花花种子切换,25糖+10000星尘)。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>有陆上/天空两形态;异色需付费票,已领者可做;天空形态 PvE/PvP 有一定可玩性。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/492.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/492.png"><figcaption>✨异色</figcaption></figure></div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>基拉祈是願望寶可夢,傳說每千年只甦醒七天,在這七天內會實現人們寫在牠頭部紙條上的願望。這種千年沉睡、實現願望的童話設定,加上正傳中一貫只透過活動配信發放,使牠成為典型的幻之寶可夢。其與星辰、願望相連的浪漫意象,讓牠在豐緣地區幻獸中別具人氣,神話色彩濃厚。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>基拉祈擁有罕見的鋼/超能力雙屬性,能抵抗多達十種以上屬性,是天生耐久肉盾。三圍均衡偏防,在 PvP 中以高生存力著稱。招式能打出超能力 STAB 與鋼系覆蓋,並擁有強力大招破滅願望(Doom Desire)。在 GO 歷史上長期是 PvP 玩家心中的優質防禦核心。</div>
+      <div class="r"><b>📍 取得方式</b>一般基拉祈透過免費特殊調查「千年的沉睡(A Thousand-Year Slumber)」取得,2019年全球登場後成為永久調查,2026年仍可進行,免付費票,每帳號限領一次。異色基拉祈則需透過付費大師級調查「Wish Granted(願望實現)」取得(約US$4.99),最近一次為2025年九週年活動期間,每帳號僅能購買並完成一次。</div>
+      <div class="r"><b>✨ 異色</b>異色基拉祈已實裝,但僅能透過付費大師級調查「Wish Granted」取得,且一個帳號終生只能拿一隻。免費的「千年的沉睡」調查為異色鎖定。該付費調查屬限時販售並非常駐,需留意官方活動公告。</div>
+      <div class="r"><b>🔧 怎麼培養</b>PvE 建議精神強念(Confusion)配破滅願望(Doom Desire)衝最高超能力輸出,IV 取滿攻。PvP(超級/高級聯盟)為主場,推薦念力(Charge Beam)或精神強念搭配破滅願望加補位大招,IV 取低攻高防高耐。建議至少練到40級,PvP 雙大招配置常需精英技術機調整。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 屬中上超能力輸出但非頂尖,多在缺乏更佳剋制手時客串。核心舞台在 PvP——超級與高級聯盟中,鋼/超能力的超多抗性讓牠極難被擊倒,搭配破滅願望高傷害大招能穩定消耗對手並安全換場。大師聯盟因 CP 不足較少登場,但在限定賽與特殊規則中仍有發揮空間。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得。PvP 頂級耐久肉盾,糖難得,主力化值得投資神奇糖果。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/385.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/385.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/494.png" onerror="this.style.opacity=.2">
       <div class="mh"><div class="mn">比克提尼 <small>Victini · #494</small></div>
-        <div class="badges"><span class="tb" style="background:#ff5f9e">超能</span><span class="tb" style="background:#ff6b3d">火</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+        <div class="badges"><span class="tb" style="background:#ff5f9e">超能力</span><span class="tb" style="background:#ff6b3d">火</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>付费/活动 Special Research:首发「The Feeling of Victory」(2021),2025 GO Tour: Unova 随 Tour Pass Deluxe 复刻。日常不可拿。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色尚未实装;胜利宝可梦,V-Create 等招式使其有一定 PvE 亮点。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>比克提尼是勝利寶可夢,傳說只要與牠同行,任何比賽或戰鬥都必定獲勝,牠能將無限能量分享給接觸者。在正傳中同樣僅透過活動配信取得,從未野生出現,加上必勝這種傳奇象徵,使牠成為合眾地區代表性的幻之寶可夢。其與勝利、能量相連的神話設定極具標誌性,人氣甚高,罕見、限定、傳說色彩濃厚。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>比克提尼擁有少見的超能力/火雙屬性,攻擊面板優秀,能同時打出超能力與火系 STAB,覆蓋面廣。最大亮點是招牌大招 V熱焰(V-create)——一發超高傷害的火系大招,是 GO 中數一數二的爆發大招。雙屬性加上高攻與爆發大招,使牠在 PvE 火系輸出與 PvP 攻擊核心兩端都有發揮空間。</div>
+      <div class="r"><b>📍 取得方式</b>透過免費特殊調查「勝利的預感」取得,2020年登場後成為永久調查,2026年仍可進行,免付費票,每帳號限領一次。部分活動(如合眾巡迴)曾以付費 Tour Pass 提供額外或加速管道,但基礎取得本身免費。</div>
+      <div class="r"><b>✨ 異色</b>異色比克提尼尚未實裝。截至2026年,遊戲中無法取得異色比克提尼,所有取得的均為一般色;未來是否開放需留意官方公告。</div>
+      <div class="r"><b>🔧 怎麼培養</b>PvE 建議快攻(Quick Attack)或精神強念(Confusion)視定位配 V熱焰(V-create)衝最高火系爆發輸出,IV 取滿攻。PvP(大師聯盟為主)推薦精神強念(Confusion)配 V熱焰(V-create)加精神強念波(Psyshock)的雙大招,IV 取低攻高耐。建議練到40級以上,大師聯盟願意衝50;V熱焰常需精英技術機解鎖。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 是可觀的火系輸出手,憑 V熱焰超高單發傷害在火系剋制的團體戰(草、蟲、鋼、冰)中表現亮眼,雖非絕對頂尖但相當實用。PvP 以精神強念加 V熱焰在各聯盟皆有一席之地,尤以高級與大師聯盟更能發揮雙屬性覆蓋與爆發,能突襲鋼、惡等對手,PvP 綜合評價偏高。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>看情況。V熱焰 PvE 火系輸出與大師對戰有亮點,想認真練值得吃;純收藏則免。</div>
       
+    </div></details><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/649.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">蓋諾賽克特 <small>Genesect · #649</small></div>
+        <div class="badges"><span class="tb" style="background:#9ac930">蟲</span><span class="tb" style="background:#7f97a8">鋼</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>3億年前的古代蟲寶可夢化石,被等離子隊(電漿隊)改造、在背上裝載大砲強化而成的人造幻之寶可夢。被人為復活並改造的設定兼具古代與科技的神話色彩,以幻之寶可夢之姿登場。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>高攻擊與不錯耐久,並有獨特卡帶機制:裝上不同卡帶,專用招式高科技光炮(Techno Blast)會變成對應屬性——普通(一般)、火焰(火)、水流(水)、電氣(電)、冰凍(冰)卡帶。登場時曾是最強蟲系攻擊手,現雖被超車仍是可靠的蟲/鋼雙刀。</div>
+      <div class="r"><b>📍 取得方式</b>透過 5 星團體戰取得,並會反覆回歸(2026年初仍持續以不同卡帶形態登場於5星團戰),可重複取得、可累積多隻不同卡帶形態,適合刷高 IV 與練多形態。團戰免費參戰。</div>
+      <div class="r"><b>✨ 異色</b>異色已實裝,且全部卡帶形態(普通/火焰/水流/電氣/冰凍)皆可為異色。團戰擊敗後捕捉觸發,機率約 1/20。</div>
+      <div class="r"><b>🔧 怎麼培養</b>推薦金屬爪配高科技光炮(對應卡帶屬性輸出),或蟲系走連斬配十字剪,鋼系站場用金屬爪配磁鐵炸彈。IV 攻擊優先,練到40+。想切換蟲/鋼用途或保留特定卡帶招式可考慮精英招式學習器。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 為堪用的蟲系與鋼系攻擊手,各卡帶可針對性補盲。PvP 大師聯盟中電氣卡帶配高科技光炮有不錯對位,但耐久偏軟,屬利基選擇而非主流。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>看情況。團戰可重複→糖果能從團戰累積,不一定要吃萬能糖;想快速練滿特定卡帶形態可少量補。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/649.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/649.png"><figcaption>✨異色</figcaption></figure></div>
+    </div></details><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/721.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">波爾凱尼恩 <small>Volcanion · #721</small></div>
+        <div class="badges"><span class="tb" style="background:#ff6b3d">火</span><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>唯一的火/水雙屬性寶可夢,能從手臂噴出高溫蒸氣、產生足以炸飛山脈的爆發力,傳說用蒸氣在深山中創造出隱密的雲海祕境。牠是卡洛斯地方最後一隻幻之寶可夢,獨一無二的屬性與隱世設定使其充滿神話色彩。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>火/水雙屬性極為獨特,同時抗火、水、冰、鋼、蟲、妖精等多屬性,攻防組合罕見。種族值攻擊與耐久兼具,GO 中是少數能同時提供火系與水系輸出選項的寶可夢,屬性新鮮度與圖鑑價值都高。</div>
+      <div class="r"><b>📍 取得方式</b>透過免費特殊調查「壓力攀升(Rising Pressure)」取得,2026/3/3 全球開放,所有訓練家皆可參與、無需付費或特殊道具。前置條件:需先完成「光芒與魅影 / 至華煥彩(Glitz and Glam)」(蒂安希相關調查)才能承接。此調查不過期,可慢慢完成,屬一次性取得。</div>
+      <div class="r"><b>✨ 異色</b>異色尚未實裝(截至目前官方未開放,需留意未來活動)。</div>
+      <div class="r"><b>🔧 怎麼培養</b>推薦燒盡配過熱(火系最高輸出)作火系打手;要水系站場可改配水系大招。IV 攻擊優先,練到40級。因取得一次性、糖果有限,一般不建議耗用精英招式學習器。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 中作火系或水系攻擊手皆堪用,雖非該屬性頂尖,但雙屬性使對位靈活。PvP 受限於弱點(電、地面、岩石)與招式池,排名中庸,主要作收藏與屬性補完。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>偏不值得。屬性新鮮但輸出中庸,除非要補火/水位,否則神奇糖果優先給更強的。</div>
+      
+    </div></details><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/807.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">捷拉奧拉 <small>Zeraora · #807</small></div>
+        <div class="badges"><span class="tb" style="background:#ffce4b">電</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>太陽/月亮世代的雷電寶可夢,幻之寶可夢。能將體內電力從腳掌釋放,以接近瞬移的速度奔馳並施放雷擊,行動如雷電閃光,只在動畫電影與特殊配信中登場,故為幻。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>純電系、高攻向(攻擊種族值約250,最大 CP 約3865),是少數攻擊面頂尖的純電輸出手。招牌專屬大招電漿閃光拳能量需求短、出招快,適合快速循環輸出。</div>
+      <div class="r"><b>📍 取得方式</b>於 GO Fest 2026 首度登場,全球場(2026/7/11–7/12)完全免費,登入即可領取特殊調查「轟雷的發現」並取得;線下場(芝加哥、東京、哥本哈根)可提前體驗。特殊調查不會過期,現在及活動後仍可慢慢完成領取,但每人只會獲得一次,之後重複完成只給糖果。</div>
+      <div class="r"><b>✨ 異色</b>異色形態尚未實裝(首次配信通常為異色鎖定)。</div>
+      <div class="r"><b>🔧 怎麼培養</b>推薦快攻伏特替換、大招電漿閃光拳打主力循環,第二招可帶瘋狂伏特追求高 DPE 爆發。IV 以高攻為主、衝最大 CP,練到40級以上當電系輸出,無傳承招需求。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 頂級電系輸出,打水、飛行系團體戰與道館效率極高,可列電系一線。PvP 因純電單一打點、怕地面,聯盟表現有限,主要價值在 PvE 電系輸出。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得。頂級電系 PvE 輸出,糖難得（免費一次取得）,想練滿打團戰值得投資。</div>
+      
+    </div></details><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/808.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">美錄坦 <small>Meltan · #808</small></div>
+        <div class="badges"><span class="tb" style="background:#7f97a8">鋼</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>Pokémon GO 與 Let's Go! 聯動時揭曉的螺帽寶可夢,劍/盾世代正式收錄的幻之寶可夢。由溶解的金屬聚合而成,以六角螺帽為頭、能吸收金屬並產生電力;是首隻跨 GO 與本傳共同首發的幻之寶可夢,發現過程本身極具話題性,故為幻。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>本身為純鋼小型寶可夢,真正價值在於進化成美錄梅塔。作為素材,是 GO 中極少數能重複無限取得的幻之寶可夢,可大量囤積糖果。</div>
+      <div class="r"><b>📍 取得方式</b>透過神秘箱取得——把 GO 的寶可夢傳送到 Pokémon HOME(或 Let's Go! 系列)即可開啟神秘箱,一段時間內大量湧現美錄坦。神秘箱有冷卻時間,但可重複開啟、實質無限取得。</div>
+      <div class="r"><b>✨ 異色</b>異色美錄坦已實裝,但僅在特定活動期間(如2026年「鋼鐵意志」活動)開放,平時神秘箱的美錄坦為異色鎖定。</div>
+      <div class="r"><b>🔧 怎麼培養</b>本身少作戰鬥用,主要是收集400顆糖進化美錄梅塔。建議多開神秘箱囤糖;要異色梅塔需在異色活動期間抓異色美錄坦再進化。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>戰鬥定位有限,核心用途是進化材料與糖果來源。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>不需要。本身不戰鬥,且神秘箱可無限刷糖,別浪費神奇糖果。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/808.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/808.png"><figcaption>✨異色</figcaption></figure></div>
+    </div></details><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/809.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">美錄梅塔 <small>Melmetal · #809</small></div>
+        <div class="badges"><span class="tb" style="background:#7f97a8">鋼</span><span class="chip" style="background:#27c08a;color:#0e1016">🟢 現可獲取</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>美錄坦的進化型螺帽寶可夢,且只能在 Pokémon GO 中進化取得——古代被當作神祇崇拜的鋼鐵巨人,胸口的大螺帽是其力量核心,能產生龐大電力。作為唯一只能透過 GO 進化登場的幻之寶可夢,地位特殊。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>GO 中頂級的鋼系坦克兼輸出,最大 CP 超過4000,血厚防高、抗性極多。專屬大招鋼拳雙擊(兩連金屬臂)傷害與能量效率俱佳,是招牌賣點。並擁有超極巨化形態,可施放超極巨鋼鐵熔爆,在 Max 戰中對鋼弱頭目造成可觀傷害。</div>
+      <div class="r"><b>📍 取得方式</b>由美錄坦集滿400顆糖進化而成;美錄坦透過神秘箱無限取得,故美錄梅塔實質可重複培養。超極巨化美錄梅塔則透過極巨戰(Max Battle)取得。</div>
+      <div class="r"><b>✨ 異色</b>異色美錄梅塔已實裝——在異色活動抓到異色美錄坦後進化即可獲得。</div>
+      <div class="r"><b>🔧 怎麼培養</b>主力推薦快攻電擊,大招首選專屬鋼拳雙擊(短能量出招),第二招帶重磅衝撞或岩崩補打點。鋼拳雙擊無法用精英刷招器洗回,屬限定傳承招,只能在開放期間進化習得,務必趁活動先留好帶此招的個體。IV:PvP 大師聯盟挑高防高 HP、衝滿等;超極巨形態用電擊/超極巨鋼鐵熔爆打 Max 戰。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvP 大師聯盟頂級坦輸出,憑厚血、廣抗性與鋼拳雙擊速攻成為長青強者,道館攻防亦具鋼系坦價值。超極巨美錄梅塔在 Max 戰中是對鋼弱頭目的優質鋼系輸出,耐久能久留場上。PvE 鋼系輸出泛用耐打。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>不必特地吃。美錄坦神秘箱可免費刷出大量糖果（輕鬆攢 400+）,把神奇糖果省下來給其他難取得的寶可夢;美錄梅塔雖頂級但糖果不缺。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/809.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/809.png"><figcaption>✨異色</figcaption></figure></div>
+    </div></details><div class="gh">🟡 限定・購買期已過 <span class="ghc">6</span></div><div class="gd">付費 Masterwork 或活動研究；已領的可慢慢做，未領的<b>無法補票</b>，只能等官方複刻</div><details class="m">
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/492.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">謝米 <small>Shaymin · #492</small></div>
+        <div class="badges"><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付費票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
+    <div class="mbody">
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>謝米是感謝寶可夢,傳說牠能淨化受污染的土地,讓花朵綻放、傳遞感謝之情。其陸上形態圓滾可愛,接觸格拉西迪亞之花後可變為輕盈的天空形態。在正傳中同樣只透過活動配信取得,加上淨化大地、傳遞感謝的溫暖神話設定,使牠歸入幻之寶可夢。象徵自然、感恩與重生,是神奧地區極具人氣的幻獸。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>謝米最大亮點是雙形態機制——陸上形態為純草系、偏防禦耐久;天空形態變為草/飛行雙屬性、攻擊與速度大幅提升,輸出面板更高。天空形態擁有強力大招種子閃光(Seed Flare),在草系輸出手中具競爭力。雙形態讓牠能依 PvE/PvP 需求彈性切換,是其他幻獸少有的特色。</div>
+      <div class="r"><b>📍 取得方式</b>陸上形態最初透過2023年永續週的免費特殊調查「青草與感謝(Grass and Gratitude)」發放,屬限時活動並非常駐,2026年較可能已結束。異色謝米則透過付費大師級調查「感激的微光(Glimmers of Gratitude)」取得(約US$4.99),最近為2024年神奧巡迴相關活動。取得多綁定特定活動,需留意官方重新開放公告。</div>
+      <div class="r"><b>✨ 異色</b>異色謝米已實裝,僅透過付費大師級調查「感激的微光(Glimmers of Gratitude)」取得,屬付費票限時活動,每帳號通常限一隻。免費活動調查發放的謝米為異色鎖定。</div>
+      <div class="r"><b>🔧 怎麼培養</b>陸上形態建議神秘之力(Hidden Power)配青草結(Grass Knot);天空形態推薦魔法葉(Magical Leaf)配日光束(Solar Beam)或種子閃光(Seed Flare)衝最高草系輸出。PvE 取滿攻 IV,PvP 取低攻高耐。建議至少練到40級。改招常需精英技術機,天空形態變身另需活動限定的格拉西迪亞之花道具。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>天空形態在 PvE 是可用的草系輸出,雖非頂尖但缺乏更強草系剋制手時堪用,適合打水、地面、岩石系團體戰。陸上形態偏防禦,PvP 超級聯盟中以耐久草系核心姿態出現,但草系在 PvP 環境普遍弱勢(怕蟲、火、飛行、毒、冰),整體定位偏小眾。大師聯盟基本無緣。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>不太值得。定位小眾、PvP 弱勢,收藏為主,神奇糖果留給更實用的寶可夢。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/492.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/492.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/648.png" onerror="this.style.opacity=.2">
       <div class="mh"><div class="mn">美洛耶塔 <small>Meloetta · #648</small></div>
-        <div class="badges"><span class="tb" style="background:#9099a1">一般</span><span class="tb" style="background:#ff5f9e">超能</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+        <div class="badges"><span class="tb" style="background:#9099a1">一般</span><span class="tb" style="background:#ff5f9e">超能力</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付費票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>普通美洛耶塔曾通过 GO Fest/GO Tour 活动研究;异色靠付费 Masterwork「A Dazzling Aria」(US$4.99,2025-02 Road to Unova)。付费研究不过期但领取窗口已过。有歌声/舞步两形态。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色2025首发,需付费票;舞步形态(格斗)GO 内实装有限,主要收藏向。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/648.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/648.png"><figcaption>✨异色</figcaption></figure></div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>合眾地方的旋律寶可夢,傳說以歌聲撥動人與寶可夢的心,自古被視為唱出萬物情感的存在。牠是第五世代僅透過官方配信登場的幻之寶可夢,從未在一般遊玩中取得,稀有度與神話色彩使其名列幻之寶可夢。詠歎調與舞步兩種形態正對應歌聲與舞步兩種藝術。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>擁有形態變化特色:平時為詠歎調(一般/超能力),本傳中使用近身戰後變為舞步(一般/格鬥)。種族值偏攻擊,GO 中攻擊面板亮眼但耐久普通,可作超能力攻擊手但已被更易培養者超車,真正價值在收藏與圖鑑完整度。</div>
+      <div class="r"><b>📍 取得方式</b>一般版最早透過免費特殊調查「尋覓你的歌聲(Finding Your Voice)」取得,一次性、現多已過期。異色透過大師級長期調查「美妙的旋律 / A Dazzling Aria」取得,2025/2/24–3/2 以約 NT$150(US$4.99)售票,合眾巡迴實體場可免費解鎖。大師級調查領取後不過期,但購票窗口已關閉,現在一般無法再取得異色。</div>
+      <div class="r"><b>✨ 異色</b>異色已實裝(2025年隨大師級長期調查「美妙的旋律」首度開放),須購票或實體場解鎖,目前購票期已過,一般無法再拿。</div>
+      <div class="r"><b>🔧 怎麼培養</b>PvE 走超能力路線推薦念力配精神強念;道館/泛用用念力配破壞光線。IV 攻擊優先,練到40–50級。因限定取得、難拿 XL 糖果,不建議為 PvE 硬刷精英招式學習器。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 屬能用但非首選的超能力攻擊手。PvP 因一般屬性主控、招式偏弱,且缺乏便宜大招騙盾,各聯盟排名不高,主要作收藏與趣味對戰。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>不值得。對戰實用性低,收藏向,別浪費神奇糖果。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/648.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/648.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/719.png" onerror="this.style.opacity=.2">
       <div class="mh"><div class="mn">蒂安希 <small>Diancie · #719</small></div>
-        <div class="badges"><span class="tb" style="background:#c9b66b">岩石</span><span class="tb" style="background:#ff8fd0">妖精</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 异色已实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+        <div class="badges"><span class="tb" style="background:#c9b66b">岩石</span><span class="tb" style="background:#ff8fd0">妖精</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付費票</span><span class="chip" style="background:rgba(255,213,74,.18);border:1px solid #ffd54a;color:#ffd54a">✨ 異色已實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>异色通过付费 Masterwork「Sparkle and Shine」(2026 GO Tour: Kalos,Global票约US$9.99,或线下票完成 GO Tour 研究解锁)。活动已结束,当前不可购入。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>2026随 GO Tour: Kalos 实装,较新;异色付费一次性,Mega 蒂安希使 PvE 有潜力。</div>
-      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/719.png"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/719.png"><figcaption>✨异色</figcaption></figure></div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>卡洛斯地方的寶石寶可夢,由小碎鑽突變而生,能瞬間用雙手壓縮空氣中的碳製造鑽石,被視為地底的公主。僅能透過官方配信取得,神秘高貴的設定使其名列幻之寶可夢。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>目前唯一能超級進化的幻之寶可夢——超級蒂安希頭上鑽石化為心形、攻防大幅提升。岩石/妖精雙屬性提供獨特攻防組合(岩打火/飛/蟲/冰,妖精打龍/惡/格鬥)。GO 中本體輸出中規中矩,超級進化後作為岩系/妖精系 Mega 有團隊增益價值。</div>
+      <div class="r"><b>📍 取得方式</b>一般蒂安希最早於2023 GO Fest 付費取得,2024年下放至免費特殊調查,之後也於免費特殊調查中登場。異色則綁定 GO Tour: Kalos 2026 的付費 Masterwork「Sparkle and Shine」(見下方異色說明)。一般版是否仍開放視當期活動而定。</div>
+      <div class="r"><b>✨ 異色</b>異色蒂安希已實裝,透過 GO Tour: Kalos 2026 的付費 Masterwork 調查「Sparkle and Shine(熠熠生輝)」取得:全球玩家需在2026年3月1日18:00(當地)前購買約 US$9.99 的全球票,或現場票(台南/洛杉磯)完成 GO Tour 調查後解鎖。Masterwork 不會過期,當時購票者現在仍可慢慢做完;未購票者目前無法取得,須等官方未來複刻。</div>
+      <div class="r"><b>🔧 怎麼培養</b>岩系輸出推薦落石配岩崩(超級進化後尤佳);妖精向可走落石配魔法閃耀。IV 攻擊優先,本體練到40級,主力價值在餵食蒂安希進化石做超級進化支援團戰。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 中超級蒂安希可作岩系/妖精系 Mega 提供同屬性增益,純輸出非頂尖。PvP 大師聯盟排名偏後段(約 Tier D),超級對戰受 CP 限制亦不突出,偏收藏與 Mega 工具型。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>不值得（本體）。本體輸出平庸,價值在超級進化（Mega 不需練到滿等）,神奇糖果留給別的。</div>
+      <div class="cmp"><figure><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/719.png"><figcaption>一般色</figcaption></figure><figure class="sh"><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/719.png"><figcaption>✨異色</figcaption></figure></div>
     </div></details><details class="m">
-    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/721.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">波尔凯尼恩 <small>Volcanion · #721</small></div>
-        <div class="badges"><span class="tb" style="background:#ff6b3d">火</span><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+    <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/720.png" onerror="this.style.opacity=.2">
+      <div class="mh"><div class="mn">胡帕 <small>Hoopa · #720</small></div>
+        <div class="badges"><span class="tb" style="background:#ff5f9e">超能力</span><span class="tb" style="background:#6a5acd">幽靈</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#3b6cff;color:#fff">🆓 免費</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>付费 Special Research,首发 GO Fest 2025(2025-05-29,需 GO Fest 票)。无野生/孵蛋/交换途径。后续更广途径未查到确证。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色截至2026-03仍未实装;火/水唯一属性组合,抗性独特,PvE 有特色。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>能用六個光環隨意傳送任何事物的惡作劇寶可夢,傳說能扭曲空間、把遠方的東西瞬間拉到眼前。分為被封印的懲戒胡帕(超能力/幽靈)與釋放真正力量的解放胡帕(超能力/惡),神話般的傳送能力與雙形態設定使其成為卡洛斯的幻之寶可夢。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>核心亮點是形態變化:懲戒(超能力/幽靈)小巧靈動,解放(超能力/惡)變得巨大、攻擊種族值高達311,是頂尖超能力/惡系輸出之一。GO 中解放胡帕攻擊面板極高但耐久偏軟,屬玻璃大砲型高輸出幻之寶可夢。</div>
+      <div class="r"><b>📍 取得方式</b>懲戒胡帕最早透過特殊調查「莫名其妙的惡作劇(Misunderstood Mischief)」(2021)取得,之後於限定活動回歸。取得懲戒胡帕後,在道具選單按切換形態並消耗50顆糖果加10,000星星沙子即可變為解放胡帕。2025/2/15 曾有解放胡帕團戰日讓玩家進行形態切換。目前是否能拿懲戒胡帕需視當期活動,非常駐。</div>
+      <div class="r"><b>✨ 異色</b>異色尚未實裝(本傳亦尚未開放異色胡帕,故 GO 目前無異色,團戰日明確不出異色)。</div>
+      <div class="r"><b>🔧 怎麼培養</b>解放胡帕推薦念力或驚嚇配精神強念(超能力輸出),或驚嚇配暗影球或惡之波動(幽靈/惡輸出)。IV 攻擊優先,練到40+。想兼顧超能力與惡兩路輸出,值得用精英招式學習器補第二大招。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 中解放胡帕是強力的超能力與惡系攻擊手,輸出極高但脆皮易倒。PvP 大師聯盟憑高攻可打出亮眼戰績(曾勝超夢、黑色奇樹那、帝牙盧卡、騎拉帝納、蓋歐卡等),惟耐久低、缺便宜騙盾大招是硬傷;超級聯盟因 CP 限制過於脆弱、幾乎不堪用。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得。解放胡帕是頂尖超能/惡 PvE 與大師輸出,糖難得,主力化值得吃。</div>
       
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/802.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">玛夏多 <small>Marshadow · #802</small></div>
-        <div class="badges"><span class="tb" style="background:#e0306a">格斗</span><span class="tb" style="background:#6a5acd">幽灵</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">瑪夏多 <small>Marshadow · #802</small></div>
+        <div class="badges"><span class="tb" style="background:#e0306a">格鬥</span><span class="tb" style="background:#6a5acd">幽靈</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付費票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>付费 Special Research:首发 GO Fest 2024(2024-05-30 线下/Global票),后于2025-04-03 经「A Striking Shadow」全球发布。需视活动复刻。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色尚未实装;格斗/幽灵唯一组合,PvP/PvE 有一定亮点,无形态。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>太陽/月亮世代登場的幻之寶可夢,圖鑑分類幻影寶可夢。能潛入他人影子之中,模仿並偷學對手的招式動作,行蹤飄忽、極度低調,鮮少被目擊。招牌招式幻影奪取能竊取對手的能力提升,設定獨一無二,須透過特殊活動才能取得,故為幻。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>目前唯一的格鬥/幽靈複合屬性寶可夢,組合稀有。攻擊種族值高,GO 最大 CP 約4217。使用快攻真心拳配大招近身戰時,格鬥輸出貼近頂級水準;幽靈副屬性讓牠不畏一般與格鬥招。</div>
+      <div class="r"><b>📍 取得方式</b>於 GO Fest 2024 首次登場,僅能透過付費票的特殊調查取得(線下場或全球場購票),2025年活動再以付費調查形式釋出。屬付費票限定、一次性,目前非常態可得,需等官方再次安排付費活動。</div>
+      <div class="r"><b>✨ 異色</b>異色形態尚未在 GO(及本傳)實裝。</div>
+      <div class="r"><b>🔧 怎麼培養</b>推薦快攻真心拳、大招近身戰,純格鬥打點輸出最高;想要幽靈打點可帶暗影球。IV 以高攻為主、衝最大 CP,練到40~50級當主力格鬥輸出,無需精英刷招器。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 是優秀的格鬥系輸出,可打鋼、惡、一般、冰、岩團體戰。PvP 因雙弱(超能力/幽靈/飛行/妖精)且缺乏優質幽靈大招而吃虧,定位不如 PvE 突出。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>值得。頂級格鬥 PvE 輸出,糖僅靠付費一次取得,想當主力值得吃神奇糖果。</div>
       
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/893.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">萨戮德 <small>Zarude · #893</small></div>
-        <div class="badges"><span class="tb" style="background:#5a5366">恶</span><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已过</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付费票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">异色未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">扎魯德 <small>Zarude · #893</small></div>
+        <div class="badges"><span class="tb" style="background:#5a5366">惡</span><span class="tb" style="background:#54c46f">草</span><span class="chip" style="background:#ff9f43;color:#0e1016">🟡 限定·已過</span><span class="chip" style="background:#ffcb05;color:#0e1016">💳 付費票</span><span class="chip" style="background:var(--panel3);color:var(--dim)">異色未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>付费 Special Research「Rogue of the Jungle」(US$7.99,2024-03 Verdant Wonders,后有复刻)。日常不可拿。一次性。</div>
-      <div class="r"><b>🔁 次数</b>🔒 一生一次</div>
-      <div class="r"><b>💡 点评</b>异色尚未实装;恶/草唯一组合,无形态,收藏向。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>劍/盾世代登場的惡黨寶可夢,幻之寶可夢。群居於深邃叢林,以背後與四肢的藤蔓攀爬、攻擊與療傷,個性兇暴排外、極度排斥外來者,鮮少現身於人前,故為幻;動畫中另有獨特的達達個體設定。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>罕見的惡/草複合屬性,最大 CP 約4334,攻擊向。能同時提供草系與惡系兩種打點,泛用性不錯;可用藤鞭、大力鞭打打草系,也能用拍落打惡系打點。</div>
+      <div class="r"><b>📍 取得方式</b>透過 Verdant Wonders 活動的付費特殊調查「叢林惡棍(Rogue of the Jungle)」取得,售價約 US$7.99(各地對應價位)。屬付費票限定、一次性,活動結束後無法再取得,須等官方再次安排。</div>
+      <div class="r"><b>✨ 異色</b>異色形態尚未實裝。</div>
+      <div class="r"><b>🔧 怎麼培養</b>草系輸出推薦快攻藤鞭、大招大力鞭打;惡系打點可用拍落或暗影爪副招。IV 視用途:PvE 衝高攻最大 CP;投 PvP 超級聯盟則挑高防/高 HP 的 PvP IV,無強制傳承招。</div>
+      <div class="r"><b>⚔️ 實戰用途</b>PvE 屬可用的草/惡輸出,但非絕對頂尖。PvP 在超級/高級聯盟可作草惡雙打點中堅,惡系打超能/幽靈、草系打水地岩,但雙弱(蟲)需注意,整體實用而非頂尖。</div>
+      <div class="r"><b>🍬 萬能糖果值不值得吃</b>看情況。草/惡雙打點實用但非頂尖,認真用可吃,收藏則免。</div>
       
-    </div></details><div class="gh">⚪ 尚未实装 <span class="ghc">4</span></div><div class="gd">GO 里还没上线，没有任何获取途径</div><details class="m">
+    </div></details><div class="gh">⚪ 尚未實裝 <span class="ghc">4</span></div><div class="gd">GO 裡還沒上線，目前無任何取得途徑</div><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/489.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">霏欧纳 <small>Phione · #489</small></div>
-        <div class="badges"><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">霏歐納 <small>Phione · #489</small></div>
+        <div class="badges"><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 尚未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>截至2026-06 尚未实装。原作由玛纳霏蛋孵化,GO 内尚无对应机制。</div>
-      <div class="r"><b>🔁 次数</b>—</div>
-      <div class="r"><b>💡 点评</b>未实装;依附于尚未上线的 Manaphy。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>霏歐納是由瑪納霏的蛋孵化而生的水屬性幻之寶可夢,也是寶可夢史上極罕見可透過孵蛋無限增殖卻仍被歸類為幻之寶可夢的特例。牠成群隨暖流漂游,旅行後必定會回到出生的地方,體型嬌小卻象徵著海洋循環不息的生命力。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>基礎種族值僅480,六項各80,是幻之寶可夢中數值偏低者。即使實裝,對戰實用性有限,收藏與圖鑑意義大於戰力。</div>
+      <div class="r"><b>📍 取得方式</b>目前 GO 尚未實裝,無取得途徑。與瑪納霏綁定,同屬 Niantic 保留中的神奧幻之寶可夢,尚無官方時程。</div>
+      <div class="r"><b>✨ 異色</b>尚未實裝</div>
+      
+      <div class="r"><b>⚔️ 實戰用途</b>理論定位偏收藏向,實裝後對戰存在感低,主要作為完成水系或神奧圖鑑的目標。</div>
+      
       
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/490.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">玛纳霏 <small>Manaphy · #490</small></div>
-        <div class="badges"><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">瑪納霏 <small>Manaphy · #490</small></div>
+        <div class="badges"><span class="tb" style="background:#4a90ff">水</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 尚未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>截至2026-06 尚未在 GO 实装,无任何获取途径。</div>
-      <div class="r"><b>🔁 次数</b>—</div>
-      <div class="r"><b>💡 点评</b>未实装;与 Phione/Arceus/Magearna 同为仅剩未上线的幻。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>瑪納霏是水屬性的幻之寶可夢,最大的謎團在於牠是少數能透過育兒屋孵蛋誕生後代的幻之寶可夢——但孵出的並非瑪納霏本身,而是霏歐納。牠擁有心之交換的特性,能與任何寶可夢心意相通,被視為大海的王子,在深海中誕生並隨洋流旅行。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>基礎種族值600,六項數值平均分配(各100),屬於均衡型水系。若實裝雖非頂尖,但全能的數值使其具備一定的對戰與超級聯盟潛力。</div>
+      <div class="r"><b>📍 取得方式</b>目前 GO 尚未實裝,無取得途徑。與阿爾宙斯同列 Niantic 保留作專屬登場的神奧地區幻之寶可夢之一,尚無發放時程。</div>
+      <div class="r"><b>✨ 異色</b>尚未實裝</div>
+      
+      <div class="r"><b>⚔️ 實戰用途</b>理論定位為均衡型水系,實裝後可能在大師或超級聯盟對戰中作為水系泛用選擇,但難敵專精型水系傳說。</div>
+      
       
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/493.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">阿尔宙斯 <small>Arceus · #493</small></div>
-        <div class="badges"><span class="tb" style="background:#9099a1">一般</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">阿爾宙斯 <small>Arceus · #493</small></div>
+        <div class="badges"><span class="tb" style="background:#9099a1">一般</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 尚未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>截至2026-06 尚未实装。2024 GO Tour: Sinnoh 也未引入。</div>
-      <div class="r"><b>🔁 次数</b>—</div>
-      <div class="r"><b>💡 点评</b>未实装;18属性形态+超高种族值,普遍认为留作重磅。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>阿爾宙斯被尊為神奧地區神話中創造整個世界的創世神,傳說牠誕生於虛無之中,並創造了騰蛇、帝牙盧卡、帕路奇亞等支配時空與反物質的存在。牠能透過攜帶的石板(Plates)自由變換18種屬性,是少數一身可對應全屬性的寶可夢。其神格地位使官方一向極為慎重看待牠的登場。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>基礎種族值高達720(全屬性平均120),是頂級的全能戰力。若實裝,憑藉可變屬性的特性與高耐久加高攻擊,理論上能在多種屬性對戰中佔據一線地位。</div>
+      <div class="r"><b>📍 取得方式</b>目前 GO 尚未實裝,無任何取得途徑。Niantic 曾在神奧導覽(Sinnoh Tour)中明確表示阿爾宙斯、瑪納霏、霏歐納都非常特別,希望在牠們未來於 GO 初登場時給予專屬的舞台,暗示將以專屬大型活動發放,但未公布時程。</div>
+      <div class="r"><b>✨ 異色</b>尚未實裝</div>
+      
+      <div class="r"><b>⚔️ 實戰用途</b>理論定位為高泛用性的全能型輸出或坦克,實裝後極可能成為一般屬性(或依配信屬性)的指標級攻擊手與道館防衛選擇。</div>
+      
       
     </div></details><details class="m">
     <summary><img loading="lazy" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/801.png" onerror="this.style.opacity=.2">
-      <div class="mh"><div class="mn">玛机雅娜 <small>Magearna · #801</small></div>
-        <div class="badges"><span class="tb" style="background:#7f97a8">钢</span><span class="tb" style="background:#ff8fd0">妖精</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 未实装</span></div>
-      </div><span class="arr">▸</span>
-    </summary>
+      <div class="mh"><div class="mn">瑪機雅娜 <small>Magearna · #801</small></div>
+        <div class="badges"><span class="tb" style="background:#7f97a8">鋼</span><span class="tb" style="background:#ff8fd0">妖精</span><span class="chip" style="background:#5a5366;color:#cdd2df">⚪ 尚未實裝</span></div>
+      </div><span class="arr">▸</span></summary>
     <div class="mbody">
-      <div class="r"><b>📍 怎么获得</b>截至2026-06 尚未确认实装。GO Fest 2025 logo 曾被解读为暗示但未兑现。</div>
-      <div class="r"><b>🔁 次数</b>—</div>
-      <div class="r"><b>💡 点评</b>疑似未实装;Gen7 幻,实际上线待官方确认。</div>
+      <div class="r"><b>🌌 背景・為什麼是「幻」</b>瑪機雅娜是鋼加妖精屬性的幻之寶可夢,設定為人造寶可夢——由一位天才科學家在約500年前打造,是寶可夢世界中極罕見的人工生命體。牠胸口的靈魂之心(Soul-Heart)能感應並理解他人的情感,並擁有可變換為復古百年前外形的特殊型態。</div>
+      <div class="r"><b>⭐ 厲害在哪</b>基礎種族值600,主打超高特防與特攻。鋼加妖精的雙屬性防禦組合極為優秀,弱點稀少(僅怕地面與火),抗性繁多。若實裝將是強力的妖精系輸出與耐久單位。</div>
+      <div class="r"><b>📍 取得方式</b>目前 GO 尚未實裝,無取得途徑,亦無 Niantic 官方暗示或可信時程傳聞;作為 Alola 地區的幻之寶可夢,普遍預期會隨第七世代幻之寶可夢的後續推進才登場。</div>
+      <div class="r"><b>✨ 異色</b>尚未實裝</div>
+      
+      <div class="r"><b>⚔️ 實戰用途</b>理論定位為優質的妖精系攻擊手與全能坦克,實裝後極可能在對戰聯盟(尤其針對龍、格鬥、惡系)中成為熱門選擇。</div>
+      
       
     </div></details>
-<div class="note">数据来源 LeekDuck / PokémonGO Hub / 官方公告 · 立绘 PokeAPI · 获取方式随活动变动,以游戏内为准<br>更新于 2026-06-15</div>
+<div class="note">繁體中文（台灣官方用語）· 招式／調查名以遊戲內官方譯名為準 · 資料來源 LeekDuck／PokémonGO Hub／官方公告，取得方式隨活動變動以遊戲內為準<br>更新於 2026-06-15</div>
 </div></body></html>
