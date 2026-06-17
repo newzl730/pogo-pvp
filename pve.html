@@ -350,5 +350,16 @@ function selB(i){cb=i;DATA.basics.forEach((_,k)=>$("bd"+k).classList.toggle("hid
 $("season").textContent='团战输出榜 · '+DATA.generated+' · 数据来源 GamePress/Pokebattler/DialgaDex，随版本变动';
 renderSide();renderType();
 </script>
+<script>
+function _gotoHash(){var m=(location.hash||"").match(/^#m(\d+)/);if(!m)return;var dex=m[1];
+ var imgs=[].slice.call(document.querySelectorAll(".acard img"));
+ var hit=imgs.filter(function(i){return i.src&&i.src.indexOf("/"+dex+".png")>=0;})[0];
+ if(!hit)return;var card=hit.closest(".acard");
+ var el=card;while(el){if(el.tagName==="DETAILS")el.open=true;el=el.parentElement;}
+ card.scrollIntoView({behavior:"smooth",block:"center"});
+ card.style.outline="3px solid #ffcb05";card.style.outlineOffset="2px";
+ setTimeout(function(){try{card.click();}catch(e){}},450);}
+addEventListener("hashchange",_gotoHash);addEventListener("load",_gotoHash);
+</script>
 </body>
 </html>
