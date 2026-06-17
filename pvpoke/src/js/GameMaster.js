@@ -382,7 +382,7 @@ var GameMaster = (function () {
 					if(!pokemon.hasTag("mega")){
 						entry = JSON.parse(JSON.stringify(entry)); // Your clones are very impressive, you must be very proud
 						entry.speciesId += "_shadow";
-						entry.speciesName += " (Shadow)";
+						entry.speciesName += "(暗影)";
 						entry.tags = entry.tags.filter(t => t != "wildlegendary" && t != "shadoweligible");
 						entry.tags.push("shadow");
 

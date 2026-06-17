@@ -31,7 +31,15 @@ var D={
 "Type":"属性","Cup":"杯赛","Format":"赛制","Category":"类别","League":"联盟","All Pokemon":"全部宝可梦","All Pokémon":"全部宝可梦",
 "Show advanced options":"显示高级选项","Hide advanced options":"隐藏高级选项","Advanced":"高级","Options":"选项",
 "Pokemon":"宝可梦","Pokémon":"宝可梦","Dex":"图鉴号","Family":"家族","Released":"已实装","Buddy Distance":"伙伴距离",
-"Self":"自身","Opponent":"对手","vs":"对","or":"或","and":"和","Total":"合计","Best Buddy":"最佳伙伴","Shadow":"暗影","Mega":"超级","Best":"最佳"
+"Self":"自身","Opponent":"对手","vs":"对","or":"或","and":"和","Total":"合计","Best Buddy":"最佳伙伴","Shadow":"暗影","Mega":"超级","Best":"最佳",
+"Sort By":"排序方式","Show Move Counts":"显示招式次数","Search Pokemon":"搜索宝可梦","Search Pokémon":"搜索宝可梦",
+"The best Pokemon overall across multiple roles.":"多种定位下综合表现最佳的宝可梦。","They have the typing, moves, and stats to succeed as top contenders.":"它们的属性、招式与种族值使其成为顶尖竞争者。",
+"Help provide usage data for the rankings at":"帮助提供排名使用数据：","Choose a cup":"选择杯赛","Choose a format":"选择赛制",
+"Lead":"先锋","Switch":"换人","Closer":"收尾","Charger":"蓄力","Attacker":"进攻","Self-Rating":"自评分","Move Counts":"招式次数",
+"Show":"显示","Hide":"隐藏","results":"结果","No results":"无结果","Loading":"加载中","Loading...":"加载中…",
+"Buddy":"伙伴","Third Move":"第二大招","Unlock":"解锁","Fast":"快","Charged":"大招","DPT":"每回合伤害","EPT":"每回合能量","DPE":"每能量伤害",
+"Compare":"对比","Top Threats":"主要威胁","Recommended Moves":"推荐招式","Alternative Moves":"备选招式","Legacy":"传承","Elite TM":"精英刷招器",
+"Great League (1500)":"超级联盟(1500)","Ultra League (2500)":"高级联盟(2500)","Master League (10000)":"大师联盟","Master League (Level 50)":"大师联盟(50级)"
 };
 function tr(s){if(!s)return s;var k=s.trim();if(D[k])return s.replace(k,D[k]);return s;}
 function walk(root){

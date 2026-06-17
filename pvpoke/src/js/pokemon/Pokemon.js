@@ -2145,8 +2145,8 @@ function Pokemon(id, i, b, d){
 			self.shadowAtkMult = DamageMultiplier.SHADOW_ATK;
 			self.shadowDefMult = DamageMultiplier.SHADOW_DEF;
 
-			if(self.speciesName.indexOf("Shadow") == -1){
-				self.speciesName = self.speciesName + " (Shadow)";
+			if(self.speciesName.indexOf("暗影") == -1 && self.speciesName.indexOf("Shadow") == -1){
+				self.speciesName = self.speciesName + "(暗影)";
 
 				// Add Frustration as a custom move
 				if(! self.knowsMove("FRUSTRATION")){
@@ -2157,8 +2157,8 @@ function Pokemon(id, i, b, d){
 			self.shadowAtkMult = 1;
 			self.shadowDefMult = 1;
 
-			if(self.speciesName.indexOf(" (Shadow)") > -1){
-				self.speciesName = self.speciesName.replace(" (Shadow)","");
+			if(self.speciesName.indexOf("(暗影)") > -1){
+				self.speciesName = self.speciesName.replace("(暗影)","");
 
 				// Remove Frustration if added as a Custom Move
 				self.removeMove("FRUSTRATION");
