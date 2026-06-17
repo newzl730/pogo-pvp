@@ -35,8 +35,8 @@ th{color:var(--grn)}
 <div id="detail"></div>
 <div id="res"></div>
 <div class="sqlbox">
-  <div class="tag">⚙️ 原始 SQL 查询（高级）— 表：pokemon / moves / pokemon_moves</div>
-  <textarea id="sql">SELECT dex,cn,en,type1,type2,atk,def,hp FROM pokemon WHERE type1='dragon' ORDER BY atk DESC LIMIT 20;</textarea>
+  <div class="tag">⚙️ 原始 SQL 查询（高级）— 表：pokemon / moves / pokemon_moves / default_ivs / type_effectiveness / shadow_purification / shiny / evolution / cpm / weather_boost</div>
+  <textarea id="sql">SELECT dex,name_cn,name_en,type1,type2,atk,def,hp FROM pokemon WHERE type1='dragon' ORDER BY atk DESC LIMIT 20;</textarea>
   <button onclick="runSQL()">运行</button>
   <div id="sqlout"></div>
 </div>
@@ -53,13 +53,28 @@ function tchip(t){return t?'<span class="tp" style="background:'+(TC[t]||"#666")
 function rows(sql,params){var st=DB.prepare(sql);if(params)st.bind(params);var o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
 function detail(sid){
   var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return;
-  var fast=rows("SELECT m.cn,m.en,m.type,pm.elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot='fast'",[sid]);
-  var chg=rows("SELECT m.cn,m.en,m.type,pm.elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot='charged'",[sid]);
-  function mvl(a){return a.map(function(m){return '<span'+(m.elite?' class="el"':'')+'>'+(m.elite?'🔑':'')+esc(m.cn)+' / '+esc(m.en)+' ['+(TN[m.type]||m.type)+']</span>';}).join("、")||"—";}
-  document.getElementById("detail").innerHTML='<div class="detail"><h3>'+esc(p.cn)+' <small style="color:var(--dim);font-weight:400">'+esc(p.tw)+' · '+esc(p.en)+' · #'+p.dex+'</small></h3>'+
-    '<div style="display:flex;gap:14px;align-items:center"><img src="'+art(p.dex)+'" style="width:80px;height:80px;object-fit:contain" onerror="this.style.opacity=.15"><div class="kv">'+
-    '属性：'+tchip(p.type1)+tchip(p.type2)+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b><br>species_id：<code>'+esc(p.species_id)+'</code>　进化自：'+esc(p.family_parent||"—")+'</div></div>'+
-    '<div class="mv" style="margin-top:10px">⚡ <b style="color:#bfe0ff">快速招式</b>：'+mvl(fast)+'<br>💥 <b style="color:#ffc59c">充能招式</b>：'+mvl(chg)+'</div></div>';
+  function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
+  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
+  var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
+  var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
+  var evo=rows("SELECT e.evolves_to,e.candy,p2.name_cn cn FROM evolution e LEFT JOIN pokemon p2 ON p2.species_id=e.evolves_to WHERE e.species_id=?",[sid]);
+  var wb=rows("SELECT DISTINCT weather FROM weather_boost WHERE type=? OR type=?",[p.type1,p.type2||p.type1]);
+  var flags=[];if(p.is_legendary)flags.push("传说");if(p.is_mythical)flags.push("幻");if(p.is_ultrabeast)flags.push("究极异兽");if(p.is_mega)flags.push("超级进化");if(p.is_regional)flags.push("地区限定");if(p.shadow_eligible)flags.push("可暗影");if(p.gl_ineligible)flags.push("超联不可用");
+  var ivmap={great:"超联1500",ultra:"高联2500",master:"大师"};
+  var ivh=ivs.map(function(v){return '<span class="tag" style="margin-right:8px">'+(ivmap[v.league]||v.league)+': L'+v.level+' '+v.iv_atk+'/'+v.iv_def+'/'+v.iv_sta+'</span>';}).join("")||"—";
+  var WN={"sunny/clear":"☀️晴","rainy":"🌧雨","partly_cloudy":"⛅多云","cloudy":"☁️阴","windy":"🌬风","snow":"❄️雪","fog":"🌫雾"};
+  document.getElementById("detail").innerHTML='<div class="detail"><h3>'+esc(p.name_cn)+' <small style="color:var(--dim);font-weight:400">'+esc(p.name_tw)+' · '+esc(p.name_en)+' · #'+p.dex+'</small></h3>'+
+    '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+art(p.dex)+'" style="width:90px;height:90px;object-fit:contain" onerror="this.style.opacity=.15"><div class="kv">'+
+    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+'<br>'+
+    (flags.length?'<span style="color:var(--gold)">'+flags.join(" · ")+'</span><br>':'')+
+    '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km<br>'+
+    'species_id：<code>'+esc(p.species_id)+'</code> 进化自：'+esc(p.family_parent||"—")+'</div></div>'+
+    '<div class="kv" style="margin-top:10px"><b style="color:var(--gold)">🏆 PvP 最佳IV（rank-1）</b>：'+ivh+'</div>'+
+    (pur?'<div class="kv">🌀 <b style="color:var(--gold)">净化成本</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83；净化去「祈愿」得「报恩」）</div>':'')+
+    (wb.length?'<div class="kv">🌦 <b style="color:var(--gold)">天气加成</b>：'+wb.map(function(x){return WN[x.weather]||x.weather;}).join(" / ")+'</div>':'')+
+    (evo.length?'<div class="kv">🔄 <b style="color:var(--gold)">进化</b>：'+evo.map(function(e){return esc(e.cn||e.evolves_to)+(e.candy?'('+e.candy+'糖)':'');}).join(" / ")+'</div>':'')+
+    '<div class="mv" style="margin-top:10px">⚡ <b style="color:#bfe0ff">快速招式</b><br>'+mvl(mv("fast"))+'</div>'+
+    '<div class="mv" style="margin-top:8px">💥 <b style="color:#ffc59c">充能招式</b><br>'+mvl(mv("charged"))+'</div></div>';
   window.scrollTo({top:0,behavior:"smooth"});
 }
 window.detail=detail;
@@ -68,7 +83,7 @@ function search(q){
   var res=document.getElementById("res");document.getElementById("detail").innerHTML="";
   if(!q){res.innerHTML="";return;}
   var like="%"+q.toLowerCase()+"%";
-  var r=rows("SELECT species_id,dex,cn,tw,en,type1,type2 FROM pokemon WHERE lower(cn) LIKE ? OR lower(tw) LIKE ? OR lower(en) LIKE ? OR lower(species_id) LIKE ? OR dex=? ORDER BY dex LIMIT 80",[like,like,like,like,(/^\d+$/.test(q)?+q:-1)]);
+  var r=rows("SELECT species_id,dex,name_cn cn,name_tw tw,name_en en,type1,type2 FROM pokemon WHERE lower(name_cn) LIKE ? OR lower(name_tw) LIKE ? OR lower(name_en) LIKE ? OR lower(species_id) LIKE ? OR dex=? ORDER BY dex LIMIT 80",[like,like,like,like,(/^\d+$/.test(q)?+q:-1)]);
   res.innerHTML=r.length?r.map(function(p){return '<div class="r" onclick="detail(\''+p.species_id+'\')"><img loading="lazy" src="'+art(p.dex)+'" onerror="this.style.opacity=.15"><div><div class="rn">'+esc(p.cn)+'<small>'+esc(p.tw)+' · '+esc(p.en)+' · #'+p.dex+'</small></div><div style="margin-top:4px">'+tchip(p.type1)+tchip(p.type2)+'</div></div></div>';}).join(""):'<div class="note">没找到「'+esc(q)+'」</div>';
 }
 window.search=search;
