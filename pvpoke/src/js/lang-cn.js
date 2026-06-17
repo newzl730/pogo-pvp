@@ -13,7 +13,7 @@ try{
 }catch(e){}
 
 // ---- 2) UI string dictionary (EN -> 中文) ----
-var D={
+var D={"Pokemon":"宝可梦","Yes":"是","No":"否","Options":"选项","Copy":"复制","Refresh":"刷新","Swap":"交换","Random":"随机","Save":"保存","Delete":"删除","Clear":"清空","Edit":"编辑","Off":"关","On":"开","Selective":"选择性","Default":"默认","Normal":"普通","Weight":"权重","meta":"环境","overall":"综合","all":"全部","Import from":"导入自","Pokebox":"宝可梦盒","Edit Pokebox":"编辑宝可梦盒","Select all":"全选","Select Pokemon":"选择宝可梦","Select Pokemon below to import.":"在下方选择要导入的宝可梦。","Loading Pokebox...":"宝可梦盒加载中…","Select a Pokemon":"选择宝可梦","Select a Pokémon":"选择宝可梦","Select a Move":"选择招式","Select another form":"选择其它形态","Select Recommended Moves":"选用推荐招式","Save Settings":"保存设置","settings":"设置","Settings":"设置","Baiting":"骗盾","Shields":"护盾","Stat Modifiers (-4 to 4)":"能力变化(-4 到 4)","damage dealt":"造成伤害","damage taken":"承受伤害","Optimize move timing":"优化出招时机","1 turn switch":"1 回合换人","Starting Energy":"初始能量","Starting HP":"初始血量","Pokebattler ID":"Pokebattler ID","Charged Moves":"充能招式","Charged Move":"充能招式","Fast Move":"快速招式","Search move":"搜索招式","Search Help":"搜索帮助","Search Pokemon":"搜索宝可梦","Search name":"搜索名称","Search move...":"搜索招式…","Great League":"超级联盟","Ultra League":"高级联盟","Master League":"大师联盟","Battle":"对战","Rankings":"排名榜","Team Builder":"队伍构建","Moves":"招式","Train":"训练","Contact":"联系","CMP Chart":"CMP 图表","Sort ...":"排序…","Sort By":"排序方式","Edit/Check IVs":"编辑/查看个体值","Level Cap:":"等级上限：","Auto level":"自动等级","Maximize":"最大化","Shadow Form":"暗影形态","Shadow":"暗影","shadow":"暗影","normal":"普通","Rank ":"排名 ","IV Rank":"个体值排名","attack":"攻击","defense":"防御","stamina":"耐力","Attack":"攻击","Defense":"防御","Stamina":"耐力","* Exclusive move":"* 专属招式","Unobtainable move":"无法获得的招式","Pull from timeline":"从时间轴提取","Ranking Weight Multiplier":"排名权重系数","Clear Selection":"清除选择","Clear Selections":"清除选择","Add move":"添加招式","+ Move":"+ 招式","Add a custom move for":"为其添加自定义招式：","from the selection?":"从选择中移除？","Generate Search String":"生成搜索字符串","Search String":"搜索字符串","Generate":"生成","Quick Fill":"快速填充","New Custom Group":"新建自定义组","Import/Export":"导入/导出","Rate Team":"评估队伍","Get Battle Ratings":"获取对战评分","Battle Again":"再战","Sponsor PvPoke":"赞助 PvPoke","Pokebattler":"Pokebattler","Add Pokemon to your Pokebox.":"把宝可梦加入你的宝可梦盒。","Maximize Stats":"最大化属性","More Options":"更多选项","Please select one or more Pokemon.":"请选择一个或多个宝可梦。","Please select a Pokemon.":"请选择宝可梦。","Add Pokemon":"添加宝可梦",
 "Rankings":"排名榜","Battle":"对战","Team Builder":"队伍构建","Teams":"队伍","Custom Rankings":"自定义排名","Pokedex":"图鉴","Moves":"招式","Train":"训练","Articles":"文章","Settings":"设置","More":"更多","Home":"首页","Sandbox":"沙盒",
 "Single Battle":"单体对战","Multi Battle":"多体对战","Matrix Battle":"对战矩阵","Fast Search":"快速搜索",
 "Overall":"综合","Leads":"先锋","Switches":"换人","Closers":"收尾","Chargers":"蓄力","Attackers":"进攻","Consistency":"稳定",
@@ -49,12 +49,13 @@ var D={
 "Get Battle Rating":"获取对战评分","Battle Rating":"对战评分","Win Rate":"胜率","Per Pokemon":"逐只","Overall Performance":"综合表现",
 "Top Performers":"最佳表现","Team Rating":"队伍评分","Defenders":"防守方","Attackers":"进攻方","Generate":"生成","Calculate":"计算"
 };
-function tr(s){if(!s)return s;var k=s.trim();if(D[k])return s.replace(k,D[k]);return s;}
+function trKey(k){if(D[k])return D[k];var m=k.match(/^([+\-*•\s]+)(.+)$/);if(m&&D[m[2]])return m[1]+D[m[2]];return null;}
+function tr(s){if(!s)return s;var k=s.replace(/\u00a0/g,' ').trim();var t=trKey(k);return t!==null?s.replace(k,t):s;}
 function walk(root){
   try{
     var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
     var n,arr=[];while(n=w.nextNode())arr.push(n);
-    arr.forEach(function(t){var v=t.nodeValue;if(v&&v.trim()&&D[v.trim()]){t.nodeValue=v.replace(v.trim(),D[v.trim()]);}});
+    arr.forEach(function(t){var v=t.nodeValue;if(!v)return;var k=v.replace(/\u00a0/g,' ').trim();if(!k)return;var c=trKey(k);if(c!==null)t.nodeValue=v.replace(v.trim(),c);});
     // attributes
     root.querySelectorAll&&root.querySelectorAll("[placeholder],[title]").forEach(function(el){
       var p=el.getAttribute("placeholder");if(p&&D[p.trim()])el.setAttribute("placeholder",D[p.trim()]);
