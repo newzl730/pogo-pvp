@@ -459,8 +459,10 @@ function selB(i){curBasics=i;DATA.basics.forEach((_,k)=>$("bdoc"+k).classList.to
 $("season").textContent=DATA.season;renderSide();renderLeague();
 </script>
 <script>
-function _gotoHash(){var m=(location.hash||"").match(/^#m(\d+)/);if(!m)return;var dex=+m[1];
- for(var li=0;li<DATA.leagues.length;li++){var arr=DATA.leagues[li].pokemon||[];for(var pj=0;pj<arr.length;pj++){if(arr[pj].dex===dex){try{selLeague(li);}catch(e){}setTimeout(function(){try{openPoke(li,pj);}catch(e){}},80);return;}}}}
+function _gotoHash(){var mm=(location.hash||"").match(/^#m(\d+)/);if(!mm)return;var dex=+mm[1];
+ var bLi=-1,bPj=-1,bR=1e9;
+ for(var li=0;li<DATA.leagues.length;li++){var arr=DATA.leagues[li].pokemon||[];for(var pj=0;pj<arr.length;pj++){if(arr[pj].dex===dex){var r=arr[pj].rank||999;if(r<bR){bR=r;bLi=li;bPj=pj;}}}}
+ if(bLi<0)return;try{selLeague(bLi);}catch(e){}setTimeout(function(){try{openPoke(bLi,bPj);}catch(e){}},90);}
 addEventListener("hashchange",_gotoHash);addEventListener("load",_gotoHash);
 </script>
 </body>
