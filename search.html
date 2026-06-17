@@ -1,0 +1,57 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokémon GO 全站搜索</title><style>
+:root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--gold:#ffcb05}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.top{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.94);backdrop-filter:blur(8px);z-index:20}
+.top h1{margin:0;font-size:17px}.top h1 b{color:var(--gold)}
+.top nav{display:flex;gap:10px;font-size:12px;flex-wrap:wrap}.top nav a{color:var(--accent);text-decoration:none;white-space:nowrap}
+.main{max-width:760px;margin:0 auto;padding:16px 12px 80px}
+.sb{position:sticky;top:54px;background:rgba(14,16,22,.96);padding:8px 0 12px;z-index:10}
+.sb input{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--txt);padding:13px 16px;font-size:16px;outline:none}
+.sb input:focus{border-color:var(--accent)}
+.hint{font-size:11.5px;color:var(--dim);margin:6px 2px 0;line-height:1.6}
+.tot{font-size:12px;color:var(--dim);margin:10px 2px}
+.r{display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:9px}
+.r img{width:56px;height:56px;object-fit:contain;flex:none}
+.rb{flex:1;min-width:0}
+.rn{font-weight:800;font-size:16px}.rn small{color:var(--dim);font-weight:400;font-size:11.5px;margin-left:5px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.chip{font-size:11px;font-weight:700;border-radius:8px;padding:3px 9px;text-decoration:none;color:#fff;white-space:nowrap}
+.c-pvp{background:#3b6cff}.c-pve{background:#ff7a45}.c-sh{background:#caa53a;color:#1a1a1a}.c-my{background:#a878ff}.c-rk{background:#ee1c25}.c-pp{background:#27c08a;color:#06281c}
+.none{font-size:11px;color:var(--dim);text-align:center;padding:30px 0}
+.note{font-size:11px;color:var(--dim);text-align:center;margin-top:24px;line-height:1.7}
+</style></head><body>
+<div class="top"><h1>Pokémon GO <b>全站搜索</b></h1>
+<nav><a href="index.html">⚔️ PvP</a><a href="pve.html">🏟 团战</a><a href="dmax.html">💥 极巨</a><a href="cal.html">📅 日历</a><a href="rocket.html">🚀 火箭队</a><a href="shiny.html">✨ 异色</a><a href="myth.html">🔮 幻</a><a href="pvpoke/src/rankings/">🧮 PvPoke</a></nav></div>
+<div class="main">
+<div class="sb"><input id="q" placeholder="搜任意宝可梦：中文 / 繁中 / 英文 / 图鉴号…" autofocus oninput="render(this.value)">
+<div class="hint">🔵 PvP排名　🟠 团战打手　🟡 异色　🟣 幻/限定　🔴 火箭队　🟢 PvPoke　— 点标签直达对应工具里的该宝可梦</div></div>
+<div class="tot" id="tot"></div>
+<div id="res"></div>
+<div class="note">数据来源：本站各工具索引 · 共 <span id="cnt">…</span> 只宝可梦可搜</div>
+</div>
+<script>
+var IDX=[],art=function(d){return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"+d+".png";};
+function esc(s){return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function card(e){
+  var c=[];
+  if(e.pvp)c.push('<a class="chip c-pvp" href="index.html#m'+e.d+'">⚔️ '+e.pvp.lg+' #'+e.pvp.rank+'</a>');
+  if(e.pve)c.push('<a class="chip c-pve" href="pve.html#m'+e.d+'">🏟 '+e.pve.ty+e.pve.t+'</a>');
+  if(e.sh)c.push('<a class="chip c-sh" href="shiny.html#m'+e.d+'">✨ 异色</a>');
+  if(e.my)c.push('<a class="chip c-my" href="myth.html#m'+e.d+'">🔮 幻/限定</a>');
+  if(e.rk)c.push('<a class="chip c-rk" href="rocket.html">🚀 火箭队</a>');
+  c.push('<a class="chip c-pp" href="pvpoke/src/pokedex/">🧮 PvPoke</a>');
+  return '<div class="r"><img loading="lazy" src="'+art(e.d)+'" onerror="this.style.opacity=.15"><div class="rb"><div class="rn">'+esc(e.cn)+'<small>'+(e.tw&&e.tw!==e.cn?esc(e.tw)+" · ":"")+(e.en?esc(e.en)+" · ":"")+'#'+e.d+'</small></div><div class="chips">'+c.join("")+'</div></div></div>';
+}
+function render(q){
+  q=(q||"").trim().toLowerCase();
+  var res=document.getElementById("res"),tot=document.getElementById("tot");
+  if(!q){res.innerHTML='<div class="none">输入宝可梦名称或图鉴号开始搜索</div>';tot.textContent="";return;}
+  var hits=IDX.filter(function(e){return (e.cn&&e.cn.toLowerCase().indexOf(q)>=0)||(e.tw&&e.tw.toLowerCase().indexOf(q)>=0)||(e.en&&e.en.toLowerCase().indexOf(q)>=0)||(""+e.d===q);});
+  // rank: exact name first, then has-tools
+  hits.sort(function(a,b){var ae=(a.cn===q||a.en&&a.en.toLowerCase()===q)?0:1,be=(b.cn===q||b.en&&b.en.toLowerCase()===q)?0:1;if(ae!==be)return ae-be;var aw=(a.pvp?1:0)+(a.pve?1:0)+(a.my?1:0),bw=(b.pvp?1:0)+(b.pve?1:0)+(b.my?1:0);return bw-aw||a.d-b.d;});
+  tot.textContent="找到 "+hits.length+" 只";
+  res.innerHTML=hits.length?hits.slice(0,60).map(card).join(""):'<div class="none">没找到「'+esc(q)+'」</div>';
+}
+fetch("search_index.json").then(function(r){return r.json();}).then(function(d){IDX=d;document.getElementById("cnt").textContent=d.length;render(document.getElementById("q").value);});
+</script></body></html>
