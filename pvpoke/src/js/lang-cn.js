@@ -39,7 +39,15 @@ var D={
 "Show":"显示","Hide":"隐藏","results":"结果","No results":"无结果","Loading":"加载中","Loading...":"加载中…",
 "Buddy":"伙伴","Third Move":"第二大招","Unlock":"解锁","Fast":"快","Charged":"大招","DPT":"每回合伤害","EPT":"每回合能量","DPE":"每能量伤害",
 "Compare":"对比","Top Threats":"主要威胁","Recommended Moves":"推荐招式","Alternative Moves":"备选招式","Legacy":"传承","Elite TM":"精英刷招器",
-"Great League (1500)":"超级联盟(1500)","Ultra League (2500)":"高级联盟(2500)","Master League (10000)":"大师联盟","Master League (Level 50)":"大师联盟(50级)"
+"Great League (1500)":"超级联盟(1500)","Ultra League (2500)":"高级联盟(2500)","Master League (10000)":"大师联盟","Master League (Level 50)":"大师联盟(50级)",
+"Select a Pokemon":"选择宝可梦","Select a Pokémon":"选择宝可梦","Search name":"搜索名称",
+"Single":"单体","Multi":"多体","Matrix":"矩阵","Random":"随机","Swap":"交换","Import from Pokebox":"从宝可梦盒导入",
+"Select two Pokemon from any league to fight a simulated battle. Customize movesets, levels, IV's, and shields.":"从任意联盟选两只宝可梦进行模拟对战，可自定义配招、等级、个体值与护盾。",
+"Build a team and discover its top threats and best partners.":"构建队伍，找出主要威胁与最佳搭档。","Add a Pokemon to your team to get started.":"添加宝可梦开始构建队伍。",
+"Pokebox":"宝可梦盒","Battle Again":"再战一次","Next":"下一个","Previous":"上一个","Edit":"编辑","Done":"完成","More Options":"更多选项",
+"Quick Fill":"快速填充","Ranking":"排名","Format":"赛制","Scenario":"情景","Custom":"自定义","Default":"默认",
+"Get Battle Rating":"获取对战评分","Battle Rating":"对战评分","Win Rate":"胜率","Per Pokemon":"逐只","Overall Performance":"综合表现",
+"Top Performers":"最佳表现","Team Rating":"队伍评分","Defenders":"防守方","Attackers":"进攻方","Generate":"生成","Calculate":"计算"
 };
 function tr(s){if(!s)return s;var k=s.trim();if(D[k])return s.replace(k,D[k]);return s;}
 function walk(root){
