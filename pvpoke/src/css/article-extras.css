@@ -1,0 +1,1024 @@
+@charset "UTF-8";
+/* General */
+.article h3.article-header {
+  font-size: 16px;
+  padding: 5px 10px;
+}
+
+.article h1 {
+  font-size: 24px;
+}
+
+input.article-search {
+  max-width: 200px;
+  margin-bottom: 15px;
+}
+
+/* Top community day event feature list */
+.cd-features {
+  display: flex;
+  flex-wrap: wrap;
+}
+.cd-features .feature {
+  margin: 0 5px 5px 0;
+  padding: 5px;
+  flex-basis: 100%;
+}
+.cd-features .feature h4 {
+  color: #777;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+.cd-features .feature .value {
+  font-weight: bold;
+}
+.cd-features .feature .detail {
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* Mega section details and sprites */
+.mega-section {
+  border-radius: 8px;
+  margin: 1em 0;
+  padding: 10px 10px;
+  color: #fff;
+}
+.mega-section .mega-title {
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
+  align-items: center;
+}
+.mega-section .mega-title .mega-icon {
+  width: 75px;
+  height: 75px;
+  background: url("../articles/article-assets/community-day/mega-icon.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  margin-right: 10px;
+}
+.mega-section .mega-title h4 {
+  flex-basis: 75%;
+}
+.mega-section .mega-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.mega-section .mega-list .mega-item {
+  margin: 0 15px 5px 0;
+}
+.mega-section .mega-list .mega-item .mega-image {
+  width: 75px;
+  height: 75px;
+  border-radius: 75px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  margin: 0 auto 10px auto;
+  border: 1px solid;
+}
+.mega-section .mega-list .mega-item .mega-label {
+  text-align: center;
+}
+
+[mega=venusaur] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/venusaur.png");
+}
+
+[mega=charizard-x] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/charizard-x.png");
+}
+
+[mega=charizard-y] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/charizard-y.png");
+}
+
+[mega=pidgeot] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/pidgeot.png");
+}
+
+[mega=aerodactyl] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/aerodactyl.png");
+}
+
+[mega=abomasnow] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/abomasnow.png");
+}
+
+[mega=steelix] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/steelix.png");
+}
+
+[mega=lopunny] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/lopunny.png");
+}
+
+[mega=manectric] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/manectric.png");
+}
+
+[mega=ampharos] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/ampharos.png");
+}
+
+[mega=absol] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/absol.png");
+}
+
+[mega=altaria] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/altaria.png");
+}
+
+[mega=gyarados] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/gyarados.png");
+}
+
+[mega=houndoom] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/houndoom.png");
+}
+
+[mega=latios] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/latios.png");
+}
+
+[mega=kangaskhan] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/kangaskhan.png");
+}
+
+[mega=gengar] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/gengar.png");
+}
+
+[mega=blaziken] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/blaziken.png");
+}
+
+[mega=sceptile] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/sceptile.png");
+}
+
+[mega=alakazam] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/alakazam.png");
+}
+
+[mega=slowbro] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/slowbro.png");
+}
+
+[mega=gardevoir] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/gardevoir.png");
+}
+
+[mega=medicham] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/medicham.png");
+}
+
+[mega=salamence] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/salamence.png");
+}
+
+[mega=blastoise] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/blastoise.png");
+}
+
+[mega=swampert] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/swampert.png");
+}
+
+[mega=kyogre] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/kyogre.png");
+}
+
+[mega=beedrill] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/beedrill.png");
+}
+
+[mega=pinsir] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/pinsir.png");
+}
+
+[mega=scizor] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/scizor.png");
+}
+
+[mega=groudon] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/groudon.png");
+}
+
+[mega=garchomp] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/garchomp.png");
+}
+
+[mega=rayquaza] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/rayquaza.png");
+}
+
+[mega=lucario] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/lucario.png");
+}
+
+[mega=mawile] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/mawile.png");
+}
+
+[mega=audino] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/audino.png");
+}
+
+[mega=diancie] .mega-image {
+  background-image: url("../articles/article-assets/community-day/megas/diancie.png");
+}
+
+/* FAQ styling */
+.faq-item {
+  border-radius: 8px;
+}
+.faq-item h3.article-header {
+  margin-bottom: 0;
+}
+.faq-item .faq-answer {
+  padding: 10px;
+  color: #000;
+}
+.faq-item .faq-answer p:first-of-type {
+  margin-top: 0;
+}
+.faq-item .faq-answer p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* CD checklist controls and forms styling */
+.checklist-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.checklist-controls .control-container {
+  margin-right: 20px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+.checklist-controls .control-container.edit-control-on, .checklist-controls .control-container.edit-control-off {
+  margin-right: 0;
+}
+.checklist-controls label {
+  margin-right: 5px;
+}
+.checklist-controls select, .checklist-controls button {
+  display: inline-block;
+  font-weight: bold;
+  max-width: 150px;
+}
+.checklist-controls label, .checklist-controls select, .checklist-controls button {
+  font-size: 12px;
+}
+.checklist-controls button {
+  padding: 3px 6px;
+}
+.checklist-controls .reset::before {
+  content: "↻ ";
+}
+.checklist-controls .edit::before {
+  content: "✎ ";
+}
+
+/* CD Checklist styling */
+.cd-checklist {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.checklist-item {
+  border: 4px solid black;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 5px;
+  flex-basis: 100%;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #000;
+}
+.checklist-item.template {
+  display: none;
+}
+.checklist-item.caught {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+}
+.checklist-item.caught > *, .checklist-item.caught .league {
+  opacity: 0.5;
+}
+.checklist-item.caught > .check, .checklist-item.caught .checkmark, .checklist-item.caught .title-section, .checklist-item.caught .title-section h4 {
+  opacity: 1;
+}
+.checklist-item[priority="1"] {
+  background: #ebd19a;
+}
+.checklist-item[priority="1"] .iv-bar .divider {
+  background: #ebd19a;
+}
+.checklist-item[priority="2"] {
+  background: #add0ed;
+}
+.checklist-item[priority="2"] .iv-bar .divider {
+  background: #add0ed;
+}
+.checklist-item[priority="3"] {
+  background: #c3a49a;
+}
+.checklist-item[priority="3"] .iv-bar .divider {
+  background: #c3a49a;
+}
+.checklist-item.new-item {
+  font-size: 24px;
+  opacity: 0.25;
+  background: #fff;
+  cursor: pointer;
+}
+.checklist-item.new-item:hover {
+  opacity: 0.5;
+}
+.checklist-item.new-item span {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.checklist-item .title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.checklist-item .title-section .check, .checklist-item .title-section .check span, .checklist-item .title-section .check.on span {
+  margin: 0 5px 0 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: none !important;
+}
+.checklist-item .title-section .check {
+  border: 2px solid #000;
+}
+.checklist-item .title-section .check:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+.checklist-item .title-section .checkmark {
+  font-size: 30px;
+  line-height: 10px;
+  font-weight: bold;
+  color: #000;
+  display: none;
+  -webkit-touch-callout: none;
+  /* iOS Safari */
+  -webkit-user-select: none;
+  /* Safari */
+  -khtml-user-select: none;
+  /* Konqueror HTML */
+  -moz-user-select: none;
+  /* Old versions of Firefox */
+  -ms-user-select: none;
+  /* Internet Explorer/Edge */
+  user-select: none;
+  /* Non-prefixed version, currently
+     supported by Chrome, Edge, Opera and Firefox */
+}
+.checklist-item .title-section .check.on .checkmark {
+  display: block;
+}
+.checklist-item .title-section h4 {
+  cursor: pointer;
+  flex-basis: 60%;
+}
+.checklist-item .title-section .league {
+  width: 24px;
+  height: 24px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+}
+.checklist-item .title-section .league.great {
+  background-image: url("../articles/article-assets/community-day/league-great.png");
+}
+.checklist-item .title-section .league.ultra {
+  background-image: url("../articles/article-assets/community-day/league-ultra.png");
+}
+.checklist-item .title-section .league.master {
+  background-image: url("../articles/article-assets/community-day/league-master.png");
+}
+.checklist-item .title-section .league.special {
+  background-image: url("../articles/article-assets/community-day/league-special.png");
+}
+.checklist-item .iv-section {
+  margin: 30px 0 15px 0;
+}
+.checklist-item .iv-section .iv-label {
+  margin-bottom: 5px;
+  display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  padding-bottom: 2px;
+}
+.checklist-item .iv-section .iv-label .level {
+  min-width: 75px;
+  margin-right: 15px;
+}
+.checklist-item .iv-section .iv-bar {
+  position: relative;
+  height: 12px;
+  margin-bottom: 8px;
+}
+.checklist-item .iv-section .iv-bar .divider {
+  position: absolute;
+  height: 100%;
+  width: 2px;
+}
+.checklist-item .iv-section .iv-bar .divider:nth-of-type(1) {
+  left: 33%;
+}
+.checklist-item .iv-section .iv-bar .divider:nth-of-type(2) {
+  left: 66%;
+}
+.checklist-item .iv-section .iv-bar .bar {
+  background: #000;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+.checklist-item .base-form-section {
+  display: flex;
+  align-items: center;
+}
+.checklist-item .base-form-section img {
+  border: none;
+  margin-right: 5px;
+}
+.checklist-item .base-form-section .label {
+  font-size: 12px;
+  font-weight: bold;
+}
+.checklist-item .base-form-section .cp {
+  font-size: 14px;
+}
+.checklist-item .priority-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.35);
+  margin-top: 5px;
+}
+.checklist-item .priority-section h4 {
+  text-transform: uppercase;
+  font-size: 12px;
+}
+.checklist-item .priority-section .item-controls {
+  display: flex;
+}
+.checklist-item .priority-section a.info {
+  display: block;
+  text-decoration: none;
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+  border: 1px solid #000;
+  width: 16px;
+  height: 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+}
+.checklist-item .priority-section a.edit, .checklist-item .priority-section a.delete {
+  margin-left: 10px;
+  color: #000;
+  text-decoration: none;
+  font-size: 12px;
+}
+.checklist-item .priority-section a.edit::before {
+  content: "✎";
+}
+.checklist-item .priority-section a.delete::before {
+  content: "✕";
+}
+
+/* New checklist item form */
+.checklist-new-item input.title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+.checklist-new-item input.title.invalid {
+  border: 1px solid #ff0000;
+}
+.checklist-new-item select.priority {
+  margin-bottom: 15px;
+}
+.checklist-new-item label {
+  font-size: 14px;
+  font-weight: bold;
+}
+.checklist-new-item .species-section, .checklist-new-item .league-section, .checklist-new-item .ivs-section {
+  display: flex;
+  margin-bottom: 15px;
+}
+.checklist-new-item input.iv {
+  background: none;
+  border: none;
+  border-bottom: 1px solid #888;
+  border-radius: 0px;
+  width: auto;
+}
+.checklist-new-item input.iv:focus {
+  outline: none;
+  border-bottom: 3px solid #eabd49;
+}
+.checklist-new-item input.iv.invalid {
+  border-bottom: 1px solid #ff0000;
+}
+.checklist-new-item textarea.notes {
+  resize: none;
+  width: 100%;
+  height: 150px;
+  font-family: arial, sans-serif;
+  font-size: 12px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.further-resource-links {
+  flex-wrap: wrap;
+}
+.further-resource-links a {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-right: 10px;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 8px;
+  background: #555;
+}
+.further-resource-links a.gostadium {
+  background: #0b1326;
+}
+
+@keyframes animatedgradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* Quote styling */
+.article-note {
+  margin: 20px auto;
+  width: 85%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-sizing: border-box;
+  border: 1px solid #eee;
+  padding: 10px;
+  background: #628b78;
+  outline: 5px solid #628b78;
+  color: #eee;
+}
+.article-note h4 {
+  margin-bottom: 1em !important;
+  font-size: 16px;
+}
+.article-note p:first-of-type {
+  margin-top: 0;
+}
+.article-note p:last-of-type {
+  margin-bottom: 0;
+}
+.article-note.quote {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  background: #456c8a;
+  outline: 5px solid #456c8a;
+}
+.article-note.quote .quote-text {
+  flex-basis: 100%;
+}
+.article-note.quote .quote-text.max-height {
+  max-height: 500px;
+  overflow-y: scroll;
+  padding-right: 10px;
+  margin-bottom: 1em;
+}
+.article-note.quote .quote-text::before, .article-note.quote .quote-text::after {
+  font-size: 70px;
+  color: #6696bb;
+  height: 30px;
+  display: block;
+  line-height: 60px;
+  overflow: hidden;
+}
+.article-note.quote .quote-text::before {
+  content: "“";
+}
+.article-note.quote .quote-text::after {
+  text-align: right;
+  content: "”";
+}
+.article-note.quote .quote-text a {
+  color: #eee;
+}
+.article-note.quote a.quote-byline {
+  display: block;
+  font-weight: bold;
+  font-size: 16px;
+  color: #eee;
+}
+
+/* Specific Pokemon styling */
+.section.hoppip {
+  background: #afe8d5;
+  background: -moz-linear-gradient(0deg, #afe8d5 20%, #ddf5ed 55%);
+  background: -webkit-linear-gradient(0deg, #afe8d5 20%, #ddf5ed 55%);
+  background: linear-gradient(0deg, #afe8d5 20%, #ddf5ed 55%);
+  border: 4px solid #91ccc3;
+}
+.section.hoppip .article-header, .section.hoppip .mega-section {
+  background: #9b547d !important;
+}
+.section.hoppip .feature h4 {
+  color: #9b547d;
+  border-bottom: 1px solid #834569;
+}
+.section.hoppip .faq-item {
+  background: #e4fff6;
+}
+.section.hoppip a.infographic {
+  background: #9b547d;
+}
+
+.section.sandshrew {
+  background: #f4f4f0;
+  border: 4px solid #b1a07d;
+}
+.section.sandshrew .article-header, .section.sandshrew .mega-section {
+  background: #917439 !important;
+}
+.section.sandshrew .feature h4 {
+  color: #917439;
+  border-bottom: 1px solid #834569;
+}
+.section.sandshrew .faq-item {
+  background: #ffffff;
+}
+.section.sandshrew a.infographic {
+  background: #917439;
+}
+
+.section.bewear {
+  background: #f6f6f5;
+  border: 4px solid #be6373;
+}
+.section.bewear .article-header, .section.bewear .mega-section {
+  color: #fff;
+  background: #be6373 !important;
+}
+.section.bewear .feature h4 {
+  color: #be6373;
+  border-bottom: 1px solid #be6373;
+}
+.section.bewear .faq-item {
+  background: #ffffff;
+}
+
+.section.geodude {
+  background: #dde8f7;
+  border: 4px solid #6a6554;
+}
+.section.geodude .article-header, .section.geodude .mega-section {
+  color: #fff;
+  background: #6a6554 !important;
+}
+.section.geodude .feature h4 {
+  color: #6a6554;
+  border-bottom: 1px solid #6a6554;
+}
+.section.geodude .faq-item {
+  background: #ffffff;
+}
+
+.section.zigzagoon {
+  background: #ebebeb;
+  border: 4px solid #363636;
+}
+.section.zigzagoon .article-header, .section.zigzagoon .mega-section {
+  color: #fff;
+  background: #363636 !important;
+}
+.section.zigzagoon .feature h4 {
+  color: #363636;
+  border-bottom: 1px solid #363636;
+}
+.section.zigzagoon .faq-item {
+  background: #ffffff;
+}
+
+.section.deino {
+  background: #f4f3f1;
+  border: 4px solid #201e1f;
+}
+.section.deino .article-header, .section.deino .mega-section {
+  color: #fff;
+  background: #383336 !important;
+}
+.section.deino .feature h4 {
+  color: #383336;
+  border-bottom: 1px solid #383336;
+}
+.section.deino .faq-item {
+  background: #ffffff;
+}
+
+.section.litwick {
+  background: #e7e9f2;
+  border: 4px solid #2f2f55;
+}
+.section.litwick .article-header, .section.litwick .mega-section {
+  color: #fff;
+  background: #2f2f55 !important;
+}
+.section.litwick .feature h4 {
+  color: #2f2f55;
+  border-bottom: 1px solid #2f2f55;
+}
+.section.litwick .faq-item {
+  background: #ffffff;
+}
+
+.section.chespin {
+  background: #deeac7;
+  border: 4px solid #513522;
+}
+.section.chespin .article-header, .section.chespin .mega-section {
+  color: #fff;
+  background: #513522 !important;
+}
+.section.chespin .feature h4 {
+  color: #513522;
+  border-bottom: 1px solid #513522;
+}
+.section.chespin .faq-item {
+  background: #ffffff;
+}
+
+.section.slowpoke {
+  background: #ece8e6;
+  border: 4px solid #9281c5;
+}
+.section.slowpoke .article-header, .section.slowpoke .mega-section {
+  color: #fff;
+  background: #634f85 !important;
+}
+.section.slowpoke .feature h4 {
+  color: #634f85;
+  border-bottom: 1px solid #634f85;
+}
+.section.slowpoke .faq-item {
+  background: #ffffff;
+}
+
+.section.togetic {
+  background: #f9fefe;
+  border: 4px solid #f0aca4;
+}
+.section.togetic .article-header, .section.togetic .mega-section {
+  color: #000;
+  background: #aad7ef !important;
+}
+.section.togetic .feature h4 {
+  color: #83bad7;
+  border-bottom: 1px solid #83bad7;
+}
+.section.togetic .faq-item {
+  background: #ffffff;
+}
+
+.section.axew {
+  background: #f4f7f0;
+  border: 4px solid #979359;
+}
+.section.axew .article-header, .section.axew .mega-section {
+  background: #74886b !important;
+}
+.section.axew .feature h4 {
+  color: #74886b;
+  border-bottom: 1px solid #8fa883;
+}
+.section.axew .faq-item {
+  background: #ffffff;
+}
+
+.section.poliwag {
+  background: #f7fcfd;
+  border: 4px solid #37548c;
+}
+.section.poliwag .article-header, .section.poliwag .mega-section {
+  background: #37548c !important;
+}
+.section.poliwag .feature h4 {
+  color: #37548c;
+  border-bottom: 1px solid #37548c;
+}
+.section.poliwag .faq-item {
+  background: #ffffff;
+}
+
+.section.froakie {
+  background: #f7fcfd;
+  border: 4px solid #024985;
+}
+.section.froakie .article-header, .section.froakie .mega-section {
+  background: #024985 !important;
+}
+.section.froakie .feature h4 {
+  color: #e4a8a9;
+  border-bottom: 1px solid #e4a8a9;
+}
+.section.froakie .faq-item {
+  background: #ffffff;
+}
+
+.section.grubbin {
+  background: #fbfdf7;
+  border: 4px solid #4a5a25;
+}
+.section.grubbin .article-header, .section.grubbin .mega-section {
+  background: #4a5a25 !important;
+}
+.section.grubbin .feature h4 {
+  color: #4a5a25;
+  border-bottom: 1px solid #4a5a25;
+}
+.section.grubbin .faq-item {
+  background: #ffffff;
+}
+
+.section.wooper {
+  background: #f0f4f7;
+  border: 4px solid #504545;
+}
+.section.wooper .article-header, .section.wooper .mega-section {
+  background: #504545 !important;
+}
+.section.wooper .feature h4 {
+  color: #504545;
+  border-bottom: 1px solid #504545;
+}
+.section.wooper .faq-item {
+  background: #ffffff;
+}
+
+.section.bellsprout {
+  background: #f6f7f0;
+  border: 4px solid #433c38;
+}
+.section.bellsprout .article-header, .section.bellsprout .mega-section {
+  background: #2c6d4f !important;
+}
+.section.bellsprout .feature h4 {
+  color: #2c6d4f;
+  border-bottom: 1px solid #2c6d4f;
+}
+.section.bellsprout .faq-item {
+  background: #ffffff;
+}
+
+.section.goomy {
+  background: #f6f7f0;
+  border: 4px solid #423c68;
+}
+.section.goomy .article-header, .section.goomy .mega-section {
+  background: #423c68 !important;
+}
+.section.goomy .feature h4 {
+  color: #423c68;
+  border-bottom: 1px solid #423c68;
+}
+.section.goomy .faq-item {
+  background: #ffffff;
+}
+
+.section.mankey {
+  background: #dce6f0;
+  border: 4px solid #421442;
+}
+.section.mankey .article-header, .section.mankey .mega-section {
+  background: #421442 !important;
+}
+.section.mankey .feature h4 {
+  color: #421442;
+  border-bottom: 1px solid #421442;
+}
+.section.mankey .faq-item {
+  background: #ffffff;
+}
+
+.section.rookidee {
+  background: #dce6f0;
+  border: 4px solid #161e2b;
+}
+.section.rookidee .article-header, .section.rookidee .mega-section {
+  background: #161e2b !important;
+}
+.section.rookidee .feature h4 {
+  color: #161e2b;
+  border-bottom: 1px solid #161e2b;
+}
+.section.rookidee .faq-item {
+  background: #ffffff;
+}
+
+.section.flabebe {
+  background: #fff;
+  border: 4px solid #0072cc;
+}
+.section.flabebe .article-header, .section.flabebe .mega-section {
+  background: #0072cc !important;
+}
+.section.flabebe .feature h4 {
+  color: #0072cc;
+  border-bottom: 1px solid #0072cc;
+}
+.section.flabebe .faq-item {
+  background: #ffffff;
+}
+
+/* Edit control toggle */
+.edit-control-on {
+  display: none !important;
+}
+
+[edit=on] .edit-control-on {
+  display: block !important;
+}
+[edit=on] .edit-control-off {
+  display: none !important;
+}
+
+/* Responsive styling */
+@media only screen and (min-width: 421px) {
+  .checklist-item {
+    flex-basis: 48.5%;
+    margin-right: 3%;
+  }
+  .checklist-item:nth-of-type(2n) {
+    margin-right: 0;
+  }
+}
+@media only screen and (min-width: 421px) {
+  .cd-features .feature {
+    flex-basis: auto;
+  }
+
+  .article h3.article-header {
+    padding: 10px;
+    font-size: 18px;
+  }
+
+  .checklist-item {
+    padding: 10px;
+    font-size: 16px;
+  }
+  .checklist-item .title-section .league {
+    width: 38px;
+    height: 37px;
+  }
+}
+@media only screen and (min-width: 728px) {
+  .article h1 {
+    font-size: 32px;
+  }
+
+  .checklist-item {
+    flex-basis: 31.5%;
+    margin-right: 2.75%;
+  }
+  .checklist-item:nth-of-type(2n) {
+    margin-right: 2.75%;
+  }
+  .checklist-item:nth-of-type(3n) {
+    margin-right: 0;
+  }
+
+  .checklist-controls label, .checklist-controls select, .checklist-controls button {
+    font-size: 16px;
+  }
+}
+
+/*# sourceMappingURL=article-extras.css.map */

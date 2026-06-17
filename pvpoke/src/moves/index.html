@@ -1,0 +1,481 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PvP Moves | PvPoke</title>
+<meta name="description" content="Explore moves and movesets in Pokemon GO PvP." />
+
+	<link rel="canonical" href="/moves/" /><!--Prevents Google from indexing hundreds of different versions of the same page-->
+
+<!--OG tags for social-->
+<meta property="og:title" content="PvP Moves | PvPoke" />
+<meta property="og:description" content="Explore moves and movesets in Pokemon GO PvP." />
+<meta property="og:image" content="https://pvpoke.com/img/og.jpg" />
+
+<meta name="apple-mobile-web-app-capable">
+<meta name="mobile-web-app-capable">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="manifest" href="/pogo-pvp/pvpoke/src/data/manifest.json?v=3">
+
+<!--
+	<link id="favicon" rel="icon" href="/pogo-pvp/pvpoke/src/img/themes/sunflower/favicon.png">
+-->
+
+<link id="favicon" rel="icon" href="/pogo-pvp/pvpoke/src/img/themes/sunflower/favicon.png">
+
+<link rel="stylesheet" type="text/css" href="/pogo-pvp/pvpoke/src/css/style.css?v=227">
+
+
+
+
+<script src="/pogo-pvp/pvpoke/src/js/libs/jquery-3.3.1.min.js"></script>
+<script src="/pogo-pvp/pvpoke/src/js/interface/RSSReader.js?v=623.440.835"></script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '');
+
+  var gaId = '';
+</script>
+
+<script>
+	// Host for link reference
+
+	var host = "https://newzl730.github.io/pogo-pvp/pvpoke/src/";
+	var webRoot = "/pogo-pvp/pvpoke/src/";
+	var siteVersion = "623.440.835";
+
+	
+		var settings = {
+			defaultIVs: "gamemaster",
+			animateTimeline: 1,
+			matrixDirection: "row",
+			gamemaster: "gamemaster",
+			pokeboxId: 0,
+			pokeboxLastDateTime: 0,
+			xls: true,
+			rankingDetails: "one-page",
+			hardMovesetLinks: 0,
+			colorblindMode: 0,
+			performanceMode: 0,
+			theme: "default"
+		};
+
+	
+	// If $_GET request exists, output as JSON into Javascript
+
+	var get = false;</script>
+<script src="/pogo-pvp/pvpoke/src/js/lang-cn.js?v=1"></script>
+
+
+	
+
+</head>
+
+<body >
+
+	
+	<header>
+		<div class="header-wrap">
+							<a href="/pogo-pvp/pvpoke/src/"><img src="/pogo-pvp/pvpoke/src/img/themes/sunflower/header.png" title="PvPoke.com" /></a>
+			
+			<div class="hamburger mobile">
+				<!--Because I'm too lazy to make a graphic-->
+				<div class="meat"></div>
+				<div class="meat"></div>
+				<div class="meat"></div>
+			</div>
+			<div class="menu">
+				<div class="menu-content">
+					<div class="parent-menu">
+						<a class="icon-battle " href="/pogo-pvp/pvpoke/src/battle/">
+							Battle<span></span>
+						</a>
+						<div class="submenu">
+							<div class="submenu-wrap">
+								<a class="nav-great" href="/pogo-pvp/pvpoke/src/battle/">Single Battle</a>
+								<a class="nav-ultra" href="/pogo-pvp/pvpoke/src/battle/multi/">Multi Battle</a>
+								<a class="nav-master" href="/pogo-pvp/pvpoke/src/battle/matrix/">Matrix Battle</a>
+							</div>
+						</div>
+					</div>
+					<div class="parent-menu">
+						<a class="icon-rankings " href="/pogo-pvp/pvpoke/src/rankings/">
+							Rankings <span></span>
+						</a>
+						<div class="submenu">
+							<div class="submenu-wrap">
+								<a class="nav-great" href="/pogo-pvp/pvpoke/src/rankings/all/1500/overall/">Great League</a>
+								<a class="nav-ultra" href="/pogo-pvp/pvpoke/src/rankings/all/2500/overall/">Ultra League</a>
+								<a class="nav-master" href="/pogo-pvp/pvpoke/src/rankings/all/10000/overall/">Master League</a>
+								<a href="/pogo-pvp/pvpoke/src/custom-rankings/">Custom Rankings</a>
+							</div>
+						</div>
+					</div>
+					<a class="icon-team " href="/pogo-pvp/pvpoke/src/team-builder/">Team Builder</a>
+					<div class="parent-menu">
+						<a class="icon-train " href="/pogo-pvp/pvpoke/src/train/">
+							Train <span></span>
+						</a>
+						<div class="submenu">
+							<div class="submenu-wrap">
+								<a href="/pogo-pvp/pvpoke/src/train/analysis/">Top Performers</a>
+							</div>
+						</div>
+					</div>
+					<div class="parent-menu more-parent-menu">
+						<a class="more desktop" href="#">
+							<div class="hamburger desktop">
+								<!--Because I'm too lazy to make a graphic-->
+								<div class="meat"></div>
+								<div class="meat"></div>
+								<div class="meat"></div>
+							</div>
+						</a>
+						<div class="submenu">
+							<div class="submenu-wrap">
+								<a href="/pogo-pvp/pvpoke/src/attack-cmp-chart/">CMP Chart</a>
+								<a href="/pogo-pvp/pvpoke/src/moves/">Moves</a>
+								<a href="/pogo-pvp/pvpoke/src/articles/">Articles</a>
+								<a href="/pogo-pvp/pvpoke/src/settings/">Settings</a>
+								<a class="icon-heart" href="/pogo-pvp/pvpoke/src/contact/">Contact</a>
+								<a class="tera" href="/pogo-pvp/pvpoke/src/tera/">Tera Raid Counters</a>
+								<div class="latest-section mobile">
+									<h4>Latest <a href="/pogo-pvp/pvpoke/src/#news"></a></h4>
+									<a class="latest-link" href="#"></a>
+									<div class="date"></div>
+								</div>
+							</div>
+						</div>
+						<div class="safe-mouse-space"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="main-wrap">
+		<div id="main">
+			
+<h1>Moves</h1>
+<div class="section moves white">
+	<select class="mode-select">
+		<option value="fast">Fast Moves</option>
+		<option value="charged">Charged Moves</option>
+		<option value="explore">Moveset Explorer</option>
+	</select>
+	<p>Sort or filter the moves below, or experiment with a custom moveset.</p>
+
+	<h2 class="loading">Loading data...</h2>
+	<div class="move-table-container fast charged">
+		<table class="stats-table" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="label">D</td>
+				<td>Damage</td>
+			</tr>
+			<tr>
+				<td class="label">E</td>
+				<td>Energy</td>
+			</tr>
+			<tr class="fast">
+				<td class="label">T</td>
+				<td>Turns</td>
+			</tr>
+			<tr class="fast">
+				<td class="label">DPT</td>
+				<td>Damage Per Turn</td>
+			</tr>
+			<tr class="fast">
+				<td class="label">EPT</td>
+				<td>Energy Per Turn</td>
+			</tr>
+			<tr class="hide"></tr>
+			<tr class="charged hide">
+				<td class="label">DPE</td>
+				<td>Damage Per Energy</td>
+			</tr>
+		</table>
+		<input class="poke-search" context="move-search" type="text" placeholder="Search Move or Type" />
+		<div class="table-container">
+			<table class="sortable-table stats-table moves" cellpadding="0" cellspacing="0"></table>
+		</div>
+
+		<a href="#" class="button download-csv">Export to CSV</a>
+	</div>
+
+	<div class="move-explore-container explore hide">
+		<div class="move-select-container flex">
+			<div class="move-select-item" >
+				<input class="poke-search" context="move-search" type="text" placeholder="Search move"/>
+				<select class="move-select fast">
+					<option selected disabled value="">Select a Fast Move</option>
+				</select>
+				<h3>Options</h3>
+				<select class="effectiveness-select fast">
+					<option selected value=".244140625">Triple resisted (x0.24)</option>
+					<option selected value=".390625">Double resisted (x0.39)</option>
+					<option selected value=".625">Resisted (x0.625)</option>
+					<option selected value="1">Neutral (x1)</option>
+					<option value="1.6">Super effective (x1.6)</option>
+					<option value="2.56">Double super effective (x2.56)</option>
+				</select>
+				<div class="stab fast check on"><span></span>Same type attack bonus</div>
+			</div>
+			<div class="move-select-item">
+				<input class="poke-search" context="move-search" type="text" placeholder="Search move" />
+				<select class="move-select charged">
+					<option selected disabled value="">Select a Charged Move</option>
+				</select>
+				<h3>Options</h3>
+				<select class="effectiveness-select charged">
+					<option selected value=".244140625">Triple resisted (x0.24)</option>
+					<option selected value=".390625">Double resisted (x0.39)</option>
+					<option selected value=".625">Resisted (x0.625)</option>
+					<option selected value="1">Neutral (x1)</option>
+					<option value="1.6">Super effective (x1.6)</option>
+					<option value="2.56">Double super effective (x2.56)</option>
+				</select>
+				<div class="stab charged check on"><span></span>Same type attack bonus</div>
+			</div>
+		</div>
+
+		<div class="explore-results hide">
+			<div class="moveset-stats flex"></div>
+			<h2>Pokemon with this moveset:</h2>
+			<div>* Legacy moveset</div>
+			<div class="rankings-container clear"></div>
+		</div>
+
+	</div>
+</div>
+
+<script src="/pogo-pvp/pvpoke/src/js/battle/DamageCalculator.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/battle/actions/ActionLogic.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/battle/timeline/TimelineEvent.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/battle/timeline/TimelineAction.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/training/DecisionOption.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/battle/Battle.js?v=623.440.835"></script>
+
+<script src="/pogo-pvp/pvpoke/src/js/GameMaster.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/pokemon/Pokemon.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/interface/SortableTable.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/interface/MovesInterface.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/battle/timeline/TimelineEvent.js?v=623.440.835"></script>
+<script src="/pogo-pvp/pvpoke/src/js/RankingMain.js?v=623.440.835"></script>
+
+		</div><!--end #main-->
+	</div><!--end #main-wrap-->
+
+	
+	
+	
+	
+	
+	
+
+	<div id="dev-panel">
+	<a class="wrench" href="#"></a>
+	<div class="dev-panel-container">
+		<h3>Developer Panel</h3>
+
+		<h4>Data</h4>
+
+		<a class="button" href="/pogo-pvp/pvpoke/src/data/compile.php" target="_blank">Compile gamemaster</a>
+		<a class="button dev-default-ivs" href="#">Generate default IV's</a>
+		<a class="button dev-shadow-stats" href="#">Update Shadow stats</a>
+		<a class="button dev-moveset-csv" href="#">Generate Moveset CSV</a>
+		<!--<a class="button dev-validate-family" href="#">Validate Family IDs</a>-->
+
+		<h4>Quick Links</h4>
+		<a class="button" href="/pogo-pvp/pvpoke/src/gm-editor/">Gamemaster Editor</a>
+		<a class="button" href="/pogo-pvp/pvpoke/src/data/overrideEditor.php">Override Editor</a>
+		<a class="button" href="/pogo-pvp/pvpoke/src/ranker.php">Ranker</a>
+		<a class="button" href="/pogo-pvp/pvpoke/src/rankersandbox.php">Rankersandbox</a>
+		<a class="button" href="/pogo-pvp/pvpoke/src/rss/feedEditor.php">RSS Feed</a>
+		<a class="button dev-production-link" href="#">Open page in production</a>
+	</div>
+</div>
+
+<script>
+	// On document ready
+	$(function() {
+
+		var gm = GameMaster.getInstance();
+		var $devPanel = $("#dev-panel").first();
+
+		// Open and close the developer panel
+		$devPanel.find("a.wrench").click(function(e){
+			e.preventDefault();
+			$devPanel.toggleClass("active");
+		});
+
+		// Generate default IV's for Pokemon
+		$devPanel.find("a.dev-default-ivs").click(function(e){
+			e.preventDefault();
+			gm.generateDefaultIVs();
+		});
+
+		// Generate default IV's for Pokemon
+		$devPanel.find("a.dev-shadow-stats").click(function(e){
+			e.preventDefault();
+			gm.updateShadowStatus();
+		});
+
+		// Validate family IDs
+		$devPanel.find("a.dev-validate-family").click(function(e){
+			e.preventDefault();
+			gm.validateFamilyData();
+		});
+
+		// Generate default IV's for Pokemon
+		$devPanel.find("a.dev-moveset-csv").click(function(e){
+			e.preventDefault();
+			gm.generatePokemonMovesetCSV();
+		});
+
+		// Open the current page link on production
+		$devPanel.find("a.dev-production-link").click(function(e){
+			e.preventDefault();
+
+			var pageURL = window.location.href.replace(host, "https://pvpoke.com/");
+
+			window.open(pageURL, '_blank');
+		});
+	});
+
+</script>
+
+	<footer>
+		<p class="copyright">Version <a href="https://github.com/pvpoke/pvpoke/releases">623.440.835</a> &copy; 2025 PvPoke LLC, released under the <a href="https://opensource.org/licenses/MIT" target="_blank">MIT license</a> | <a href="/pogo-pvp/pvpoke/src/privacy/">Privacy Policy</a></p>
+		<p>Logo and brand colors by <a class="domz-link" href="https://pogodomz.bio.link/" target="_blank">pogoDomz</a></p>
+		<p>Pokémon and Pokémon GO are copyright of The Pokémon Company, Niantic, Inc., and Nintendo. All trademarked images and names are property of their respective owners, and any such material is used on this site for educational purposes only. PvPoke LLC has no affiliation with The Pokémon Company, Niantic, Inc., or Nintendo.</p>
+	</footer>
+
+	<!--Global script-->
+	<script>
+		var menuSlideProtection = false;
+
+		$(".hamburger.mobile").click(function(e){
+			$("header .menu").slideToggle(125);
+
+			menuSlideProtection = true;
+			setTimeout(function(){
+				menuSlideProtection = false;
+			}, 125);
+		});
+
+		// Submenu interaction on desktop and mobile
+		$(".menu .parent-menu").on("mouseenter click", function(e){
+
+			if(screen.width >= 721){
+				$(".submenu").removeClass("active");
+				$(this).find(".submenu").addClass("active");
+
+				/*// Open the submenu on a slight delay so menus don't pop open on collateral mouseovers
+				var $targetParentMenu = $(this).get(0);''
+
+				setTimeout(function(){
+					if($(".parent-menu:hover").get(0) == $targetParentMenu){
+						$(".submenu").removeClass("active");
+						$(".parent-menu:hover").find(".submenu").addClass("active");
+					}
+				}, 125);*/
+			}
+		});
+
+		$(".menu .parent-menu > a").on("click", function(e){
+			if($(e.target).is("span") && screen.width < 721){
+				e.preventDefault();
+				$(this).toggleClass("active");
+				$(this).next(".submenu").toggleClass("active");
+			}
+		});
+
+		$("body").on("mousemove click", function(e){
+			if($(".submenu:hover, .parent-menu:hover").length == 0){
+				$(".submenu").removeClass("active");
+			}
+
+			if(screen.width <= 720 && ! menuSlideProtection){
+				if($("header .menu:hover, .hamburger.mobile:hover").length == 0 && $("header .menu").css("display") == "block"){
+					$("header .menu").slideToggle(125);
+
+					menuSlideProtection = true;
+					setTimeout(function(){
+						menuSlideProtection = false;
+					}, 125);
+				}
+			}
+		});
+
+		$("header .latest-section a").click(function(e){
+			$("header .menu").slideToggle(125);
+		});
+
+		// Auto select link
+
+		$(".share-link input").click(function(e){
+			this.setSelectionRange(0, this.value.length);
+		});
+
+		// Link share copying
+
+		$("body").on("click", ".share-link .copy", function(e){
+			var el = $(e.target).prev()[0];
+			el.focus();
+			el.setSelectionRange(0, el.value.length);
+			document.execCommand("copy");
+		});
+
+		// Toggleable sections
+
+		$("body").on("click", ".toggle", function(e){
+			e.preventDefault();
+
+			$(e.target).closest(".toggle").toggleClass("active");
+		});
+
+		// Service worker handler
+		if ('serviceWorker' in navigator) {
+			console.log("Attempting to register service worker");
+			0;
+			  .then(function(reg){
+				console.log("Service worker registered.");
+			  }).catch(function(err) {
+				console.log("Service worker failed to register:", err)
+			  });
+		}
+
+		// disable mousewheel on a input number field when in focus
+		// (to prevent Chromium browsers change the value when scrolling)
+		$('body').on('focus', 'input[type=number]', function (e) {
+		$(this).on('wheel.disableScroll', function (e) {
+			e.preventDefault()
+		})
+		})
+		$('body').on('blur', 'input[type=number]', function (e) {
+		$(this).off('wheel.disableScroll')
+		})
+
+					// One-time custom group migration from cookies to localstorage
+
+			var jsonToMigrate = [];
+
+			
+			// Migrate custom groups to local storage
+
+			for(var i = 0; i < jsonToMigrate.length; i++){
+				window.localStorage.setItem(jsonToMigrate[i].name, jsonToMigrate[i].data);
+			}
+
+		
+	</script>
+
+</body>
+</html>

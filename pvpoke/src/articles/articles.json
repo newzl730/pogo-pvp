@@ -1,0 +1,314 @@
+[
+	{
+		"id": "personal-update-1-26-26",
+		"title": "Personal Update",
+		"description": "I live in Minneapolis. If you don't know what's happening right now in the United States, this is my alarm for anyone who will listen.",
+		"path": "development",
+		"tags": [],
+		"date": "January 26, 2026"
+	},
+	{
+		"id": "25-09-flabebe",
+		"title": "Flabébé Community Day Guide for PvP",
+		"description": "Florges is a Fairy type with fairly hype prospects for PvP. How will Chilling Water improve it in all three leagues? Let's find out more about the upcoming flowery Community Day!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "August 27, 2025"
+	},
+	{
+		"id": "25-08-rookidee",
+		"title": "Rookidee Community Day Guide for PvP",
+		"description": "Corviknight makes a bid to enter the top meta. Will it finally beat the fraud allegations? Read up on everything you need to know for Rookidee Community Day!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "August 27, 2025"
+	},
+	{
+		"id": "24-11-mankey",
+		"title": "Mankey Community Day Guide for PvP",
+		"description": "Mankey Community Day is a massive event for PvP! Rage Fist is a big upgrade for both Annihilape and Primeape. Here's all you need to know and what to look for this weekend!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "November 8, 2024"
+	},
+	{
+		"id": "24-08-shared-skies-great-league-starter-pack",
+		"title": "Great League Starter Pack for Season of Shared Skies",
+		"description": "Check out the premiere and budget picks to get started in Great League and GO Battle League for Season of Shared Skies!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "August 16, 2024"
+	},
+	{
+		"id": "24-06-goomy",
+		"title": "Goomy Community Day Guide for PvP",
+		"description": "Goodra is getting Thunder Punch this weekend, but is it any good? Check out tips and IV's for this exciting Community Day for PvP!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "June 7, 2024"
+	},
+	{
+		"id": "24-04-bellsprout",
+		"title": "Bellsprout Community Day Guide for PvP",
+		"description": "One of PvP's most feared Pokemon is getting its Community Day! How do Magical Leaf and Razor Leaf compare? Check out more info on Bellsprout Community Day and what IV's to watch for.",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "April 19, 2024"
+	},
+	{
+		"id": "23-11-wooper",
+		"title": "Wooper Community Day Guide for PvP",
+		"description": "The time has come to acquire the Sire! Clodsire makes its debut and Quagsire gets Aqua Tail in this exciting Community Day for PvP. What should you know about each Pokemon's PvP potential?",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "November 2, 2023"
+	},
+	{
+		"id": "23-10-adventures-abound-great-league-starter-pack",
+		"title": "Great League Starter Pack for Season of Adventures Abound",
+		"description": "Check out the premiere and budget picks to get started in Great League and GO Battle League for Season of Adventures Abound!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "October 7, 2023"
+	},
+	{
+		"id": "23-09-grubbin",
+		"title": "Grubbin Community Day Guide for PvP",
+		"description": "Both Charjabug and Vikavolt are getting the exlusive treatment this Community Day! How will they fare in PvP with Volt Switch? Time to dig into the details and check the ins and outs of these Bug-type Pokemon!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "September 21, 2023"
+	},
+	{
+		"id": "23-08-froakie",
+		"title": "Froakie Community Day Guide for PvP",
+		"description": "Fan favorite Greninja is finally getting the level-up it needs! Will it be enough to become viable in PvP? Find out more about Greninja and IV's to look for during the upcoming Community Day!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "August 9, 2023"
+	},
+	{
+		"id": "23-07-poliwag",
+		"title": "Poliwag Community Day Guide for PvP",
+		"description": "Poliwag is waddling into Community Day! Both Poliwrath and Politoed are viable in PvP, so let's dive into the impact of their exclusive moves.",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "July 16, 2023"
+	},
+	{
+		"id": "23-07-axew",
+		"title": "Axew Community Day Guide for PvP",
+		"description": "Axew is hacking its way onto the Community Day roster. Can it cut a place in PvP? Read up on the meta impact for Haxorus and Breaking Swipe!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "June 8, 2023"
+	},
+	{
+		"id": "23-04-togetic",
+		"title": "Togetic Community Day Guide for PvP",
+		"description": "Togetic is a charming addition to the Community Day roster, and its evolution, Togekiss, has play in all three leagues. Find out what to look out for in PvP!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "April 14, 2023"
+	},
+	{
+		"id": "23-03-slowpoke",
+		"title": "Slowpoke Community Day Guide for PvP",
+		"description": "Not so fast! Slowpoke Community Day is around the corner. Find out how Surf will impact the whole Slow family in PvP and IV's to look for.",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "March 16, 2023"
+	},
+	{
+		"id": "23-01-season-of-mythical-wishes-starter-packs",
+		"title": "PvP Starter Packs for Season of Mythical Wishes",
+		"description": "Check out the premiere and budget picks to get started in Great League, Ultra League, and Master League for GO Battle League in the Season of Mythical Wishes!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "January 14, 2023"
+	},
+	{
+		"id": "23-01-chespin",
+		"title": "Chespin Community Day Guide for PvP",
+		"description": "Chesnaught is finally getting Frenzy Plant! Can it find a way to crack into the PvP meta? Check out its meta relevance and PvP IV's to look for.",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "December 21, 2022"
+	},
+	{
+		"id": "22-11-shadow-predictions",
+		"title": "PvPoke's Shadow Crystal Ball",
+		"description": "Which Shadow Pokemon could become more relevant for PvP in a future move update or Community Day? Check out this speculative list if you have TM's to spare!",
+		"path": "infographics",
+		"tags": ["Infographic"],
+		"date": "November 13, 2022"
+	},
+	{
+		"id": "22-11-teddiursa",
+		"title": "Teddiursa Community Day Guide for PvP",
+		"description": "Ursaluna will be making its debut in Pokemon GO! How does it stand up to the meta and is this bear a necessity for PvP?",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "November 11, 2022"
+	},
+	{
+		"id": "22-10-litwick",
+		"title": "Litwick Community Day Guide for PvP",
+		"description": "Will Litwick be able to haunt its way into PvP this Community Day? Let's shed some light on how Chandelure performs in PvP!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "October 12, 2022"
+	},
+	{
+		"id": "22-08-zigzagoon",
+		"title": "Galarian Zigzagoon Community Day Guide for PvP",
+		"description": "Obstagoon is already a top tier Pokemon for PvP! Will Obstruct elevate it even further?",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "August 12, 2022"
+	},
+	{
+		"id": "22-07-shadow-pokemon-pvp",
+		"title": "Best Shadow Pokemon to TM for PvP",
+		"description": "When a Team Rocket event arrives, which Shadow Pokemon should you prepare for trouble? Check out the top Shadow Pokemon in each league!",
+		"path": "infographics",
+		"tags": ["Infographic"],
+		"date": "July 9, 2022"
+	},
+	{
+		"id": "22-06-deino",
+		"title": "Deino Community Day Guide for PvP",
+		"description": "Are three heads better than one? Find out how Brutal Swing Hydreigon will impact the meta and which PvP Pokemon and IV's to look for this Community Day!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "June 22, 2022"
+	},
+	{
+		"id": "22-06-season-11-master-league-starter-pack",
+		"title": "Master League Starter Pack for Season 11",
+		"description": "Check out the best legendary and non-legendary Pokemon to get started in Master League for GO Battle League Season 11!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "June 14, 2022"
+	},
+	{
+		"id": "22-06-season-11-ultra-league-starter-pack",
+		"title": "Ultra League Starter Pack for Season 11",
+		"description": "Check out the premiere and budget picks to get started in Ultra League for GO Battle League Season 11!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "June 6, 2022"
+	},
+	{
+		"id": "22-05-season-11-great-league-starter-pack",
+		"title": "Great League Starter Pack for Season 11",
+		"description": "Check out the premiere and budget picks to get started in Great League for GO Battle League Season 11!",
+		"path": "infographics",
+		"tags": ["Infographic", "Starter Pack"],
+		"date": "May 30, 2022"
+	},
+	{
+		"id": "22-05-geodude",
+		"title": "Alolan Geodude Community Day Guide for PvP",
+		"description": "The Alolan Geodude family is ready to rock! Which leagues and Pokemon should you be on the lookout for and how impactful will Rollout be on the meta?",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "May 19, 2022"
+	},
+	{
+		"id": "22-05-friend-trade-tier-list",
+		"title": "Sh!tty Friend Trade Tier List",
+		"description": "Whether you meet new friends or that one person who doesn't open your gifts, here's a list of PvP trade ideas with low friendship level!",
+		"path": "infographics",
+		"tags": ["Infographic"],
+		"date": "May 14, 2022"
+	},
+	{
+		"id": "22-05-latias-latios-counters",
+		"title": "Latias and Latios Counters for Master League",
+		"description": "See which Latias and Latios raid counters also double as top Master League picks!",
+		"path": "infographics",
+		"tags": ["Infographic"],
+		"date": "May 3, 2022"
+	},
+	{
+		"id": "22-04-stufful",
+		"title": "Stufful Community Day Guide for PvP",
+		"description": "Learn about the brand new Pokemon Stufful, and how its evolution may perform in PvP!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "April 22, 2022"
+	},
+	{
+		"id": "developer-notes-1-27-0",
+		"title": "PvPoke Developer Notes - Update 1.27.0",
+		"description": "Get an overview on updates to the core simulation logic and default settings, including baiting behavior and optimized move timing.",
+		"path": "development",
+		"tags": ["Development"],
+		"date": "April 16, 2022"
+	},
+	{
+		"id": "tournament-guide",
+		"title": "Strategy Guide for Tournament Play",
+		"description": "How do you build a team for tournament play and pick your Pokemon for battle? Get an in depth look at tournament strategies with advice from veteran trainers!",
+		"path": "strategy",
+		"tags": ["Strategy"],
+		"date": "March 25, 2022"
+	},
+	{
+		"id": "22-03-great-league-meta-snapshot",
+		"title": "Great League Tournament Meta Snapshot, March 2022",
+		"description": "Get a preview of the Pokemon GO Championship Series meta for your regional tournament.",
+		"path": "infographics",
+		"tags": ["Infographic"],
+		"date": "March 19, 2022"
+	},
+	{
+		"id": "22-03-sandshrew",
+		"title": "Sandshrew Community Day Guide for PvP",
+		"description": "Learn about Sandshrew's upcoming Community Day and how both of its Alolan and Kanto families will be relevant for PvP!",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "March 10, 2022"
+	},
+	{
+		"id": "22-02-hoppip",
+		"title": "Hoppip Community Day Guide for PvP",
+		"description": "Learn about Hoppip's upcoming Community Day, how Acrobatics will be relevant for PvP, and which Jumpluff IV's to look out for.",
+		"path": "community-day",
+		"tags": ["Community Day", "Infographic"],
+		"date": "February 10, 2022"
+	},
+	{
+		"id": "best-elite-tm-candidates-pvp",
+		"title": "Best Elite TM Candidates for PvP",
+		"description": "Which exclusive moves and Pokemon are the best for your PvP team? Find the best use for your Elite Fast and Charged TM's.",
+		"path": "strategy",
+		"tags": ["Strategy"],
+		"date": "February 10, 2022"
+	},
+	{
+		"id": "guide-to-fast-move-registration",
+		"title": "Guide to Fast Move Mechanics",
+		"description": "How exactly do Fast Moves work and register? This guide will walk through some of PvP's mysterious nuts and bolts.",
+		"path": "strategy",
+		"tags": ["Strategy", "Mechanics"],
+		"date": "February 10, 2022"
+	},
+	{
+		"id": "ultimate-guide-to-team-building",
+		"title": "Ultimate Team Building Guide by PolymersUp",
+		"description": "Learn the fundamentals of building a good team and how to use the PvPoke Team Builder to its full potential.",
+		"path": "strategy",
+		"tags": ["Strategy"],
+		"date": "August 11, 2020"
+	},
+	{
+		"id": "developing-trainer-battle-ai",
+		"title": "Developing an AI for Pokemon GO Trainer Battles",
+		"description": "How does the AI on the site's training battles work? Read all about how I approached development and strategies the AI uses to mimic player behavior.",
+		"path": "development",
+		"tags": ["Development"],
+		"date": "July 30, 2019"
+	}
+]
