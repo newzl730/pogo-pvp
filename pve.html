@@ -115,13 +115,29 @@ function renderTypes(){
       '<div class="er">📊 L'+document.getElementById("lvl").value+' 有效：攻 '+b.eAtk+' · 防 '+b.eDef+' · 血 '+b.eHP+'　DPS <b style="color:#ff9f6b">'+b.DPS.toFixed(2)+'</b> · TDO '+Math.round(b.TDO)+'</div>'+
       (elite?'<div class="er" style="color:var(--gold)">⚠️ 最佳配招含传承/精英招式，需用「精英刷招学习器」获得</div>':'<div class="er" style="color:#46d39a">✓ 普通可学招式，无需精英学习器</div>')+
       '<span class="er" onclick="event.stopPropagation();pokeModalSid(\''+x.p.species_id+'\')" style="color:#46d39a;cursor:pointer;display:block">🗄️ 完整资料（净化/进化/异色/获取…）→</span></div>';
-    return '<div class="rwrap"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
+    return '<div class="rwrap" data-dex="'+x.p.dex+'" data-sid="'+x.p.species_id+'"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
   }).join("");
 }
 function pveTog(i){var e=document.getElementById("exp"+i);if(e)e.style.display=e.style.display==="block"?"none":"block";}
 window.pveTog=pveTog;
 function selType(t){curType=t;document.querySelectorAll(".tb").forEach(function(b){b.classList.toggle("on",b.dataset.t===t);});render();}
 window.selType=selType;window.render=render;
+// 深链：pve.html#<type>/<dex> 或 #<type>/sid:<species_id> → 切到该属性并滚动高亮该宝可梦
+function _gotoPve(){
+  var h=(location.hash||"").replace(/^#/,"");if(!h)return;
+  var parts=h.split("/");var t=parts[0],key=parts[1];if(!TN[t])return;
+  if(MODE!=="type")setMode("type");
+  selType(t);
+  setTimeout(function(){
+    var sel=key&&key.indexOf("sid:")===0?'[data-sid="'+key.slice(4)+'"]':(key?'[data-dex="'+key+'"]':null);
+    var el=sel&&document.querySelector(sel);if(!el)return;
+    el.scrollIntoView({behavior:"smooth",block:"center"});
+    el.style.transition="outline .2s";el.style.outline="3px solid #ff7a45";el.style.borderRadius="13px";
+    var r=el.querySelector(".exp");if(r)r.style.display="block";
+    setTimeout(function(){el.style.outline="none";},2600);
+  },120);
+}
+window.addEventListener("hashchange",_gotoPve);
 document.getElementById("types").innerHTML=TYPES.map(function(t){return '<span class="tb'+(t[0]==="fire"?" on":"")+'" data-t="'+t[0]+'" style="background:'+t[2]+'" onclick="selType(\''+t[0]+'\')">'+t[1]+'</span>';}).join("");
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
   return fetch("pokemon.db?v=pve1").then(function(r){return r.arrayBuffer();}).then(function(buf){
@@ -134,6 +150,7 @@ initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs
     try{BOSS=rows("SELECT o.dex dex,MIN(o.detail) tier,p.name_cn,p.type1,p.type2,p.sprite FROM obtain o JOIN pokemon p ON p.dex=o.dex WHERE o.method='raid' AND p.is_shadow=0 AND p.is_mega=0 GROUP BY o.dex ORDER BY (o.detail LIKE '5%' OR o.detail LIKE 'Mega%') DESC, o.dex");}catch(e){BOSS=[];}
     document.getElementById("meta").innerHTML="✅ "+POK.length+" 宝可梦 · 实时计算";
     render();
+    _gotoPve();
   });
 }).catch(function(e){document.getElementById("meta").innerHTML='<span style="color:#ff7a8f">加载失败：'+esc(e.message)+'</span>';});
 </script>
