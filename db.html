@@ -55,7 +55,7 @@ function genderStr(g){if(g===null||g===undefined)return '';if(g<0)return '⚲无
 function detail(sid){
   var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return;
   function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
-  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
+  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b style="cursor:pointer;color:#8fb0ff" onclick="moveDetail(\''+m.move_id+'\')">'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
   var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
   var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
   function _nm(s){var r=rows("SELECT name_cn,dex FROM pokemon WHERE species_id=?",[s])[0];return r||{name_cn:s,dex:0};}
@@ -85,6 +85,20 @@ function detail(sid){
     '<div class="mv" style="margin-top:8px">💥 <b style="color:#ffc59c">充能招式</b><br>'+mvl(mv("charged"))+'</div></div>';
   window.scrollTo({top:0,behavior:"smooth"});
 }
+function moveDetail(mid){
+  var m=rows("SELECT * FROM moves WHERE move_id=?",[mid])[0];if(!m)return;
+  var users=rows("SELECT p.dex,p.name_cn,p.sprite,p.species_id,pm.slot,pm.is_elite FROM pokemon_moves pm JOIN pokemon p ON p.species_id=pm.species_id WHERE pm.move_id=? AND p.is_shadow=0 ORDER BY pm.is_elite, p.dex",[mid]);
+  var slotcn=m.slot==="fast"?"快速招式":"充能招式";
+  var bf=m.pvp_buffs?'<br>⚡ <b>PvP buff</b>：'+esc(m.pvp_buffs):'';
+  var chips=users.map(function(u){return '<span onclick="detail(\''+u.species_id+'\')" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:2px 7px;margin:2px;font-size:11.5px">'+(u.is_elite?"🔑":"")+'<img src="'+esc(u.sprite)+'" style="width:20px;height:20px;object-fit:contain" onerror="this.style.display=\'none\'">'+esc(u.name_cn)+'</span>';}).join("");
+  document.getElementById("detail").innerHTML='<div class="detail"><h3>'+esc(m.name_cn)+' <small style="color:var(--dim);font-weight:400">'+esc(m.name_en)+' · '+slotcn+'</small></h3>'+
+    '<div class="kv">属性：'+tchip(m.type)+'　类型：'+slotcn+'<br>'+
+    '<b style="color:#bfe0ff">PvP</b>：威力 '+m.pvp_power+' · 能量 '+m.pvp_energy+bf+'<br>'+
+    '<b style="color:#ffc59c">PvE</b>：威力 '+m.pve_power+' · 能量 '+m.pve_energy+' · 时长 '+(m.pve_duration_ms?m.pve_duration_ms/1000+"s":"-")+'</div>'+
+    '<div class="kv" style="margin-top:10px">📚 <b style="color:var(--gold)">会此招式的宝可梦（'+users.length+' 只，🔑=传承/精英）</b></div><div style="margin-top:6px">'+chips+'</div></div>';
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+window.moveDetail=moveDetail;
 window.detail=detail;
 function search(q){
   if(!DB)return;q=(q||"").trim();
@@ -93,6 +107,10 @@ function search(q){
   var like="%"+q.toLowerCase()+"%";
   var r=rows("SELECT species_id,dex,name_cn cn,name_tw tw,name_en en,type1,type2,sprite FROM pokemon WHERE lower(name_cn) LIKE ? OR lower(name_tw) LIKE ? OR lower(name_en) LIKE ? OR lower(species_id) LIKE ? OR dex=? ORDER BY dex LIMIT 80",[like,like,like,like,(/^\d+$/.test(q)?+q:-1)]);
   res.innerHTML=r.length?r.map(function(p){return '<div class="r" onclick="detail(\''+p.species_id+'\')"><img loading="lazy" src="'+(p.sprite||art(p.dex))+'" onerror="this.onerror=null;this.src=\''+art(p.dex)+'\'"><div><div class="rn">'+esc(p.cn)+'<small>'+esc(p.tw)+' · '+esc(p.en)+' · #'+p.dex+'</small></div><div style="margin-top:4px">'+tchip(p.type1)+tchip(p.type2)+'</div></div></div>';}).join(""):'<div class="note">没找到「'+esc(q)+'」</div>';
+  // also match moves
+  var mq="%"+q.toLowerCase()+"%";
+  var mv=rows("SELECT move_id,name_cn,name_en,type,slot FROM moves WHERE lower(name_cn) LIKE '"+q.toLowerCase().replace(/'/g,"")+"%' OR lower(name_en) LIKE '"+q.toLowerCase().replace(/'/g,"")+"%' LIMIT 12");
+  if(mv.length){res.innerHTML+='<div class="meta" style="margin-top:12px">🎯 招式（点击看会此招式的宝可梦）</div>'+mv.map(function(m){return '<div class="r" onclick="moveDetail(\''+m.move_id+'\')"><div style="width:50px;text-align:center">'+(m.slot==="fast"?"⚡":"💥")+'</div><div><div class="rn">'+esc(m.name_cn)+'<small>'+esc(m.name_en)+'</small></div><div style="margin-top:4px">'+tchip(m.type)+'</div></div></div>';}).join("");}
 }
 window.search=search;
 function runSQL(){
@@ -107,7 +125,7 @@ window.runSQL=runSQL;
 function _goHash(){if(!DB)return;var mm=(location.hash||"").match(/^#m(\d+)/);if(!mm)return;var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+mm[1]]);if(r.length)detail(r[0].species_id);}
 window.addEventListener("hashchange",_goHash);
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
-  return fetch("pokemon.db?v20260618-68256").then(function(r){return r.arrayBuffer();}).then(function(buf){
+  return fetch("pokemon.db?v=20260618b").then(function(r){return r.arrayBuffer();}).then(function(buf){
     DB=new SQL.Database(new Uint8Array(buf));
     var n=rows("SELECT COUNT(*) c FROM pokemon")[0].c, m=rows("SELECT COUNT(*) c FROM moves")[0].c;
     document.getElementById("meta").innerHTML="✅ 已加载 <b>"+n+"</b> 宝可梦 · <b>"+m+"</b> 招式（pokemon.db）";
