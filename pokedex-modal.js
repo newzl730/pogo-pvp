@@ -36,7 +36,7 @@ function close(){var o=document.getElementById("pmOv");if(o)o.style.display="non
 function detailHtml(sid){
   var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return "未找到";
   function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
-  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
+  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0"><span style="cursor:pointer;color:#8fb0ff" onclick="moveModal(\''+esc(m.move_id)+'\')">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+'</span> '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
   var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
   var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
   function _nm(s){var r=rows("SELECT name_cn FROM pokemon WHERE species_id=?",[s])[0];return r?r.name_cn:s;}
@@ -44,6 +44,19 @@ function detailHtml(sid){
   function _chain(node){var tag='<span style="cursor:pointer;'+(node===sid?"color:#ffcb05;font-weight:800":"color:#8fb0ff")+'" onclick="pokeModalSid(\''+node+'\')">'+esc(_nm(node))+'</span>';var kids=rows("SELECT evolves_to,candy,condition FROM evolution WHERE species_id=?",[node]);if(!kids.length)return tag;if(kids.length===1)return tag+' <span class="tag">→'+(kids[0].candy?kids[0].candy+'糖':'')+(kids[0].condition?'·'+esc(kids[0].condition):'')+'</span> '+_chain(kids[0].evolves_to);return tag+'<div style="padding-left:16px;border-left:1px solid #2c3142;margin:3px 0">'+kids.map(function(k){return '<span class="tag">→'+(k.candy?k.candy+'糖':'')+(k.condition?'·'+esc(k.condition):'')+'</span> '+_chain(k.evolves_to);}).join("<br>")+'</div>';}
   var hasEvo=rows("SELECT 1 FROM evolution WHERE species_id=? OR evolves_to=? LIMIT 1",[sid,sid]).length;
   var wb=rows("SELECT DISTINCT weather FROM weather_boost WHERE type=? OR type=?",[p.type1,p.type2||p.type1]);
+  // 属性克制：聚合 18 种攻击属性对本宝可梦的倍率（type1×type2）
+  var deft=[p.type1,p.type2].filter(Boolean);
+  var teRows=rows("SELECT atk_type,def_type,multiplier FROM type_effectiveness WHERE def_type=? OR def_type=?",[p.type1,p.type2||p.type1]);
+  var teMap={};teRows.forEach(function(r){if(!teMap[r.atk_type])teMap[r.atk_type]={};teMap[r.atk_type][r.def_type]=r.multiplier;});
+  var weakArr=[],resArr=[];
+  Object.keys(TN).forEach(function(at){var m=1;deft.forEach(function(dt){m*=(teMap[at]&&teMap[at][dt]!=null)?teMap[at][dt]:1;});if(m>1.01)weakArr.push([at,m]);else if(m<0.99)resArr.push([at,m]);});
+  weakArr.sort(function(a,b){return b[1]-a[1];});resArr.sort(function(a,b){return a[1]-b[1];});
+  function multLbl(m){return m>=2.5?"×2.56":m>=1.5?"×1.6":m<=0.4?"×0.39":m<=0.65?"×0.63":(m).toFixed(2);}
+  function teChip(x){return '<span style="font-size:9px;font-weight:700;color:#0e1016;border-radius:5px;padding:1px 5px;margin:1px;display:inline-block;background:'+(TC[x[0]]||"#666")+'">'+(TN[x[0]]||x[0])+' '+multLbl(x[1])+'</span>';}
+  // 最大 CP（L40 / L50）
+  var cpmR=rows("SELECT level,cpm FROM cpm WHERE level IN (40,50)");var cpmMap={};cpmR.forEach(function(r){cpmMap[r.level]=r.cpm;});
+  function maxcp(cpm){if(!cpm)return null;return Math.max(10,Math.floor((p.atk+15)*Math.sqrt(p.def+15)*Math.sqrt(p.hp+15)*cpm*cpm/10));}
+  var cp40=maxcp(cpmMap[40]),cp50=maxcp(cpmMap[50]);
   var ob=rows("SELECT method,detail FROM obtain WHERE dex=?",[p.dex]);
   var flags=[];if(p.is_legendary)flags.push("传说");if(p.is_mythical)flags.push("幻");if(p.is_ultrabeast)flags.push("究极异兽");if(p.is_mega)flags.push("超级进化");if(p.is_regional)flags.push("地区限定");if(p.shadow_eligible)flags.push("可暗影");if(p.gl_ineligible)flags.push("超联不可用");
   var ivmap={great:"超联1500",ultra:"高联2500",master:"大师"};
@@ -51,11 +64,13 @@ function detailHtml(sid){
   var WN={"sunny/clear":"☀️晴","rainy":"🌧雨","partly_cloudy":"⛅多云","cloudy":"☁️阴","windy":"🌬风","snow":"❄️雪","fog":"🌫雾"};
   return '<span id="pmX" onclick="pmClose()">×</span><h3>'+esc(p.name_cn)+' <small style="color:#9aa1b4;font-weight:400;font-size:12px">'+esc(p.name_tw)+' · '+esc(p.name_en)+' · #'+p.dex+'</small></h3>'+
     '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+(p.sprite||art(p.dex))+'" onerror="this.src=\''+art(p.dex)+'\'" style="width:90px;height:90px;object-fit:contain;flex:none"><div class="kv">'+
-    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+(p.genus_cn?'　'+esc(p.genus_cn):'')+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+(p.height_m?'　📏'+p.height_m+'m '+p.weight_kg+'kg':'')+'<br>'+
+    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+(p.genus_cn?'　'+esc(p.genus_cn):'')+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>'+(p.height_m?'　📏'+p.height_m+'m '+p.weight_kg+'kg':'')+'<br>最大CP：<b>'+(cp40||"?")+'</b>(L40) / <b>'+(cp50||"?")+'</b>(L50)　L25 '+(p.level25cp||"?")+'<br>'+
     (flags.length?'<span style="color:#ffcb05">'+flags.join(" · ")+'</span><br>':'')+
     '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km　'+genderStr(p.gender_rate)+'<br>'+
-    'species_id：<code>'+esc(p.species_id)+'</code></div></div>'+(p.flavor_cn?'<div class="kv" style="font-style:italic;color:#bcd;margin-top:8px">📖 '+esc(p.flavor_cn)+'</div>':'')+
-    '<div class="kv" style="margin-top:10px"><b style="color:#ffcb05">🏆 PvP 最佳IV</b>：'+ivh+'</div>'+
+    '</div></div>'+(p.flavor_cn?'<div class="kv" style="font-style:italic;color:#bcd;margin-top:8px">📖 '+esc(p.flavor_cn)+'</div>':'')+
+    '<div class="kv" style="margin-top:8px">🛡 <b style="color:#ff8f6b">弱点</b>：'+(weakArr.length?weakArr.map(teChip).join(""):"无")+'</div>'+
+    '<div class="kv">🧱 <b style="color:#7fd6d6">抗性</b>：'+(resArr.length?resArr.map(teChip).join(""):"无")+'</div>'+
+    '<div class="kv" style="margin-top:8px"><b style="color:#ffcb05">🏆 PvP 最佳IV</b>：'+ivh+'</div>'+
     (pur?'<div class="kv">🌀 <b style="color:#ffcb05">净化</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83）</div>':'')+
     (wb.length?'<div class="kv">🌦 <b style="color:#ffcb05">天气加成</b>：'+wb.map(function(x){return WN[x.weather]||x.weather;}).join(" / ")+'</div>':'')+
     (ob.length?'<div class="kv">🎯 <b style="color:#ffcb05">当前获取</b>：'+[].concat.apply([],[Array.from(new Set(ob.map(function(o){var M={raid:"团战",egg:"蛋",research:"调查"};return (M[o.method]||o.method)+(o.detail?'('+esc(o.detail)+')':'');})))]).slice(0,8).join(" · ")+'</div>':'')+
@@ -63,23 +78,48 @@ function detailHtml(sid){
     '<div class="mv" style="margin-top:10px">⚡ <b style="color:#bfe0ff">快速招式</b><br>'+mvl(mv("fast"))+'</div>'+
     '<div class="mv" style="margin-top:8px">💥 <b style="color:#ffc59c">充能招式</b><br>'+mvl(mv("charged"))+'</div>';
 }
-function show(sid){ensure();document.getElementById("pmCard").innerHTML=detailHtml(sid);var o=document.getElementById("pmOv");o.style.display="flex";o.scrollTop=0;}
+function showHtml(html){ensure();document.getElementById("pmCard").innerHTML=html;var o=document.getElementById("pmOv");o.style.display="flex";o.scrollTop=0;}
+function show(sid){showHtml(detailHtml(sid));}
+// 招式详情：威力/能量/时长/buff + 哪些宝可梦能学（快攻/大招/精英）
+function moveDetailHtml(mid){
+  var m=rows("SELECT * FROM moves WHERE move_id=?",[mid])[0];if(!m)return "未找到招式";
+  var users=rows("SELECT DISTINCT p.dex,p.name_cn,pm.slot,pm.is_elite FROM pokemon_moves pm JOIN pokemon p ON p.species_id=pm.species_id WHERE pm.move_id=? AND p.is_shadow=0 ORDER BY pm.is_elite,p.dex",[mid]);
+  var slotName=m.slot==="fast"?"快速招式":"充能招式";
+  var dpe=(m.pve_energy&&m.pve_power)?(m.pve_power/Math.abs(m.pve_energy)).toFixed(2):"";
+  var buffTxt="";if(m.pvp_buffs){try{var b=JSON.parse(m.pvp_buffs);buffTxt=JSON.stringify(b);}catch(e){buffTxt=m.pvp_buffs;}}
+  var chips=users.map(function(u){return '<span data-pdex="'+u.dex+'" style="cursor:pointer;font-size:11.5px;background:#1f2330;border:1px solid #2c3142;border-radius:7px;padding:1px 7px;margin:2px;display:inline-block">'+(u.is_elite?'🔑':'')+esc(u.name_cn)+'</span>';}).join("");
+  return '<span id="pmX" onclick="pmClose()">×</span><h3>'+esc(m.name_cn)+' <small style="color:#9aa1b4;font-weight:400;font-size:12px">'+esc(m.name_en)+'</small></h3>'+
+    '<div class="kv">类型：'+tchip(m.type)+'　'+slotName+'</div>'+
+    '<div class="kv">⚔️ <b style="color:#ffcb05">PvE（团战/道馆）</b>：威力 <b>'+(m.pve_power||0)+'</b> · 能量 <b>'+(m.pve_energy||0)+'</b> · 时长 <b>'+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'?')+'</b>'+(dpe?' · 威力/能量比 '+dpe:'')+'</div>'+
+    '<div class="kv">🥊 <b style="color:#ffcb05">PvP（训练家对战）</b>：威力 <b>'+(m.pvp_power||0)+'</b> · 能量 <b>'+(m.pvp_energy||0)+'</b>'+(m.pvp_turns!=null?' · '+m.pvp_turns+'回合':'')+(buffTxt?' · <span style="color:#ffcb05">效果 '+esc(buffTxt)+'</span>':'')+'</div>'+
+    '<div class="kv" style="margin-top:10px">📚 <b style="color:#ffcb05">可学习的宝可梦</b>（'+users.length+'，🔑=需精英学习器）</div>'+
+    '<div style="margin-top:4px;max-height:240px;overflow:auto">'+(chips||"—")+'</div>';
+}
 window.pokeModal=function(dex){load().then(function(){var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+dex]);if(r[0])show(r[0].species_id);});};
 window.pokeModalSid=function(sid){load().then(function(){show(sid);});};
+window.moveModal=function(mid){load().then(function(){showHtml(moveDetailHtml(mid));});};
 window.pmClose=close;
 // 自动接线：把匹配选择器、且 src 含 official-artwork/<dex>.png 的图片标记为可点（data-pdex）。
 // 生成器无关：在页面加载后扫描现有 DOM，无论内容是静态还是脚本注入都能接上弹窗。
 window.pokeModalAutowire=function(sel){
   try{
-    Array.prototype.forEach.call(document.querySelectorAll(sel),function(img){
-      var m=(img.getAttribute("src")||"").match(/official-artwork\/(\d+)\.png/);
+    Array.prototype.forEach.call(document.querySelectorAll(sel||"img"),function(img){
+      if(img.closest("#pmOv"))return;
+      if(img.getAttribute("data-pdex"))return;
+      var m=(img.getAttribute("src")||img.src||"").match(/official-artwork\/(\d+)\.png/);
       if(!m)return;
       img.setAttribute("data-pdex",m[1]);
       img.style.cursor="pointer";
-      img.title="点击查看完整资料";
+      if(!img.title)img.title="查看完整资料";
     });
   }catch(e){}
 };
+// 默认自动接线：页面加载后扫描所有 official-artwork 立绘并接上弹窗；延时再扫一次以覆盖懒加载/脚本注入。
+(function(){
+  function run(){if(window.PM_NO_AUTOWIRE)return;window.pokeModalAutowire("img");}
+  if(document.readyState!=="loading")run();else document.addEventListener("DOMContentLoaded",run);
+  setTimeout(run,1500);setTimeout(run,4000);
+})();
 // 事件委托：任意带 data-pdex="<dex>" 或 data-psid="<species_id>" 的元素点击即开弹窗。
 document.addEventListener("click",function(e){
   var el=e.target.closest?e.target.closest("[data-pdex],[data-psid]"):null;
