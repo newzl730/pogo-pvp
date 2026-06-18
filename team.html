@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pokémon GO PvP 队伍构建器 · 对全 Meta 胜负矩阵</title><style>
+:root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--panel3:#272c3b;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--accent2:#ffcb05;--good:#27c08a;--bad:#ff5c72;--warn:#ff9f43}
+*{box-sizing:border-box}html{overflow-x:hidden}
+body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+.top{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.94);backdrop-filter:blur(8px);z-index:20}
+.top h1{margin:0;font-size:16px}.top h1 b{color:var(--accent2)}
+.main{max-width:920px;margin:0 auto;padding:14px 14px 90px}
+.lgtabs{display:flex;gap:7px;margin:6px 0 12px;flex-wrap:wrap}
+.lgtab{font-size:13px;font-weight:700;padding:7px 15px;border-radius:11px;cursor:pointer;background:var(--panel2);border:1px solid var(--line);color:var(--dim)}
+.lgtab.on{background:linear-gradient(135deg,#3b6cff,#8a5cff);color:#fff;border-color:transparent}
+.team{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:680px){.team{grid-template-columns:1fr}}
+.slot{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px}
+.slot .lbl{font-size:11px;color:var(--dim);margin-bottom:6px}
+.sug{position:relative}
+.sug input{width:100%;background:var(--panel3);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none}
+.sug input:focus{border-color:var(--accent)}
+.suglist{position:absolute;z-index:30;left:0;right:0;background:var(--panel2);border:1px solid var(--line);border-radius:9px;margin-top:3px;max-height:240px;overflow-y:auto;display:none}
+.sugitem{padding:6px 9px;cursor:pointer;font-size:13px;display:flex;gap:8px;align-items:center}
+.sugitem:hover{background:var(--panel3)}.sugitem img{width:28px;height:28px;object-fit:contain}
+.chosen{display:flex;gap:9px;align-items:center;margin-top:9px}
+.chosen img{width:50px;height:50px;object-fit:contain;background:var(--panel2);border-radius:9px;border:1px solid var(--line)}
+.chosen .nm{font-size:14px;font-weight:700}.chosen .nm small{display:block;color:var(--dim);font-size:10px;font-weight:400}
+.chosen .x{margin-left:auto;color:var(--dim);cursor:pointer;font-size:18px}
+.mv{font-size:10.5px;color:var(--dim);margin-top:5px;line-height:1.5}
+.bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:14px 0}
+.go{padding:11px 22px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+.go:active{transform:scale(.99)}.go:disabled{opacity:.4;cursor:not-allowed}
+.shsel{font-size:12.5px;color:var(--dim)}.shsel select{background:var(--panel3);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12.5px;font-family:inherit;margin-left:5px}
+.sum{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 14px}
+.scard{flex:1;min-width:130px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px 14px;text-align:center}
+.scard .v{font-size:24px;font-weight:800}.scard .l{font-size:11px;color:var(--dim);margin-top:3px}
+.hd{font-size:13px;color:var(--dim);margin:16px 2px 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
+.orow{display:flex;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:7px}
+.orow.threat{border-color:var(--bad)}.orow.ok{}
+.orow img{width:44px;height:44px;object-fit:contain;flex:none;cursor:pointer}
+.orow .on{flex:1;min-width:0}.orow .on b{font-size:13.5px}.orow .on .t{font-size:10px;color:var(--dim)}
+.cells{display:flex;gap:5px;flex:none}
+.cell{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.cell.w{background:rgba(39,192,138,.2);color:var(--good);border:1px solid rgba(39,192,138,.4)}
+.cell.l{background:rgba(255,92,114,.16);color:var(--bad);border:1px solid rgba(255,92,114,.35)}
+.verdict{font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;flex:none;width:48px;text-align:center}
+.v-good{background:rgba(39,192,138,.2);color:var(--good)}.v-mid{background:rgba(255,159,67,.2);color:var(--warn)}.v-bad{background:rgba(255,92,114,.2);color:var(--bad)}
+.note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.7}
+.empty{color:var(--dim);font-size:13px;text-align:center;padding:30px}
+.legend{font-size:11px;color:var(--dim);margin:4px 2px 10px}
+</style></head><body>
+<div class="top"><h1>Pokémon GO <b>PvP 队伍构建器</b> · 对全 Meta 胜负矩阵</h1>
+<nav><a href="index.html">⚔️ PvP</a><a href="sim.html">🎮 模拟</a><a href="db.html">🗄️ 数据库</a></nav></div>
+<div class="main">
+<div class="lgtabs" id="lgtabs"></div>
+<div class="legend">选 1–3 只你的宝可梦 → 引擎用 PvPoke 推荐配招 + 该联赛 rank-1 IV，逐只对当前 <b id="metaN">Meta</b> 模拟 1v1（双方 1 盾）→ 给出胜负矩阵、<b style="color:var(--bad)">威胁</b>（队伍打不过的）与覆盖率。</div>
+<div class="team" id="team"></div>
+<div class="bar">
+  <button class="go" id="goBtn" onclick="analyze()" disabled>⚔️ 分析队伍</button>
+  <span class="shsel">护盾 <select id="shields"><option value="1">1 盾（标准）</option><option value="0">0 盾</option><option value="2">2 盾</option></select></span>
+  <span id="status" style="font-size:12px;color:var(--dim)">加载中…</span>
+</div>
+<div id="result"></div>
+<div class="note">引擎复用对战模拟器（GO PvP 真实机制：相克1.6x、STAB1.2、CMP 先手、护盾、能量、招式 buff）· 对手为各联赛 PvPoke Top 28 Meta（配招/IV 取官方排名）· 你的宝可梦默认套用 PvPoke 推荐配招（排名内）或其招式池 · 结果为单打 1v1 近似，真实对战含换人/读盾博弈，精确请以 pvpoke.com 为准。</div>
+</div>
+<script src="pvp_data.js?v=1"></script>
+<script>
+var D=window.PVP_D,META=null,byId={},LEAGUE="gl",CAP={gl:1500,ul:2500,ml:10000},LGNAME={gl:"超级联盟 1500",ul:"高级联盟 2500",ml:"大师联盟"};
+var LEVELS=Object.keys(D.cpm).map(Number).sort(function(a,b){return a-b;});
+D.pokemon.forEach(function(p){byId[p.id]=p;});
+var PICK=[null,null,null];
+function $(id){return document.getElementById(id);}
+function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function sprite(dex){return dex?"https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/.dummy":"";}
+function art(dex){return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"+dex+".png";}
+function nameOf(p){return p.cn||p.en;}
+// ---- engine (ported from sim.html) ----
+function cpOf(a,d,s,m){return Math.max(10,Math.floor(a*Math.sqrt(d)*Math.sqrt(s)*m*m/10));}
+function bestLevel(base,iv,cap){var best=1;for(var i=0;i<LEVELS.length;i++){var L=LEVELS[i];if(L>50)break;if(cpOf(base.a+iv[0],base.d+iv[1],base.h+iv[2],D.cpm[L])<=cap)best=L;}return best;}
+function mvLookup(id){var pool=META[LEAGUE].mv;return pool[id]||null;}
+function buildMon(id){
+  var p=byId[id];if(!p)return null;
+  var mv=mvLookup(id),cap=CAP[LEAGUE];
+  var iv=(mv&&mv.iv)?mv.iv:[15,15,15];
+  var L=(mv&&mv.iv&&mv.iv[3])?mv.iv[3]:bestLevel(p.base,iv,cap);
+  var m=D.cpm[L]||D.cpm[Math.round(L)]||D.cpm[40];
+  var fId=(mv&&mv.f)||p.fast[0];
+  var c1=(mv&&mv.c1)||p.charged[0],c2=(mv&&mv.c2)||p.charged[1];
+  var charged=[c1,c2].filter(function(v,i,a){return v&&a.indexOf(v)===i;}).map(function(x){return D.moves[x];}).filter(Boolean);
+  var fast=D.moves[fId]||D.moves[p.fast[0]];
+  if(!fast||!charged.length)return null;
+  return {p:p,name:nameOf(p),types:p.types,atk:(p.base.a+iv[0])*m,def:(p.base.d+iv[1])*m,hp:Math.floor((p.base.h+iv[2])*m),
+    fast:fast,charged:charged,L:L,cp:cpOf(p.base.a+iv[0],p.base.d+iv[1],p.base.h+iv[2],m)};
+}
+function buffMult(st){return st>=0?(4+st)/4:4/(4-st);}
+function dmg(at,df,mv){var ae=at.atk*buffMult(at.atkS),de=df.def*buffMult(df.defS);var stab=at.types.indexOf(mv.t)>=0?1.2:1;var te=1;for(var i=0;i<df.types.length;i++){te*=(D.eff[mv.t]&&D.eff[mv.t][df.types[i]])||1;}return Math.floor(0.5*1.3*mv.p*(ae/de)*stab*te)+1;}
+function applyBuff(mv,at,df){if(!mv.buffs||mv.bc!=1)return;var tgt=mv.bt==="self"?at:df;tgt.atkS=Math.max(-4,Math.min(4,tgt.atkS+mv.buffs[0]));tgt.defS=Math.max(-4,Math.min(4,tgt.defS+mv.buffs[1]));}
+function fresh(M,sh){return {name:M.name,types:M.types,atk:M.atk,def:M.def,hp:M.hp,maxhp:M.hp,energy:0,atkS:0,defS:0,shields:sh,fast:M.fast,charged:M.charged,ft:M.fast.turns};}
+function battle(MA,MB,shA,shB){
+  var A=fresh(MA,shA),B=fresh(MB,shB),turn=0,MAX=600;
+  function tryC(at,df){var opts=at.charged.filter(function(c){return at.energy>=c.e;}).sort(function(a,b){return a.e-b.e;});if(!opts.length)return;var mv=opts[0];for(var i=0;i<opts.length;i++){if(df.shields<=0&&dmg(at,df,opts[i])>=df.hp){mv=opts[i];break;}}at.energy-=mv.e;var d=dmg(at,df,mv);if(df.shields>0&&(d>=df.hp||d>=df.maxhp*0.2)){df.shields--;d=0;}df.hp-=d;applyBuff(mv,at,df);}
+  while(turn<MAX&&A.hp>0&&B.hp>0){
+    turn++;A.ft--;B.ft--;var aF=false,bF=false;
+    if(A.ft<=0){B.hp-=dmg(A,B,A.fast);A.energy=Math.min(100,A.energy+A.fast.eg);A.ft=A.fast.turns;aF=true;}
+    if(B.ft<=0){A.hp-=dmg(B,A,B.fast);B.energy=Math.min(100,B.energy+B.fast.eg);B.ft=B.fast.turns;bF=true;}
+    if(A.hp<=0||B.hp<=0)break;
+    var aC=aF&&A.charged.some(function(c){return A.energy>=c.e;}),bC=bF&&B.charged.some(function(c){return B.energy>=c.e;});
+    if(aC&&bC){if(A.atk>=B.atk){tryC(A,B);if(B.hp>0)tryC(B,A);}else{tryC(B,A);if(A.hp>0)tryC(A,B);}}
+    else if(aC)tryC(A,B);else if(bC)tryC(B,A);
+  }
+  if(A.hp<=0&&B.hp<=0)return 0;
+  if(A.hp<=0)return -1;if(B.hp<=0)return 1;
+  return (A.hp/A.maxhp)>=(B.hp/B.maxhp)?1:-1;
+}
+// ---- UI ----
+function renderLeagueTabs(){
+  $("lgtabs").innerHTML=Object.keys(CAP).map(function(k){return '<span class="lgtab'+(k===LEAGUE?" on":"")+'" onclick="setLeague(\''+k+'\')">'+LGNAME[k]+'</span>';}).join("");
+  $("metaN").textContent=LGNAME[LEAGUE]+" Meta";
+}
+function setLeague(k){LEAGUE=k;renderLeagueTabs();renderTeam();$("result").innerHTML="";}
+window.setLeague=setLeague;
+function renderTeam(){
+  $("team").innerHTML=[0,1,2].map(function(i){
+    var id=PICK[i];
+    if(!id)return '<div class="slot"><div class="lbl">宝可梦 '+(i+1)+'</div><div class="sug"><input id="in'+i+'" placeholder="搜索中/英文名…" oninput="sug('+i+')" autocomplete="off"><div class="suglist" id="sl'+i+'"></div></div></div>';
+    var p=byId[id],M=buildMon(id);
+    var mvtxt=M?('⚡'+M.fast.n+' + '+M.charged.map(function(c){return c.n;}).join(' / ')+'　L'+M.L+' CP'+M.cp):'无有效配招';
+    return '<div class="slot"><div class="lbl">宝可梦 '+(i+1)+'</div><div class="chosen"><img src="'+art(p.dex)+'"><div class="nm">'+esc(nameOf(p))+'<small>'+esc(p.en)+' · '+p.types.join('/')+'</small></div><span class="x" onclick="clearPick('+i+')">✕</span></div><div class="mv">'+esc(mvtxt)+'</div></div>';
+  }).join("");
+  $("goBtn").disabled=!PICK.some(function(x){return x;});
+}
+function sug(i){
+  var q=($("in"+i).value||"").toLowerCase().trim(),el=$("sl"+i);
+  if(!q){el.style.display="none";return;}
+  var hits=D.pokemon.filter(function(p){return (p.cn&&p.cn.indexOf(q)>=0)||(p.en&&p.en.toLowerCase().indexOf(q)>=0);}).slice(0,40);
+  el.innerHTML=hits.map(function(p){return '<div class="sugitem" onclick="pick('+i+',\''+p.id+'\')"><img src="'+art(p.dex)+'" onerror="this.style.opacity=.2"><span>'+esc(nameOf(p))+' <span style="color:var(--dim)">'+esc(p.en)+'</span></span></div>';}).join("")||'<div class="sugitem" style="color:var(--dim)">无结果</div>';
+  el.style.display="block";
+}
+window.sug=sug;
+function pick(i,id){PICK[i]=id;renderTeam();}
+window.pick=pick;
+function clearPick(i){PICK[i]=null;renderTeam();$("result").innerHTML="";}
+window.clearPick=clearPick;
+function analyze(){
+  var sh=+$("shields").value;
+  var members=PICK.map(function(id){return id?{id:id,M:buildMon(id)}:null;}).filter(function(x){return x&&x.M;});
+  if(!members.length){$("result").innerHTML='<div class="empty">先选至少 1 只宝可梦</div>';return;}
+  var pool=META[LEAGUE].top.map(function(o){return {id:o.id,score:o.score,M:buildMon(o.id)};}).filter(function(o){return o.M;});
+  var rows=pool.map(function(o){
+    var wins=members.map(function(m){return battle(m.M,o.M,sh,sh)>0;});
+    var nWin=wins.filter(Boolean).length;
+    return {o:o,wins:wins,nWin:nWin};
+  });
+  // 排序：威胁（队伍胜场少）在前
+  rows.sort(function(a,b){return a.nWin-b.nWin || b.o.score-a.o.score;});
+  var threats=rows.filter(function(r){return r.nWin===0;}).length;
+  var risky=rows.filter(function(r){return r.nWin===1;}).length;
+  var covered=rows.filter(function(r){return r.nWin>=2;}).length;
+  var mNames=members.map(function(m){return nameOf(m.M.p);});
+  var sumHtml='<div class="sum">'+
+    '<div class="scard"><div class="v" style="color:var(--good)">'+covered+'/'+rows.length+'</div><div class="l">✅ 稳控（≥2 只能赢）</div></div>'+
+    '<div class="scard"><div class="v" style="color:var(--warn)">'+risky+'</div><div class="l">⚠️ 勉强（仅 1 只能赢）</div></div>'+
+    '<div class="scard"><div class="v" style="color:var(--bad)">'+threats+'</div><div class="l">🚨 威胁（全队打不过）</div></div></div>';
+  var head='<div class="hd">'+LGNAME[LEAGUE]+' · 队伍：'+mNames.map(esc).join(' / ')+'　（列＝你的 '+members.length+' 只，✓胜 ✗负，双方 '+sh+' 盾）</div>';
+  var list=rows.map(function(r){
+    var cls=r.nWin===0?"threat":"";
+    var cells=r.wins.map(function(w,wi){return '<div class="cell '+(w?"w":"l")+'" title="'+esc(mNames[wi]||"")+(w?" 胜":" 负")+'">'+(w?"✓":"✗")+'</div>';}).join("");
+    var vc=r.nWin>=2?["v-good","稳"]:(r.nWin===1?["v-mid","勉强"]:["v-bad","危险"]);
+    return '<div class="orow '+cls+'"><img src="'+art(r.o.M.p.dex)+'" onerror="this.style.opacity=.2" data-pdex="'+r.o.M.p.dex+'"><div class="on"><b>'+esc(nameOf(r.o.M.p))+'</b> <span class="t">PvPoke '+r.o.score+'分 · ⚡'+esc(r.o.M.fast.n)+'+'+r.o.M.charged.map(function(c){return esc(c.n);}).join("/")+'</span></div><div class="cells">'+cells+'</div><div class="verdict '+vc[0]+'">'+vc[1]+'</div></div>';
+  }).join("");
+  $("result").innerHTML=sumHtml+head+list;
+  $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+window.analyze=analyze;
+// init
+function start(){
+  fetch("meta_pool.json?v=1").then(function(r){return r.json();}).then(function(j){
+    META=j;renderLeagueTabs();renderTeam();
+    $("status").textContent="✅ 引擎就绪（"+D.pokemon.length+" 宝可梦 · 各联赛 Top28 Meta）";
+  }).catch(function(e){$("status").innerHTML='<span style="color:var(--bad)">加载失败：'+esc(e.message)+'</span>';});
+}
+start();
+</script>
+<script src="pokedex-modal.js?v=3"></script><script src="site-nav.js?v=3"></script></body></html>
