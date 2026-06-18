@@ -7,7 +7,7 @@ function ls(src){return new Promise(function(res,rej){var s=document.createEleme
 function load(){ if(MDB)return Promise.resolve(); if(loading)return loading;
   loading=(window.initSqlJs?Promise.resolve():ls(SQLBASE+"sql-wasm.js"))
     .then(function(){return initSqlJs({locateFile:function(f){return SQLBASE+f;}});})
-    .then(function(SQL){return fetch("pokemon.db?v=modal1").then(function(r){return r.arrayBuffer();}).then(function(b){MDB=new SQL.Database(new Uint8Array(b));});});
+    .then(function(SQL){return fetch("pokemon.db?v20260619-9341").then(function(r){return r.arrayBuffer();}).then(function(b){MDB=new SQL.Database(new Uint8Array(b));});});
   return loading;
 }
 function rows(sql,p){var st=MDB.prepare(sql);if(p)st.bind(p);var o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
