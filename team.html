@@ -41,6 +41,11 @@ body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e101
 .cell.w{background:rgba(39,192,138,.2);color:var(--good);border:1px solid rgba(39,192,138,.4)}
 .cell.l{background:rgba(255,92,114,.16);color:var(--bad);border:1px solid rgba(255,92,114,.35)}
 .verdict{font-size:11px;font-weight:800;padding:3px 9px;border-radius:8px;flex:none;width:48px;text-align:center}
+.addbtn{flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;cursor:pointer;background:var(--panel3);border:1px solid var(--line);color:var(--accent)}
+.addbtn:hover{background:var(--accent);color:#fff}.addbtn.off{opacity:.35;cursor:pointer}
+.ctrline{margin-top:5px;font-size:11px;color:var(--dim);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.ctr{background:rgba(39,192,138,.16);border:1px solid rgba(39,192,138,.4);color:var(--good);border-radius:7px;padding:2px 8px;cursor:pointer;font-weight:700;white-space:nowrap}
+.ctr:hover{background:var(--good);color:#08110c}
 .v-good{background:rgba(39,192,138,.2);color:var(--good)}.v-mid{background:rgba(255,159,67,.2);color:var(--warn)}.v-bad{background:rgba(255,92,114,.2);color:var(--bad)}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.7}
 .empty{color:var(--dim);font-size:13px;text-align:center;padding:30px}
@@ -160,21 +165,49 @@ function analyze(){
     '<div class="scard"><div class="v" style="color:var(--warn)">'+risky+'</div><div class="l">⚠️ 勉强（少数队员能赢）</div></div>'+
     '<div class="scard"><div class="v" style="color:var(--bad)">'+threats+'</div><div class="l">🚨 威胁（全队打不过）</div></div></div>';
   var head='<div class="hd">'+LGNAME[LEAGUE]+' · 队伍：'+mNames.map(esc).join(' / ')+'　（列＝你的 '+members.length+' 只，✓胜 ✗负，双方 '+sh+' 盾）</div>';
+  var teamFull=members.length>=3;
   var list=rows.map(function(r){
     var cls=r.nWin===0?"threat":"";
     var cells=r.wins.map(function(w,wi){return '<div class="cell '+(w?"w":"l")+'" title="'+esc(mNames[wi]||"")+(w?" 胜":" 负")+'">'+(w?"✓":"✗")+'</div>';}).join("");
     var vc=r.nWin>majo?["v-good","稳"]:(r.nWin>0?["v-mid","勉强"]:["v-bad","危险"]);
-    return '<div class="orow '+cls+'"><img src="'+art(r.o.M.p.dex)+'" onerror="this.style.opacity=.2" data-pdex="'+r.o.M.p.dex+'"><div class="on"><b>'+esc(nameOf(r.o.M.p))+'</b> <span class="t">PvPoke '+r.o.score+'分 · ⚡'+esc(r.o.M.fast.n)+'+'+r.o.M.charged.map(function(c){return esc(c.n);}).join("/")+'</span></div><div class="cells">'+cells+'</div><div class="verdict '+vc[0]+'">'+vc[1]+'</div></div>';
+    var addBtn='<span class="addbtn'+(teamFull?" off":"")+'" title="把它加入你的队伍" onclick="addPick(\''+r.o.id+'\')">＋</span>';
+    var ctr='';
+    if(r.nWin<=majo){ // 未稳控 → 给最佳应对（补盲推荐）
+      var cs=countersFor(r.o,pool,sh,members);
+      if(cs.length)ctr='<div class="ctrline">💡 补盲推荐：'+cs.map(function(c){return '<span class="ctr" title="加入队伍补盲" onclick="addPick(\''+c.id+'\')">＋ '+esc(nameOf(c.M.p))+'</span>';}).join("")+'</div>';
+    }
+    return '<div class="orow '+cls+'"><img src="'+art(r.o.M.p.dex)+'" onerror="this.style.opacity=.2" data-pdex="'+r.o.M.p.dex+'"><div class="on"><b>'+esc(nameOf(r.o.M.p))+'</b> <span class="t">PvPoke '+r.o.score+'分 · ⚡'+esc(r.o.M.fast.n)+'+'+r.o.M.charged.map(function(c){return esc(c.n);}).join("/")+'</span>'+ctr+'</div><div class="cells">'+cells+'</div><div class="verdict '+vc[0]+'">'+vc[1]+'</div>'+addBtn+'</div>';
   }).join("");
   $("result").innerHTML=sumHtml+head+list;
   $("result").scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 window.analyze=analyze;
+// 最佳应对反查：meta 池中能打赢该对手、且不在当前队里的，按 meta 强度取前 3
+function countersFor(opp,pool,sh,members){
+  var inTeam={};members.forEach(function(m){inTeam[m.id]=1;});
+  var beats=pool.filter(function(c){return c.M&&c.id!==opp.id&&!inTeam[c.id]&&battle(c.M,opp.M,sh,sh)>0;});
+  beats.sort(function(a,b){return b.score-a.score;});
+  return beats.slice(0,3);
+}
+function addPick(id){
+  var i=PICK.indexOf(null);if(i<0)i=2; // 满了则替换最后一只
+  PICK[i]=id;renderTeam();analyze();
+}
+window.addPick=addPick;
 // init
 function start(){
   fetch("meta_pool.json?v=1").then(function(r){return r.json();}).then(function(j){
-    META=j;renderLeagueTabs();renderTeam();
+    META=j;
+    // URL 预填：team.html?lg=gl&team=id1,id2,id3 （供 index「分析这套阵容」一键跳转）
+    try{
+      var u=new URLSearchParams(location.search);
+      var lg=u.get("lg");if(lg&&CAP[lg])LEAGUE=lg;
+      var tm=u.get("team");
+      if(tm){var ids=tm.split(",").map(function(s){return s.trim();}).filter(Boolean).slice(0,3);for(var i=0;i<ids.length;i++)PICK[i]=byId[ids[i]]?ids[i]:null;}
+    }catch(e){}
+    renderLeagueTabs();renderTeam();
     $("status").textContent="✅ 引擎就绪（"+D.pokemon.length+" 宝可梦 · 各联赛 Top28 Meta）";
+    if(PICK.some(function(x){return x;}))analyze();
   }).catch(function(e){$("status").innerHTML='<span style="color:var(--bad)">加载失败：'+esc(e.message)+'</span>';});
 }
 start();
