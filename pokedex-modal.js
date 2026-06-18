@@ -1,0 +1,70 @@
+/* 共享宝可梦详情弹窗：window.pokeModal(dex) / pokeModalSid(sid)。按需懒加载 sql.js + pokemon.db。*/
+(function(){
+"use strict";
+var MDB=null,loading=null;
+var SQLBASE="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/";
+function ls(src){return new Promise(function(res,rej){var s=document.createElement("script");s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+function load(){ if(MDB)return Promise.resolve(); if(loading)return loading;
+  loading=(window.initSqlJs?Promise.resolve():ls(SQLBASE+"sql-wasm.js"))
+    .then(function(){return initSqlJs({locateFile:function(f){return SQLBASE+f;}});})
+    .then(function(SQL){return fetch("pokemon.db?v=modal1").then(function(r){return r.arrayBuffer();}).then(function(b){MDB=new SQL.Database(new Uint8Array(b));});});
+  return loading;
+}
+function rows(sql,p){var st=MDB.prepare(sql);if(p)st.bind(p);var o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
+var TC={normal:"#9099a1",fire:"#ff6b3d",water:"#4f9fff",electric:"#ffd23d",grass:"#5fbf52",ice:"#7fd6d6",fighting:"#d3425f",poison:"#a95fc9",ground:"#d9ab55",flying:"#92a8ff",psychic:"#ff5f8f",bug:"#9fb336",rock:"#c8b681",ghost:"#6f5b9e",dragon:"#5a78e0",dark:"#5a5468",steel:"#5a8fa0",fairy:"#f08fc7"};
+var TN={normal:"一般",fire:"火",water:"水",electric:"电",grass:"草",ice:"冰",fighting:"格斗",poison:"毒",ground:"地面",flying:"飞行",psychic:"超能力",bug:"虫",rock:"岩石",ghost:"幽灵",dragon:"龙",dark:"恶",steel:"钢",fairy:"妖精"};
+function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function art(d){return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"+d+".png";}
+function tchip(t){return t?'<span style="font-size:9px;font-weight:700;color:#0e1016;border-radius:5px;padding:1px 6px;margin-right:3px;background:'+(TC[t]||"#666")+'">'+(TN[t]||t)+'</span>':"";}
+function genderStr(g){if(g==null)return "";if(g<0)return "⚲无性别";if(g===0)return "♂100%";if(g===8)return "♀100%";var fp=Math.round(g/8*100);return "♂"+(100-fp)+"% / ♀"+fp+"%";}
+function ensure(){
+  if(document.getElementById("pmOv"))return;
+  var st=document.createElement("style");st.textContent=
+  "#pmOv{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.66);backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;overflow:auto;padding:24px 10px}"+
+  "#pmCard{position:relative;max-width:560px;width:100%;background:#171a23;border:1px solid #2c3142;border-radius:16px;padding:16px 18px;color:#e9ebf2;font-family:-apple-system,'PingFang SC','Microsoft YaHei',system-ui,sans-serif;box-shadow:0 20px 60px -10px rgba(0,0,0,.7)}"+
+  "#pmCard h3{margin:0 0 8px;font-size:19px}#pmCard .kv{font-size:13px;line-height:1.9}#pmCard .kv b{color:#ffcb05}#pmCard code{background:#1f2330;border-radius:4px;padding:0 4px}"+
+  "#pmCard .mv{font-size:12.5px;line-height:1.7}#pmCard .tag{font-size:10.5px;color:#9aa1b4}"+
+  "#pmX{position:absolute;top:10px;right:14px;font-size:26px;line-height:1;color:#9aa1b4;cursor:pointer;font-weight:700}#pmX:hover{color:#fff}"+
+  "#pmCard a{color:#46d39a}";
+  document.head.appendChild(st);
+  var ov=document.createElement("div");ov.id="pmOv";ov.innerHTML='<div id="pmCard"></div>';
+  ov.addEventListener("click",function(e){if(e.target===ov)close();});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")close();});
+  document.body.appendChild(ov);
+}
+function close(){var o=document.getElementById("pmOv");if(o)o.style.display="none";}
+function detailHtml(sid){
+  var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return "未找到";
+  function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
+  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
+  var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
+  var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
+  function _nm(s){var r=rows("SELECT name_cn FROM pokemon WHERE species_id=?",[s])[0];return r?r.name_cn:s;}
+  var _root=sid,_seen={};while(true){var pr=rows("SELECT family_parent FROM pokemon WHERE species_id=?",[_root])[0];if(pr&&pr.family_parent&&!_seen[pr.family_parent]){_seen[pr.family_parent]=1;_root=pr.family_parent;}else break;}
+  function _chain(node){var tag='<span style="cursor:pointer;'+(node===sid?"color:#ffcb05;font-weight:800":"color:#8fb0ff")+'" onclick="pokeModalSid(\''+node+'\')">'+esc(_nm(node))+'</span>';var kids=rows("SELECT evolves_to,candy,condition FROM evolution WHERE species_id=?",[node]);if(!kids.length)return tag;if(kids.length===1)return tag+' <span class="tag">→'+(kids[0].candy?kids[0].candy+'糖':'')+(kids[0].condition?'·'+esc(kids[0].condition):'')+'</span> '+_chain(kids[0].evolves_to);return tag+'<div style="padding-left:16px;border-left:1px solid #2c3142;margin:3px 0">'+kids.map(function(k){return '<span class="tag">→'+(k.candy?k.candy+'糖':'')+(k.condition?'·'+esc(k.condition):'')+'</span> '+_chain(k.evolves_to);}).join("<br>")+'</div>';}
+  var hasEvo=rows("SELECT 1 FROM evolution WHERE species_id=? OR evolves_to=? LIMIT 1",[sid,sid]).length;
+  var wb=rows("SELECT DISTINCT weather FROM weather_boost WHERE type=? OR type=?",[p.type1,p.type2||p.type1]);
+  var ob=rows("SELECT method,detail FROM obtain WHERE dex=?",[p.dex]);
+  var flags=[];if(p.is_legendary)flags.push("传说");if(p.is_mythical)flags.push("幻");if(p.is_ultrabeast)flags.push("究极异兽");if(p.is_mega)flags.push("超级进化");if(p.is_regional)flags.push("地区限定");if(p.shadow_eligible)flags.push("可暗影");if(p.gl_ineligible)flags.push("超联不可用");
+  var ivmap={great:"超联1500",ultra:"高联2500",master:"大师"};
+  var ivh=ivs.map(function(v){return '<span class="tag" style="margin-right:8px">'+(ivmap[v.league]||v.league)+': L'+v.level+' '+v.iv_atk+'/'+v.iv_def+'/'+v.iv_sta+'</span>';}).join("")||"—";
+  var WN={"sunny/clear":"☀️晴","rainy":"🌧雨","partly_cloudy":"⛅多云","cloudy":"☁️阴","windy":"🌬风","snow":"❄️雪","fog":"🌫雾"};
+  return '<span id="pmX" onclick="pmClose()">×</span><h3>'+esc(p.name_cn)+' <small style="color:#9aa1b4;font-weight:400;font-size:12px">'+esc(p.name_tw)+' · '+esc(p.name_en)+' · #'+p.dex+'</small></h3>'+
+    '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+(p.sprite||art(p.dex))+'" onerror="this.src=\''+art(p.dex)+'\'" style="width:90px;height:90px;object-fit:contain;flex:none"><div class="kv">'+
+    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+(p.genus_cn?'　'+esc(p.genus_cn):'')+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+(p.height_m?'　📏'+p.height_m+'m '+p.weight_kg+'kg':'')+'<br>'+
+    (flags.length?'<span style="color:#ffcb05">'+flags.join(" · ")+'</span><br>':'')+
+    '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km　'+genderStr(p.gender_rate)+'<br>'+
+    'species_id：<code>'+esc(p.species_id)+'</code></div></div>'+(p.flavor_cn?'<div class="kv" style="font-style:italic;color:#bcd;margin-top:8px">📖 '+esc(p.flavor_cn)+'</div>':'')+
+    '<div class="kv" style="margin-top:10px"><b style="color:#ffcb05">🏆 PvP 最佳IV</b>：'+ivh+'</div>'+
+    (pur?'<div class="kv">🌀 <b style="color:#ffcb05">净化</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83）</div>':'')+
+    (wb.length?'<div class="kv">🌦 <b style="color:#ffcb05">天气加成</b>：'+wb.map(function(x){return WN[x.weather]||x.weather;}).join(" / ")+'</div>':'')+
+    (ob.length?'<div class="kv">🎯 <b style="color:#ffcb05">当前获取</b>：'+[].concat.apply([],[Array.from(new Set(ob.map(function(o){var M={raid:"团战",egg:"蛋",research:"调查"};return (M[o.method]||o.method)+(o.detail?'('+esc(o.detail)+')':'');})))]).slice(0,8).join(" · ")+'</div>':'')+
+    (hasEvo?'<div class="kv">🔄 <b style="color:#ffcb05">进化链</b>：'+_chain(_root)+'</div>':'')+
+    '<div class="mv" style="margin-top:10px">⚡ <b style="color:#bfe0ff">快速招式</b><br>'+mvl(mv("fast"))+'</div>'+
+    '<div class="mv" style="margin-top:8px">💥 <b style="color:#ffc59c">充能招式</b><br>'+mvl(mv("charged"))+'</div>';
+}
+function show(sid){ensure();document.getElementById("pmCard").innerHTML=detailHtml(sid);var o=document.getElementById("pmOv");o.style.display="flex";o.scrollTop=0;}
+window.pokeModal=function(dex){load().then(function(){var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+dex]);if(r[0])show(r[0].species_id);});};
+window.pokeModalSid=function(sid){load().then(function(){show(sid);});};
+window.pmClose=close;
+})();
