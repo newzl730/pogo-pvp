@@ -114,7 +114,7 @@ function renderTypes(){
     var exp='<div class="exp" id="exp'+i+'"><div class="er">⚡ 快攻：'+mvInfo(f,b.fe)+'</div><div class="er">💥 大招：'+mvInfo(ch,b.ce)+'</div>'+
       '<div class="er">📊 L'+document.getElementById("lvl").value+' 有效：攻 '+b.eAtk+' · 防 '+b.eDef+' · 血 '+b.eHP+'　DPS <b style="color:#ff9f6b">'+b.DPS.toFixed(2)+'</b> · TDO '+Math.round(b.TDO)+'</div>'+
       (elite?'<div class="er" style="color:var(--gold)">⚠️ 最佳配招含传承/精英招式，需用「精英刷招学习器」获得</div>':'<div class="er" style="color:#46d39a">✓ 普通可学招式，无需精英学习器</div>')+
-      '<span class="er" onclick="event.stopPropagation();pokeModal('+x.p.dex+')" style="color:#46d39a;cursor:pointer;display:block">🗄️ 完整资料（净化/进化/异色/获取…）→</span></div>';
+      '<span class="er" onclick="event.stopPropagation();pokeModalSid(\''+x.p.species_id+'\')" style="color:#46d39a;cursor:pointer;display:block">🗄️ 完整资料（净化/进化/异色/获取…）→</span></div>';
     return '<div class="rwrap"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
   }).join("");
 }
