@@ -67,4 +67,27 @@ function show(sid){ensure();document.getElementById("pmCard").innerHTML=detailHt
 window.pokeModal=function(dex){load().then(function(){var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+dex]);if(r[0])show(r[0].species_id);});};
 window.pokeModalSid=function(sid){load().then(function(){show(sid);});};
 window.pmClose=close;
+// 自动接线：把匹配选择器、且 src 含 official-artwork/<dex>.png 的图片标记为可点（data-pdex）。
+// 生成器无关：在页面加载后扫描现有 DOM，无论内容是静态还是脚本注入都能接上弹窗。
+window.pokeModalAutowire=function(sel){
+  try{
+    Array.prototype.forEach.call(document.querySelectorAll(sel),function(img){
+      var m=(img.getAttribute("src")||"").match(/official-artwork\/(\d+)\.png/);
+      if(!m)return;
+      img.setAttribute("data-pdex",m[1]);
+      img.style.cursor="pointer";
+      img.title="点击查看完整资料";
+    });
+  }catch(e){}
+};
+// 事件委托：任意带 data-pdex="<dex>" 或 data-psid="<species_id>" 的元素点击即开弹窗。
+document.addEventListener("click",function(e){
+  var el=e.target.closest?e.target.closest("[data-pdex],[data-psid]"):null;
+  if(!el)return;
+  e.preventDefault();e.stopPropagation();
+  var sid=el.getAttribute("data-psid");
+  if(sid){window.pokeModalSid(sid);return;}
+  var dex=el.getAttribute("data-pdex");
+  if(dex)window.pokeModal(+dex);
+});
 })();
