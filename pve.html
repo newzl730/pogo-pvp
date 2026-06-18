@@ -33,10 +33,11 @@
   <label><input type="checkbox" id="shadow" checked onchange="render()"> 含暗影</label>
   <label><input type="checkbox" id="mega" checked onchange="render()"> 含超级进化</label>
   <span>等级 <select id="lvl" onchange="render()"><option value="40">L40</option><option value="50">L50(XL)</option></select></span>
+  <span>排序 <select id="sortby" onchange="render()"><option value="score">综合战力(输出×续航)</option><option value="dps">纯输出DPS</option></select></span>
   <span id="meta" style="margin-left:auto">加载中…</span>
 </div>
 <div id="out"></div>
-<div class="note">DPS / TDO <b>实时由 pokemon.db 计算</b>（种族值×CPM + 招式PvE威力/能量/时长 + 本系加成；暗影×1.2攻）· 综合评分=DPS×TDO^0.5 · 点击查看完整资料<br>只计入【快攻+大招同属性】的本系打手（与主流打手榜口径一致）</div>
+<div class="note">DPS / TDO <b>实时由 pokemon.db 计算</b>（种族值×CPM + 招式PvE威力/能量/时长 + 本系加成；暗影×1.2攻/×0.83防）· 默认按<b>综合战力</b>=DPS×√TDO 排序（兼顾输出与续航，与 Pokebattler「best attackers」口径一致；可切「纯输出DPS」）· 点击行展开配招、点「完整资料」看弹窗<br>只计入【快攻+大招同属性】的本系打手；同属性快攻能量充能已计入组合 DPS（非只算大招）</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <script>
@@ -76,7 +77,8 @@ function rankType(T){
   if(_rc[T])return _rc[T];
   var cpm=CPM[document.getElementById("lvl").value], sh=document.getElementById("shadow").checked, mega=document.getElementById("mega").checked, res=[];
   POK.forEach(function(p){ if(p.is_shadow&&!sh)return; if(p.is_mega&&!mega)return; if(!p.released&&!p.is_mega)return; var b=calc(p,T,cpm,p.is_shadow); if(b)res.push({p:p,b:b}); });
-  res.sort(function(a,b){return b.b.DPS-a.b.DPS;});
+  var sb=(document.getElementById("sortby")||{}).value||"score";
+  res.sort(function(a,b){return sb==="dps"?(b.b.DPS-a.b.DPS):(b.b.score-a.b.score);});
   _rc[T]=res; return res;
 }
 function bossMult(at,b){var m=(TE[at]&&TE[at][b.type1])||1; if(b.type2)m*=(TE[at]&&TE[at][b.type2])||1; return m;}
@@ -101,15 +103,18 @@ function renderBosses(){
 function renderTypes(){
   var T=curType;
   var res=rankType(T).slice(0,40);
-  var top=res.length?res[0].b.DPS:1;
+  var sb=(document.getElementById("sortby")||{}).value||"score";
+  var mk=function(b){return sb==="dps"?b.DPS:b.score;};
+  var top=res.length?mk(res[0].b):1;
   function tier(s){var r=s/top;return r>=.97?["S+","#ff5b6e"]:r>=.9?["S","#ff9f43"]:r>=.82?["A","#ffd23d"]:r>=.72?["B","#46d39a"]:["C","#9099a1"];}
-  document.getElementById("out").innerHTML='<div class="hd">'+TN[T]+'系 团战输出排名 · 共 '+res.length+' 只（L'+document.getElementById("lvl").value+'）</div>'+res.map(function(x,i){
-    var tg=tier(x.b.DPS),f=x.b.f,ch=x.b.ch,b=x.b,elite=b.fe||b.ce;
+  var sbLabel=sb==="dps"?"纯输出 DPS":"综合战力（输出×续航 √TDO，与 Pokebattler 口径一致）";
+  document.getElementById("out").innerHTML='<div class="hd">'+TN[T]+'系 团战输出排名 · 共 '+res.length+' 只（L'+document.getElementById("lvl").value+'）· 排序：'+sbLabel+'</div>'+res.map(function(x,i){
+    var tg=tier(mk(x.b)),f=x.b.f,ch=x.b.ch,b=x.b,elite=b.fe||b.ce;
     var mvline='⚡'+(b.fe?'🔑':'')+esc(f.name_cn)+' + 💥'+(b.ce?'🔑':'')+esc(ch.name_cn)+(elite?' <span style="color:var(--gold);font-size:10px">🔑需特殊招式</span>':'');
     var exp='<div class="exp" id="exp'+i+'"><div class="er">⚡ 快攻：'+mvInfo(f,b.fe)+'</div><div class="er">💥 大招：'+mvInfo(ch,b.ce)+'</div>'+
       '<div class="er">📊 L'+document.getElementById("lvl").value+' 有效：攻 '+b.eAtk+' · 防 '+b.eDef+' · 血 '+b.eHP+'　DPS <b style="color:#ff9f6b">'+b.DPS.toFixed(2)+'</b> · TDO '+Math.round(b.TDO)+'</div>'+
       (elite?'<div class="er" style="color:var(--gold)">⚠️ 最佳配招含传承/精英招式，需用「精英刷招学习器」获得</div>':'<div class="er" style="color:#46d39a">✓ 普通可学招式，无需精英学习器</div>')+
-      '<a class="er" href="db.html#m'+x.p.dex+'" onclick="event.stopPropagation()" style="color:#46d39a;text-decoration:none">🗄️ 完整资料（净化/进化/异色/获取…）→</a></div>';
+      '<span class="er" onclick="event.stopPropagation();pokeModal('+x.p.dex+')" style="color:#46d39a;cursor:pointer;display:block">🗄️ 完整资料（净化/进化/异色/获取…）→</span></div>';
     return '<div class="rwrap"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
   }).join("");
 }
