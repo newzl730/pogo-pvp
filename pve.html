@@ -27,6 +27,7 @@
 <div class="top"><h1>Pokémon GO <b>团战输出排名</b> · 实时计算</h1>
 <nav><a href="index.html">⚔️ PvP</a><a href="dmax.html">💥 极巨</a><a href="cal.html">📅 日历</a><a href="rocket.html">🚀 火箭队</a><a href="shiny.html">✨ 异色</a><a href="search.html">🔍 搜索</a><a href="db.html">🗄️ 数据库</a></nav></div>
 <div class="main">
+<div class="types"><span class="tb on" id="m-type" style="background:#ff7a45" onclick="setMode('type')">🎯 按属性看打手</span><span class="tb" id="m-boss" style="background:#3b6cff" onclick="setMode('boss')">🛡 当前首领反制</span></div>
 <div class="types" id="types"></div>
 <div class="opt">
   <label><input type="checkbox" id="shadow" checked onchange="render()"> 含暗影</label>
@@ -51,7 +52,7 @@ function calc(p,T,cpm,sh){
   var Dd=180;
   function dmg(pw,mt){return 0.5*pw*(eAtk/Dd)*(types.indexOf(mt)>=0?1.2:1)+1;}
   var pm=PM[p.species_id]; if(!pm) return null;
-  function cand(slot){return pm.filter(function(m){return m.slot===slot;}).map(function(m){return {mv:MOVE[m.move_id],el:m.is_elite};}).filter(function(x){return x.mv&&x.mv.type===T;});}
+  function cand(slot){return pm.filter(function(m){return m.slot===slot;}).map(function(m){return {mv:MOVE[m.move_id],el:m.is_elite};}).filter(function(x){return x.mv&&x.mv.type===T&&x.mv.pve_duration_ms>0&&(slot==="fast"?x.mv.pve_energy>0:x.mv.pve_energy<0);});}
   var fasts=cand("fast"), chs=cand("charged");
   if(!fasts.length||!chs.length) return null;
   var best=null;
@@ -68,16 +69,38 @@ function calc(p,T,cpm,sh){
   return best;
 }
 function mvInfo(m,el){return (el?'🔑':'')+esc(m.name_cn)+' / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">威'+m.pve_power+' 能'+m.pve_energy+(m.pve_duration_ms?' '+(m.pve_duration_ms/1000)+'s':'')+'</span>';}
-function render(){
-  if(!DB)return;
-  var T=curType, cpm=CPM[document.getElementById("lvl").value], sh=document.getElementById("shadow").checked, mega=document.getElementById("mega").checked;
-  var res=[];
-  POK.forEach(function(p){
-    if(p.is_shadow&&!sh)return; if(p.is_mega&&!mega)return; if(!p.released&&!p.is_mega)return;
-    var b=calc(p,T,cpm,sh&&p.is_shadow?true:p.is_shadow); if(b) res.push({p:p,b:b});
-  });
+var MODE="type",TE={},BOSS=[],_rc={};
+function setMode(m){MODE=m;document.getElementById("m-type").classList.toggle("on",m==="type");document.getElementById("m-boss").classList.toggle("on",m==="boss");document.getElementById("types").style.display=m==="type"?"":"none";render();}
+window.setMode=setMode;
+function rankType(T){
+  if(_rc[T])return _rc[T];
+  var cpm=CPM[document.getElementById("lvl").value], sh=document.getElementById("shadow").checked, mega=document.getElementById("mega").checked, res=[];
+  POK.forEach(function(p){ if(p.is_shadow&&!sh)return; if(p.is_mega&&!mega)return; if(!p.released&&!p.is_mega)return; var b=calc(p,T,cpm,p.is_shadow); if(b)res.push({p:p,b:b}); });
   res.sort(function(a,b){return b.b.DPS-a.b.DPS;});
-  res=res.slice(0,40);
+  _rc[T]=res; return res;
+}
+function bossMult(at,b){var m=(TE[at]&&TE[at][b.type1])||1; if(b.type2)m*=(TE[at]&&TE[at][b.type2])||1; return m;}
+function render(){ if(!DB)return; _rc={}; if(MODE==="boss"){renderBosses();return;} renderTypes(); }
+function renderBosses(){
+  if(!BOSS.length){document.getElementById("out").innerHTML='<div class="hd">当前没有团战首领数据（每12h刷新）</div>';return;}
+  var html='<div class="hd">🛡 当前团战首领 · 推荐反制打手（按 弱点属性×输出 实时计算，🔑=需特殊招式）</div>';
+  BOSS.forEach(function(b){
+    var weak=TYPES.map(function(t){return t[0];}).filter(function(at){return bossMult(at,b)>1.01;});
+    var pool=[];
+    weak.forEach(function(at){ rankType(at).slice(0,8).forEach(function(x){ pool.push({p:x.p,bb:x.b,at:at,eff:x.b.DPS*bossMult(at,b)}); }); });
+    pool.sort(function(a,c){return c.eff-a.eff;});
+    var seen={},top=[];pool.forEach(function(x){if(!seen[x.p.species_id]){seen[x.p.species_id]=1;top.push(x);}});
+    top=top.slice(0,6);
+    var wk=weak.map(function(at){return tchip(at);}).join("");
+    html+='<div class="r" style="align-items:flex-start;cursor:default"><img loading="lazy" src="'+esc(b.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(b.name_cn)+' <span class="tag">'+esc(b.tier||"")+'</span></div><div class="mv">属性 '+tchip(b.type1)+tchip(b.type2)+'　弱点 '+wk+'</div><div style="margin-top:6px">'+
+      top.map(function(x){return '<span onclick="location.href=\''+'db.html#m'+x.p.dex+'\'" style="cursor:pointer;display:inline-flex;align-items:center;gap:3px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:2px 7px;margin:2px;font-size:11.5px">'+(x.bb.fe||x.bb.ce?"🔑":"")+'<img src="'+esc(x.p.sprite)+'" style="width:22px;height:22px;object-fit:contain" onerror="this.style.display=\'none\'">'+esc(x.p.name_cn)+' <b style="color:#ff9f6b">'+x.eff.toFixed(0)+'</b></span>';}).join("")+
+      '</div></div></div>';
+  });
+  document.getElementById("out").innerHTML=html;
+}
+function renderTypes(){
+  var T=curType;
+  var res=rankType(T).slice(0,40);
   var top=res.length?res[0].b.DPS:1;
   function tier(s){var r=s/top;return r>=.97?["S+","#ff5b6e"]:r>=.9?["S","#ff9f43"]:r>=.82?["A","#ffd23d"]:r>=.72?["B","#46d39a"]:["C","#9099a1"];}
   document.getElementById("out").innerHTML='<div class="hd">'+TN[T]+'系 团战输出排名 · 共 '+res.length+' 只（L'+document.getElementById("lvl").value+'）</div>'+res.map(function(x,i){
@@ -102,6 +125,8 @@ initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs
     POK=rows("SELECT species_id,dex,name_cn,type1,type2,atk,def,hp,is_shadow,is_mega,released,sprite FROM pokemon");
     rows("SELECT move_id,name_cn,type,slot,pve_power,pve_energy,pve_duration_ms FROM moves").forEach(function(m){MOVE[m.move_id]=m;});
     rows("SELECT species_id,move_id,slot,is_elite FROM pokemon_moves").forEach(function(r){(PM[r.species_id]=PM[r.species_id]||[]).push(r);});
+    rows("SELECT atk_type,def_type,multiplier FROM type_effectiveness").forEach(function(r){(TE[r.atk_type]=TE[r.atk_type]||{})[r.def_type]=r.multiplier;});
+    try{BOSS=rows("SELECT o.dex dex,MIN(o.detail) tier,p.name_cn,p.type1,p.type2,p.sprite FROM obtain o JOIN pokemon p ON p.dex=o.dex WHERE o.method='raid' AND p.is_shadow=0 AND p.is_mega=0 GROUP BY o.dex ORDER BY (o.detail LIKE '5%' OR o.detail LIKE 'Mega%') DESC, o.dex");}catch(e){BOSS=[];}
     document.getElementById("meta").innerHTML="✅ "+POK.length+" 宝可梦 · 实时计算";
     render();
   });
