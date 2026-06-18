@@ -15,7 +15,7 @@ details.gen>summary::-webkit-details-marker{display:none}
 details.gen>summary::before{content:"▸";color:var(--accent)}details.gen[open]>summary::before{content:"▾"}
 .cnt{font-size:11.5px;color:var(--dim);font-weight:400;background:var(--panel2);border-radius:8px;padding:2px 8px;margin-left:auto}
 .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(124px,100%),1fr));gap:9px;padding:4px 12px 14px}
-.sc{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:8px 5px;text-align:center}
+.sc{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:8px 5px;text-align:center;transition:.12s}.sc:hover{border-color:var(--shiny)}
 .imgs{display:flex;gap:3px;justify-content:center}.imgs figure{margin:0;flex:1;min-width:0}
 .imgs img{width:100%;max-width:54px;height:54px;object-fit:contain}
 .imgs figcaption{font-size:8.5px;color:var(--dim);margin-top:1px}
@@ -35,7 +35,7 @@ details.gen>summary::before{content:"▸";color:var(--accent)}details.gen[open]>
 var DB=null,GENS=[[1,"关都"],[2,"城都"],[3,"丰缘"],[4,"神奥"],[5,"合众"],[6,"卡洛斯"],[7,"阿罗拉"],[8,"伽勒尔/洗翠"],[9,"帕底亚"]];
 function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
-function card(p){return '<div class="sc" data-n="'+esc((p.name_cn+(p.name_tw||"")).toLowerCase())+'"><div class="imgs"><figure><img loading="lazy" src="'+esc(p.sprite)+'" onerror="this.style.opacity=.2"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="'+esc(p.sprite_shiny)+'" onerror="this.style.opacity=.2"><figcaption>✨异色</figcaption></figure></div><div class="nm">'+esc(p.name_cn)+'</div><div class="sub">'+(p.name_tw&&p.name_tw!==p.name_cn?esc(p.name_tw)+" · ":"")+'#'+p.dex+'</div>'+(p.shiny_date?'<div class="dt">实装 '+esc(p.shiny_date)+'</div>':'')+'</div>';}
+function card(p){return '<div class="sc" style="cursor:pointer" onclick="location.href=\'db.html#m'+p.dex+'\'" data-n="'+esc((p.name_cn+(p.name_tw||"")).toLowerCase())+'"><div class="imgs"><figure><img loading="lazy" src="'+esc(p.sprite)+'" onerror="this.style.opacity=.2"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="'+esc(p.sprite_shiny)+'" onerror="this.style.opacity=.2"><figcaption>✨异色</figcaption></figure></div><div class="nm">'+esc(p.name_cn)+'</div><div class="sub">'+(p.name_tw&&p.name_tw!==p.name_cn?esc(p.name_tw)+" · ":"")+'#'+p.dex+'</div>'+(p.shiny_date?'<div class="dt">实装 '+esc(p.shiny_date)+'</div>':'')+'</div>';}
 function render(){
   var total=0,html="";
   GENS.forEach(function(g,i){
@@ -54,6 +54,6 @@ function flt(v){v=(v||"").trim().toLowerCase();document.querySelectorAll("detail
 function allG(o){document.querySelectorAll("details.gen").forEach(function(g){g.open=!!o;});}
 window.flt=flt;window.allG=allG;
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
-  return fetch("pokemon.db?v20260618-67576").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));render();});
+  return fetch("pokemon.db?v=20260618-67576").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));render();});
 }).catch(function(e){document.getElementById("tot").innerHTML='<span style="color:#ff7a8f">加载失败：'+esc(e.message)+'</span>';});
 </script></body></html>
