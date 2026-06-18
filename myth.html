@@ -425,7 +425,7 @@ PvEEngine.ready(function(){
     var dex=+m[1];var r;try{r=PvEEngine.bestRank(dex);}catch(e){r=null;}
     if(!r)return;
     a.textContent='🏟 '+r.typeCn+r.tier+' #'+r.rank;
-    a.setAttribute('href','pve.html#'+r.type+'/'+dex);
+    a.setAttribute('href','pve.html#'+r.type+'/sid:'+r.sid);
     a.title='团战 '+r.typeCn+'系实时第 '+r.rank+' 名（共 '+r.total+' 只）· 点击精确定位';
   });
 });
