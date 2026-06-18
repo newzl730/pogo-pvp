@@ -35,7 +35,7 @@ details.gen>summary::before{content:"▸";color:var(--accent)}details.gen[open]>
 var DB=null,GENS=[[1,"关都"],[2,"城都"],[3,"丰缘"],[4,"神奥"],[5,"合众"],[6,"卡洛斯"],[7,"阿罗拉"],[8,"伽勒尔/洗翠"],[9,"帕底亚"]];
 function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
-function card(p){return '<div class="sc" style="cursor:pointer" onclick="location.href=\'db.html#m'+p.dex+'\'" data-n="'+esc((p.name_cn+(p.name_tw||"")).toLowerCase())+'"><div class="imgs"><figure><img loading="lazy" src="'+esc(p.sprite)+'" onerror="this.style.opacity=.2"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="'+esc(p.sprite_shiny)+'" onerror="this.style.opacity=.2"><figcaption>✨异色</figcaption></figure></div><div class="nm">'+esc(p.name_cn)+'</div><div class="sub">'+(p.name_tw&&p.name_tw!==p.name_cn?esc(p.name_tw)+" · ":"")+'#'+p.dex+'</div>'+(p.shiny_date?'<div class="dt">实装 '+esc(p.shiny_date)+'</div>':'')+'</div>';}
+function card(p){return '<div class="sc" style="cursor:pointer" onclick="pokeModal('+p.dex+')" data-n="'+esc((p.name_cn+(p.name_tw||"")).toLowerCase())+'"><div class="imgs"><figure><img loading="lazy" src="'+esc(p.sprite)+'" onerror="this.style.opacity=.2"><figcaption>普通</figcaption></figure><figure class="sh"><img loading="lazy" src="'+esc(p.sprite_shiny)+'" onerror="this.style.opacity=.2"><figcaption>✨异色</figcaption></figure></div><div class="nm">'+esc(p.name_cn)+'</div><div class="sub">'+(p.name_tw&&p.name_tw!==p.name_cn?esc(p.name_tw)+" · ":"")+'#'+p.dex+'</div>'+(p.shiny_date?'<div class="dt">实装 '+esc(p.shiny_date)+'</div>':'')+'</div>';}
 function render(){
   var total=0,html="";
   GENS.forEach(function(g,i){
@@ -54,6 +54,7 @@ function flt(v){v=(v||"").trim().toLowerCase();document.querySelectorAll("detail
 function allG(o){document.querySelectorAll("details.gen").forEach(function(g){g.open=!!o;});}
 window.flt=flt;window.allG=allG;
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
-  return fetch("pokemon.db?v20260618-68256").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));render();});
+  return fetch("pokemon.db?v=20260618-67576").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));render();});
 }).catch(function(e){document.getElementById("tot").innerHTML='<span style="color:#ff7a8f">加载失败：'+esc(e.message)+'</span>';});
-</script></body></html>
+</script>
+<script src="pokedex-modal.js?v=1"></script></body></html>
