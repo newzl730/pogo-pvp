@@ -17,7 +17,7 @@
 .rn{font-weight:800;font-size:16px}.rn small{color:var(--dim);font-weight:400;font-size:11.5px;margin-left:5px}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
 .chip{font-size:11px;font-weight:700;border-radius:8px;padding:3px 9px;text-decoration:none;color:#fff;white-space:nowrap}
-.c-pvp{background:#3b6cff}.c-pve{background:#ff7a45}.c-sh{background:#caa53a;color:#1a1a1a}.c-my{background:#a878ff}.c-rk{background:#ee1c25}.c-pp{background:#27c08a;color:#06281c}
+.c-pvp{background:#3b6cff}.c-pve{background:#ff7a45}.c-sh{background:#caa53a;color:#1a1a1a}.c-my{background:#a878ff}.c-rk{background:#ee1c25}.c-pp{background:#27c08a;color:#06281c}.c-db{background:#46d39a;color:#06281c}
 .none{font-size:11px;color:var(--dim);text-align:center;padding:30px 0}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:24px;line-height:1.7}
 </style></head><body>
@@ -41,6 +41,7 @@ function card(e){
   if(e.my)c.push('<a class="chip c-my" href="myth.html#m'+e.d+'">🔮 幻/限定</a>');
   if(e.rk)c.push('<a class="chip c-rk" href="rocket.html">🚀 火箭队</a>');
   c.push('<a class="chip c-pp" href="pvpoke/src/pokedex/">🧮 PvPoke</a>');
+  c.push('<a class="chip c-db" href="db.html#m'+e.d+'">🗄️ 完整资料</a>');
   return '<div class="r"><img loading="lazy" src="'+art(e.d)+'" onerror="this.style.opacity=.15"><div class="rb"><div class="rn">'+esc(e.cn)+'<small>'+(e.tw&&e.tw!==e.cn?esc(e.tw)+" · ":"")+(e.en?esc(e.en)+" · ":"")+'#'+e.d+'</small></div><div class="chips">'+c.join("")+'</div></div></div>';
 }
 function render(q){
