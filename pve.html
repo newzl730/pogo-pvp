@@ -19,6 +19,9 @@
 .rb{flex:1;min-width:0}.rn{font-weight:700;font-size:14.5px}.rn .tier{font-size:10px;font-weight:800;border-radius:6px;padding:1px 6px;margin-left:6px;color:#0e1016}
 .mv{font-size:11.5px;color:var(--dim);margin-top:2px}.mv .el{color:var(--gold)}
 .dps{text-align:right;flex:none}.dps .v{font-weight:800;font-size:16px;color:#ff9f6b}.dps .l{font-size:9.5px;color:var(--dim)}.dps .t{font-size:10px;color:var(--dim)}
+.exp{display:none;background:var(--panel2);border:1px solid var(--line);border-top:0;border-radius:0 0 13px 13px;margin:-8px 0 8px;padding:9px 14px;font-size:12.5px}
+.er{padding:3px 0;line-height:1.7}
+.tag{font-size:10.5px;color:var(--dim)}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.7}
 </style></head><body>
 <div class="top"><h1>Pokémon GO <b>团战输出排名</b> · 实时计算</h1>
@@ -32,13 +35,14 @@
   <span id="meta" style="margin-left:auto">加载中…</span>
 </div>
 <div id="out"></div>
-<div class="note">DPS / TDO <b>实时由 pokemon.db 计算</b>（种族值×CPM + 招式PvE威力/能量/时长 + 本系加成；暗影×1.2攻）· 综合评分=DPS×TDO^0.5 · 点击查看完整资料<br>每个属性列出能打出该属性输出的最强打手</div>
+<div class="note">DPS / TDO <b>实时由 pokemon.db 计算</b>（种族值×CPM + 招式PvE威力/能量/时长 + 本系加成；暗影×1.2攻）· 综合评分=DPS×TDO^0.5 · 点击查看完整资料<br>只计入【快攻+大招同属性】的本系打手（与主流打手榜口径一致）</div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <script>
 var DB,POK=[],MOVE={},PM={},CPM={},curType="fire";
 var TYPES=[["fire","火","#ff6b3d"],["water","水","#4f9fff"],["grass","草","#5fbf52"],["electric","电","#ffd23d"],["ice","冰","#7fd6d6"],["fighting","格斗","#d3425f"],["poison","毒","#a95fc9"],["ground","地面","#d9ab55"],["flying","飞行","#92a8ff"],["psychic","超能力","#ff5f8f"],["bug","虫","#9fb336"],["rock","岩石","#c8b681"],["ghost","幽灵","#6f5b9e"],["dragon","龙","#5a78e0"],["dark","恶","#5a5468"],["steel","钢","#5a8fa0"],["fairy","妖精","#f08fc7"],["normal","一般","#9099a1"]];
-var TN={};TYPES.forEach(function(t){TN[t[0]]=t[1];});
+var TN={},TCOL={};TYPES.forEach(function(t){TN[t[0]]=t[1];TCOL[t[0]]=t[2];});
+function tchip(t){return t?'<span style="font-size:9px;font-weight:700;color:#0e1016;border-radius:5px;padding:1px 5px;background:'+(TCOL[t]||"#666")+'">'+(TN[t]||t)+'</span>':"";}
 function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
 function calc(p,T,cpm,sh){
@@ -46,23 +50,24 @@ function calc(p,T,cpm,sh){
   var eAtk=(p.atk+15)*cpm*(sh?1.2:1), eDef=(p.def+15)*cpm*(sh?0.8333:1), eHP=Math.floor((p.hp+15)*cpm);
   var Dd=180;
   function dmg(pw,mt){return 0.5*pw*(eAtk/Dd)*(types.indexOf(mt)>=0?1.2:1)+1;}
-  var mv=PM[p.species_id]; if(!mv) return null;
-  var fasts=mv.filter(function(m){return m.slot==="fast";}).map(function(m){return MOVE[m.move_id];}).filter(Boolean);
-  var chs=mv.filter(function(m){return m.slot==="charged";}).map(function(m){return MOVE[m.move_id];}).filter(function(m){return m&&m.type===T;});
+  var pm=PM[p.species_id]; if(!pm) return null;
+  function cand(slot){return pm.filter(function(m){return m.slot===slot;}).map(function(m){return {mv:MOVE[m.move_id],el:m.is_elite};}).filter(function(x){return x.mv&&x.mv.type===T;});}
+  var fasts=cand("fast"), chs=cand("charged");
   if(!fasts.length||!chs.length) return null;
   var best=null;
-  fasts.forEach(function(f){
+  fasts.forEach(function(F){var f=F.mv;
     var Tf=(f.pve_duration_ms||500)/1000, fDPS=dmg(f.pve_power,f.type)/Tf, fEPS=(f.pve_energy||0)/Tf;
-    chs.forEach(function(ch){
+    chs.forEach(function(Cc){var ch=Cc.mv;
       var Tc=(ch.pve_duration_ms||500)/1000, cDPS=dmg(ch.pve_power,ch.type)/Tc, cEPS=Math.abs(ch.pve_energy||1)/Tc;
       var DPS=(cEPS+fEPS)?(fDPS*cEPS+cDPS*fEPS)/(cEPS+fEPS):0;
       var TDO=DPS*eHP*(eDef/Dd)/100;
       var score=DPS*Math.sqrt(TDO);
-      if(!best||score>best.score) best={DPS:DPS,TDO:TDO,score:score,f:f,ch:ch};
+      if(!best||score>best.score) best={DPS:DPS,TDO:TDO,score:score,f:f,ch:ch,fe:F.el,ce:Cc.el,eHP:eHP,eAtk:Math.round(eAtk),eDef:Math.round(eDef)};
     });
   });
   return best;
 }
+function mvInfo(m,el){return (el?'🔑':'')+esc(m.name_cn)+' / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">威'+m.pve_power+' 能'+m.pve_energy+(m.pve_duration_ms?' '+(m.pve_duration_ms/1000)+'s':'')+'</span>';}
 function render(){
   if(!DB)return;
   var T=curType, cpm=CPM[document.getElementById("lvl").value], sh=document.getElementById("shadow").checked, mega=document.getElementById("mega").checked;
@@ -76,10 +81,17 @@ function render(){
   var top=res.length?res[0].b.DPS:1;
   function tier(s){var r=s/top;return r>=.97?["S+","#ff5b6e"]:r>=.9?["S","#ff9f43"]:r>=.82?["A","#ffd23d"]:r>=.72?["B","#46d39a"]:["C","#9099a1"];}
   document.getElementById("out").innerHTML='<div class="hd">'+TN[T]+'系 团战输出排名 · 共 '+res.length+' 只（L'+document.getElementById("lvl").value+'）</div>'+res.map(function(x,i){
-    var tg=tier(x.b.DPS),f=x.b.f,ch=x.b.ch;
-    return '<div class="r" onclick="location.href=\'db.html#m'+x.p.dex+'\'"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">⚡'+esc(f.name_cn)+' + 💥'+esc(ch.name_cn)+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>';
+    var tg=tier(x.b.DPS),f=x.b.f,ch=x.b.ch,b=x.b,elite=b.fe||b.ce;
+    var mvline='⚡'+(b.fe?'🔑':'')+esc(f.name_cn)+' + 💥'+(b.ce?'🔑':'')+esc(ch.name_cn)+(elite?' <span style="color:var(--gold);font-size:10px">🔑需特殊招式</span>':'');
+    var exp='<div class="exp" id="exp'+i+'"><div class="er">⚡ 快攻：'+mvInfo(f,b.fe)+'</div><div class="er">💥 大招：'+mvInfo(ch,b.ce)+'</div>'+
+      '<div class="er">📊 L'+document.getElementById("lvl").value+' 有效：攻 '+b.eAtk+' · 防 '+b.eDef+' · 血 '+b.eHP+'　DPS <b style="color:#ff9f6b">'+b.DPS.toFixed(2)+'</b> · TDO '+Math.round(b.TDO)+'</div>'+
+      (elite?'<div class="er" style="color:var(--gold)">⚠️ 最佳配招含传承/精英招式，需用「精英刷招学习器」获得</div>':'<div class="er" style="color:#46d39a">✓ 普通可学招式，无需精英学习器</div>')+
+      '<a class="er" href="db.html#m'+x.p.dex+'" onclick="event.stopPropagation()" style="color:#46d39a;text-decoration:none">🗄️ 完整资料（净化/进化/异色/获取…）→</a></div>';
+    return '<div class="rwrap"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
   }).join("");
 }
+function pveTog(i){var e=document.getElementById("exp"+i);if(e)e.style.display=e.style.display==="block"?"none":"block";}
+window.pveTog=pveTog;
 function selType(t){curType=t;document.querySelectorAll(".tb").forEach(function(b){b.classList.toggle("on",b.dataset.t===t);});render();}
 window.selType=selType;window.render=render;
 document.getElementById("types").innerHTML=TYPES.map(function(t){return '<span class="tb'+(t[0]==="fire"?" on":"")+'" data-t="'+t[0]+'" style="background:'+t[2]+'" onclick="selType(\''+t[0]+'\')">'+t[1]+'</span>';}).join("");
