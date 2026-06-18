@@ -71,12 +71,12 @@ function render(){
     if(p.is_shadow&&!sh)return; if(p.is_mega&&!mega)return; if(!p.released&&!p.is_mega)return;
     var b=calc(p,T,cpm,sh&&p.is_shadow?true:p.is_shadow); if(b) res.push({p:p,b:b});
   });
-  res.sort(function(a,b){return b.b.score-a.b.score;});
+  res.sort(function(a,b){return b.b.DPS-a.b.DPS;});
   res=res.slice(0,40);
-  var top=res.length?res[0].b.score:1;
+  var top=res.length?res[0].b.DPS:1;
   function tier(s){var r=s/top;return r>=.97?["S+","#ff5b6e"]:r>=.9?["S","#ff9f43"]:r>=.82?["A","#ffd23d"]:r>=.72?["B","#46d39a"]:["C","#9099a1"];}
   document.getElementById("out").innerHTML='<div class="hd">'+TN[T]+'系 团战输出排名 · 共 '+res.length+' 只（L'+document.getElementById("lvl").value+'）</div>'+res.map(function(x,i){
-    var tg=tier(x.b.score),f=x.b.f,ch=x.b.ch;
+    var tg=tier(x.b.DPS),f=x.b.f,ch=x.b.ch;
     return '<div class="r" onclick="location.href=\'db.html#m'+x.p.dex+'\'"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">⚡'+esc(f.name_cn)+' + 💥'+esc(ch.name_cn)+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>';
   }).join("");
 }
