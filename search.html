@@ -41,7 +41,7 @@ function card(e){
   if(e.my)c.push('<a class="chip c-my" href="myth.html#m'+e.d+'">🔮 幻/限定</a>');
   if(e.rk)c.push('<a class="chip c-rk" href="rocket.html">🚀 火箭队</a>');
   c.push('<a class="chip c-pp" href="pvpoke/src/pokedex/">🧮 PvPoke</a>');
-  c.push('<a class="chip c-db" href="db.html#m'+e.d+'">🗄️ 完整资料</a>');
+  c.push('<span class="chip c-db" style="cursor:pointer" onclick="pokeModal('+e.d+')">🗄️ 完整资料</span>');
   return '<div class="r"><img loading="lazy" src="'+art(e.d)+'" onerror="this.style.opacity=.15"><div class="rb"><div class="rn">'+esc(e.cn)+'<small>'+(e.tw&&e.tw!==e.cn?esc(e.tw)+" · ":"")+(e.en?esc(e.en)+" · ":"")+'#'+e.d+'</small></div><div class="chips">'+c.join("")+'</div></div></div>';
 }
 function render(q){
@@ -55,4 +55,5 @@ function render(q){
   res.innerHTML=hits.length?hits.slice(0,60).map(card).join(""):'<div class="none">没找到「'+esc(q)+'」</div>';
 }
 fetch("search_index.json").then(function(r){return r.json();}).then(function(d){IDX=d;document.getElementById("cnt").textContent=d.length;render(document.getElementById("q").value);});
-</script></body></html>
+</script>
+<script src="pokedex-modal.js?v=1"></script></body></html>
