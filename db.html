@@ -57,7 +57,11 @@ function detail(sid){
   function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
   var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
   var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
-  var evo=rows("SELECT e.evolves_to,e.candy,p2.name_cn cn FROM evolution e LEFT JOIN pokemon p2 ON p2.species_id=e.evolves_to WHERE e.species_id=?",[sid]);
+  function _nm(s){var r=rows("SELECT name_cn,dex FROM pokemon WHERE species_id=?",[s])[0];return r||{name_cn:s,dex:0};}
+  var _root=sid,_seen={};while(true){var pr=rows("SELECT family_parent FROM pokemon WHERE species_id=?",[_root])[0];if(pr&&pr.family_parent&&!_seen[pr.family_parent]){_seen[pr.family_parent]=1;_root=pr.family_parent;}else break;}
+  function _chain(node){var me=_nm(node);var tag='<span style="cursor:pointer;'+(node===sid?"color:var(--gold);font-weight:800":"color:var(--accent)")+'" onclick="detail(\''+node+'\')">'+esc(me.name_cn)+'</span>';var kids=rows("SELECT evolves_to,candy FROM evolution WHERE species_id=?",[node]);if(!kids.length)return tag;if(kids.length===1)return tag+' <span class="tag">→'+(kids[0].candy?kids[0].candy+'糖':'')+'</span> '+_chain(kids[0].evolves_to);return tag+'<div style="padding-left:16px;border-left:1px solid var(--line);margin:3px 0">'+kids.map(function(k){return '<span class="tag">→'+(k.candy?k.candy+'糖':'')+'</span> '+_chain(k.evolves_to);}).join("<br>")+'</div>';}
+  var evoHtml=_chain(_root);
+  var hasEvo=rows("SELECT 1 FROM evolution WHERE species_id=? OR evolves_to=? LIMIT 1",[sid,sid]).length;
   var wb=rows("SELECT DISTINCT weather FROM weather_boost WHERE type=? OR type=?",[p.type1,p.type2||p.type1]);
   var flags=[];if(p.is_legendary)flags.push("传说");if(p.is_mythical)flags.push("幻");if(p.is_ultrabeast)flags.push("究极异兽");if(p.is_mega)flags.push("超级进化");if(p.is_regional)flags.push("地区限定");if(p.shadow_eligible)flags.push("可暗影");if(p.gl_ineligible)flags.push("超联不可用");
   var ivmap={great:"超联1500",ultra:"高联2500",master:"大师"};
@@ -72,7 +76,7 @@ function detail(sid){
     '<div class="kv" style="margin-top:10px"><b style="color:var(--gold)">🏆 PvP 最佳IV（rank-1）</b>：'+ivh+'</div>'+
     (pur?'<div class="kv">🌀 <b style="color:var(--gold)">净化成本</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83；净化去「祈愿」得「报恩」）</div>':'')+
     (wb.length?'<div class="kv">🌦 <b style="color:var(--gold)">天气加成</b>：'+wb.map(function(x){return WN[x.weather]||x.weather;}).join(" / ")+'</div>':'')+
-    (evo.length?'<div class="kv">🔄 <b style="color:var(--gold)">进化</b>：'+evo.map(function(e){return esc(e.cn||e.evolves_to)+(e.candy?'('+e.candy+'糖)':'');}).join(" / ")+'</div>':'')+
+    (hasEvo?'<div class="kv">🔄 <b style="color:var(--gold)">进化链</b>：'+evoHtml+'</div>':'')+
     '<div class="mv" style="margin-top:10px">⚡ <b style="color:#bfe0ff">快速招式</b><br>'+mvl(mv("fast"))+'</div>'+
     '<div class="mv" style="margin-top:8px">💥 <b style="color:#ffc59c">充能招式</b><br>'+mvl(mv("charged"))+'</div></div>';
   window.scrollTo({top:0,behavior:"smooth"});
