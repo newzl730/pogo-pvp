@@ -106,7 +106,7 @@ window.runSQL=runSQL;
 function _goHash(){if(!DB)return;var mm=(location.hash||"").match(/^#m(\d+)/);if(!mm)return;var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+mm[1]]);if(r.length)detail(r[0].species_id);}
 window.addEventListener("hashchange",_goHash);
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
-  return fetch("pokemon.db?v=5").then(function(r){return r.arrayBuffer();}).then(function(buf){
+  return fetch("pokemon.db?v=20260618b").then(function(r){return r.arrayBuffer();}).then(function(buf){
     DB=new SQL.Database(new Uint8Array(buf));
     var n=rows("SELECT COUNT(*) c FROM pokemon")[0].c, m=rows("SELECT COUNT(*) c FROM moves")[0].c;
     document.getElementById("meta").innerHTML="✅ 已加载 <b>"+n+"</b> 宝可梦 · <b>"+m+"</b> 招式（pokemon.db）";
