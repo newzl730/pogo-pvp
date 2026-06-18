@@ -6,11 +6,17 @@
 .top h1{margin:0;font-size:16px}.top h1 b{color:#ff7a45}
 .top nav{display:flex;gap:10px;font-size:12px;flex-wrap:wrap}.top nav a{color:var(--accent);text-decoration:none;white-space:nowrap}
 .main{max-width:880px;margin:0 auto;padding:12px 12px 80px}
-.types{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
-.tb{font-size:12.5px;font-weight:700;color:#0e1016;border-radius:9px;padding:5px 11px;cursor:pointer;opacity:.55;border:2px solid transparent}
-.tb.on{opacity:1;border-color:#fff}
-.opt{font-size:12px;color:var(--dim);margin:4px 0 10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.opt label{cursor:pointer}
+.ctrl{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:12px 0}
+.types{display:flex;gap:6px;flex-wrap:wrap;margin:0}
+.types+.types{margin-top:9px}
+.tb{font-size:12.5px;font-weight:700;color:#0e1016;border-radius:10px;padding:6px 12px;cursor:pointer;opacity:.5;border:1.5px solid transparent;transition:opacity .12s,transform .1s,box-shadow .12s}
+.tb:hover{opacity:.85;transform:translateY(-1px)}
+.tb.on{opacity:1;border-color:rgba(255,255,255,.85);box-shadow:0 3px 12px -3px rgba(0,0,0,.6)}
+.opt{font-size:12px;color:var(--dim);margin:11px 0 0;padding-top:11px;border-top:1px solid var(--line);display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.opt label{cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.opt input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);cursor:pointer}
+.opt select{background:var(--panel3,#272c3b);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12px;font-family:inherit;cursor:pointer;outline:none}
+.opt select:hover{border-color:var(--accent)}
 .hd{font-size:13px;color:var(--dim);margin:14px 2px 8px;border-bottom:1px solid var(--line);padding-bottom:5px}
 .r{display:flex;gap:11px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:9px 12px;margin-bottom:8px;cursor:pointer;transition:.12s}
 .r:hover{border-color:#ff7a45}
@@ -27,6 +33,7 @@
 <div class="top"><h1>Pokémon GO <b>团战输出排名</b> · 实时计算</h1>
 <nav><a href="index.html">⚔️ PvP</a><a href="dmax.html">💥 极巨</a><a href="cal.html">📅 日历</a><a href="rocket.html">🚀 火箭队</a><a href="shiny.html">✨ 异色</a><a href="search.html">🔍 搜索</a><a href="db.html">🗄️ 数据库</a></nav></div>
 <div class="main">
+<div class="ctrl">
 <div class="types"><span class="tb on" id="m-type" style="background:#ff7a45" onclick="setMode('type')">🎯 按属性看打手</span><span class="tb" id="m-boss" style="background:#3b6cff" onclick="setMode('boss')">🛡 当前首领反制</span></div>
 <div class="types" id="types"></div>
 <div class="opt">
@@ -35,6 +42,7 @@
   <span>等级 <select id="lvl" onchange="render()"><option value="40">L40</option><option value="50">L50(XL)</option></select></span>
   <span>排序 <select id="sortby" onchange="render()"><option value="score">综合战力(输出×续航)</option><option value="dps">纯输出DPS</option></select></span>
   <span id="meta" style="margin-left:auto">加载中…</span>
+</div>
 </div>
 <div id="out"></div>
 <div class="note">DPS / TDO <b>实时由 pokemon.db 计算</b>（种族值×CPM + 招式PvE威力/能量/时长 + 本系加成；暗影×1.2攻/×0.83防）· 默认按<b>综合战力</b>=DPS×√TDO 排序（兼顾输出与续航，与 Pokebattler「best attackers」口径一致；可切「纯输出DPS」）· 点击行展开配招、点「完整资料」看弹窗<br>只计入【快攻+大招同属性】的本系打手；同属性快攻能量充能已计入组合 DPS（非只算大招）</div>
@@ -125,7 +133,8 @@ window.selType=selType;window.render=render;
 // 深链：pve.html#<type>/<dex> 或 #<type>/sid:<species_id> → 切到该属性并滚动高亮该宝可梦
 function _gotoPve(){
   var h=(location.hash||"").replace(/^#/,"");if(!h)return;
-  var parts=h.split("/");var t=parts[0],key=parts[1];if(!TN[t])return;
+  var parts=h.split("/");var t=parts[0],key=parts[1],sort=parts[2];if(!TN[t])return;
+  if(sort==="dps"||sort==="score"){var sb=document.getElementById("sortby");if(sb)sb.value=sort;}
   if(MODE!=="type")setMode("type");
   selType(t);
   setTimeout(function(){
