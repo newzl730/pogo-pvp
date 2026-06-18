@@ -305,6 +305,7 @@ function openPoke(li,pj){
   const hasBase=!!p.base;
   const rc=roleCat(p.role);
   let h=`<span class="x" onclick="closeOv()">✕</span>
+    ${p.dex?`<span onclick="pokeModal(${p.dex})" style="position:absolute;top:13px;right:42px;cursor:pointer;font-size:11.5px;color:#46d39a;border:1px solid #2c3142;border-radius:8px;padding:3px 8px">🗄️ 完整资料</span>`:''}
     <div class="mhead"><img src="${sprite(p.dex)}" onerror="this.src=FB"><div><div class="nm">${esc(p.cn)}<small>${esc(p.en)}${p.dex?' · #'+p.dex:''}</small></div>
       <div class="meta-line">${p.rank?`<span class="chip" style="background:var(--accent);color:#0e1016;font-weight:800">PvPoke #${p.rank} · ${p.score}分</span>`:`<span class="rbadge r-${rc}">${catLabel[rc]}</span>`}
       ${hasBase?`<span class="chip stat">种族 ${p.base.a}/${p.base.d}/${p.base.h}</span>`:''}
@@ -465,5 +466,5 @@ function _gotoHash(){var mm=(location.hash||"").match(/^#m(\d+)/);if(!mm)return;
  if(bLi<0)return;try{selLeague(bLi);}catch(e){}setTimeout(function(){try{openPoke(bLi,bPj);}catch(e){}},90);}
 addEventListener("hashchange",_gotoHash);addEventListener("load",_gotoHash);
 </script>
-<script src="site-nav.js?v=1"></script></body>
+<script>window.PM_NO_AUTOWIRE=1;</script><script src="pokedex-modal.js?v=2"></script><script src="site-nav.js?v=2"></script></body>
 </html>
