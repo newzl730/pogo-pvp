@@ -28,10 +28,11 @@
 .exp{display:none;background:var(--panel2);border:1px solid var(--line);border-top:0;border-radius:0 0 13px 13px;margin:-8px 0 8px;padding:9px 14px;font-size:12.5px}
 .er{padding:3px 0;line-height:1.7}
 .ivcalc{margin-top:7px;padding-top:7px;border-top:1px solid var(--line);font-size:12px}
-.ivrow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:6px 0 0;color:var(--dim)}
-.ivrow input{background:var(--panel3,#272c3b);color:var(--txt);border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;font-family:inherit;width:46px;margin-right:6px}
-.ivrow input:focus{outline:none;border-color:#ff7a45}
-.ivres{margin-top:6px;font-size:12.5px;color:var(--txt)}
+.ivslide{display:flex;align-items:center;gap:8px;margin:7px 0 0;color:var(--dim)}
+.ivslide label{width:30px;flex:none;font-size:12px}
+.ivslide input[type=range]{flex:1;accent-color:#ff7a45;cursor:pointer;height:5px}
+.ivslide b{width:34px;text-align:right;color:var(--txt);font-size:12.5px}
+.ivres{margin-top:8px;font-size:12.5px;color:var(--txt);font-weight:600}
 .tag{font-size:10.5px;color:var(--dim)}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.7}
 </style></head><body>
@@ -99,6 +100,7 @@ function pveIV(i){
   var cl=function(v){return Math.max(0,Math.min(15,isNaN(v)?15:v));};
   var a=cl(parseInt(document.getElementById("ivA"+i).value,10)),d=cl(parseInt(document.getElementById("ivD"+i).value,10)),h=cl(parseInt(document.getElementById("ivH"+i).value,10));
   var lv=parseFloat(document.getElementById("ivL"+i).value)||40;var cpm=CPM[lv]||CPM[Math.round(lv)]||CPM[40];
+  document.getElementById("ivAv"+i).textContent=a;document.getElementById("ivDv"+i).textContent=d;document.getElementById("ivHv"+i).textContent=h;document.getElementById("ivLv"+i).textContent=lv;
   var sh=x.p.is_shadow;
   var r=dpsWith(x.p,x.b.f,x.b.ch,cpm,sh,a,d,h),rmax=dpsWith(x.p,x.b.f,x.b.ch,cpm,sh,15,15,15);
   document.getElementById("ivres"+i).innerHTML='你的个体：DPS <b style="color:#ff9f6b">'+r.DPS.toFixed(2)+'</b> · TDO '+Math.round(r.TDO)+' <span class="tag">（满IV '+rmax.DPS.toFixed(2)+'/'+Math.round(rmax.TDO)+'，DPS 达 '+(r.DPS/rmax.DPS*100).toFixed(1)+'%）</span>';
@@ -148,11 +150,11 @@ function renderTypes(){
     var exp='<div class="exp" id="exp'+i+'"><div class="er">⚡ 快攻：'+mvInfo(f,b.fe)+'</div><div class="er">💥 大招：'+mvInfo(ch,b.ce)+'</div>'+
       '<div class="er">📊 L'+document.getElementById("lvl").value+' 有效：攻 '+b.eAtk+' · 防 '+b.eDef+' · 血 '+b.eHP+'　DPS <b style="color:#ff9f6b">'+b.DPS.toFixed(2)+'</b> · TDO '+Math.round(b.TDO)+'</div>'+
       (elite?'<div class="er" style="color:var(--gold)">⚠️ 最佳配招含传承/精英招式，需用「精英刷招学习器」获得</div>':'<div class="er" style="color:#46d39a">✓ 普通可学招式，无需精英学习器</div>')+
-      '<div class="ivcalc" onclick="event.stopPropagation()">🧮 <b>IV→DPS 计算器</b>（输入你的个体值/等级，按本配招算输出）'+
-        '<div class="ivrow">攻<input id="ivA'+i+'" type="number" min="0" max="15" value="15" oninput="pveIV('+i+')">'+
-        '防<input id="ivD'+i+'" type="number" min="0" max="15" value="15" oninput="pveIV('+i+')">'+
-        '体<input id="ivH'+i+'" type="number" min="0" max="15" value="15" oninput="pveIV('+i+')">'+
-        '等级<input id="ivL'+i+'" type="number" min="1" max="51" step="0.5" value="'+document.getElementById("lvl").value+'" oninput="pveIV('+i+')"></div>'+
+      '<div class="ivcalc" onclick="event.stopPropagation()">🧮 <b>IV→DPS 计算器</b>（拖动滑块按你的个体值/等级算输出）'+
+        '<div class="ivslide"><label>攻</label><input type="range" id="ivA'+i+'" min="0" max="15" value="15" oninput="pveIV('+i+')"><b id="ivAv'+i+'">15</b></div>'+
+        '<div class="ivslide"><label>防</label><input type="range" id="ivD'+i+'" min="0" max="15" value="15" oninput="pveIV('+i+')"><b id="ivDv'+i+'">15</b></div>'+
+        '<div class="ivslide"><label>体</label><input type="range" id="ivH'+i+'" min="0" max="15" value="15" oninput="pveIV('+i+')"><b id="ivHv'+i+'">15</b></div>'+
+        '<div class="ivslide"><label>等级</label><input type="range" id="ivL'+i+'" min="1" max="51" step="0.5" value="'+document.getElementById("lvl").value+'" oninput="pveIV('+i+')"><b id="ivLv'+i+'">'+document.getElementById("lvl").value+'</b></div>'+
         '<div id="ivres'+i+'" class="ivres">满IV基准：DPS '+b.DPS.toFixed(2)+' · TDO '+Math.round(b.TDO)+'</div></div>'+
       '<span class="er" onclick="event.stopPropagation();pokeModalSid(\''+x.p.species_id+'\')" style="color:#46d39a;cursor:pointer;display:block">🗄️ 完整资料（净化/进化/异色/获取…）→</span></div>';
     return '<div class="rwrap" data-dex="'+x.p.dex+'" data-sid="'+x.p.species_id+'"><div class="r" onclick="pveTog('+i+')"><div class="rk">#'+(i+1)+'</div><img loading="lazy" src="'+esc(x.p.sprite)+'" onerror="this.style.opacity=.2"><div class="rb"><div class="rn">'+esc(x.p.name_cn)+'<span class="tier" style="background:'+tg[1]+'">'+tg[0]+'</span></div><div class="mv">'+mvline+'</div></div><div class="dps"><div class="v">'+x.b.DPS.toFixed(1)+'</div><div class="l">DPS</div><div class="t">TDO '+Math.round(x.b.TDO)+'</div></div></div>'+exp+'</div>';
