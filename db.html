@@ -69,10 +69,10 @@ function detail(sid){
   var WN={"sunny/clear":"☀️晴","rainy":"🌧雨","partly_cloudy":"⛅多云","cloudy":"☁️阴","windy":"🌬风","snow":"❄️雪","fog":"🌫雾"};
   document.getElementById("detail").innerHTML='<div class="detail"><h3>'+esc(p.name_cn)+' <small style="color:var(--dim);font-weight:400">'+esc(p.name_tw)+' · '+esc(p.name_en)+' · #'+p.dex+'</small></h3>'+
     '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+art(p.dex)+'" style="width:90px;height:90px;object-fit:contain" onerror="this.style.opacity=.15"><div class="kv">'+
-    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+'<br>'+
+    '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+(p.genus_cn?'　'+esc(p.genus_cn):'')+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+(p.height_m?'　📏'+p.height_m+'m '+p.weight_kg+'kg':'')+'<br>'+
     (flags.length?'<span style="color:var(--gold)">'+flags.join(" · ")+'</span><br>':'')+
     '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km<br>'+
-    'species_id：<code>'+esc(p.species_id)+'</code> 进化自：'+esc(p.family_parent||"—")+'</div></div>'+
+    'species_id：<code>'+esc(p.species_id)+'</code> 进化自：'+esc(p.family_parent||"—")+'</div></div>'+(p.flavor_cn?'<div class="kv" style="font-style:italic;color:#bcd;margin-top:8px">📖 '+esc(p.flavor_cn)+'</div>':'')+
     '<div class="kv" style="margin-top:10px"><b style="color:var(--gold)">🏆 PvP 最佳IV（rank-1）</b>：'+ivh+'</div>'+
     (pur?'<div class="kv">🌀 <b style="color:var(--gold)">净化成本</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83；净化去「祈愿」得「报恩」）</div>':'')+
     (wb.length?'<div class="kv">🌦 <b style="color:var(--gold)">天气加成</b>：'+wb.map(function(x){return WN[x.weather]||x.weather;}).join(" / ")+'</div>':'')+
