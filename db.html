@@ -51,6 +51,7 @@ function esc(s){return (""+(s==null?"":s)).replace(/&/g,"&amp;").replace(/</g,"&
 function art(d){return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"+d+".png";}
 function tchip(t){return t?'<span class="tp" style="background:'+(TC[t]||"#666")+'">'+(TN[t]||t)+'</span>':"";}
 function rows(sql,params){var st=DB.prepare(sql);if(params)st.bind(params);var o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
+function genderStr(g){if(g===null||g===undefined)return '';if(g<0)return '⚲无性别';if(g===0)return '♂100%';if(g===8)return '♀100%';var fp=Math.round(g/8*100);return '♂'+(100-fp)+'% / ♀'+fp+'%';}
 function detail(sid){
   var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return;
   function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
@@ -59,7 +60,7 @@ function detail(sid){
   var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
   function _nm(s){var r=rows("SELECT name_cn,dex FROM pokemon WHERE species_id=?",[s])[0];return r||{name_cn:s,dex:0};}
   var _root=sid,_seen={};while(true){var pr=rows("SELECT family_parent FROM pokemon WHERE species_id=?",[_root])[0];if(pr&&pr.family_parent&&!_seen[pr.family_parent]){_seen[pr.family_parent]=1;_root=pr.family_parent;}else break;}
-  function _chain(node){var me=_nm(node);var tag='<span style="cursor:pointer;'+(node===sid?"color:var(--gold);font-weight:800":"color:var(--accent)")+'" onclick="detail(\''+node+'\')">'+esc(me.name_cn)+'</span>';var kids=rows("SELECT evolves_to,candy FROM evolution WHERE species_id=?",[node]);if(!kids.length)return tag;if(kids.length===1)return tag+' <span class="tag">→'+(kids[0].candy?kids[0].candy+'糖':'')+'</span> '+_chain(kids[0].evolves_to);return tag+'<div style="padding-left:16px;border-left:1px solid var(--line);margin:3px 0">'+kids.map(function(k){return '<span class="tag">→'+(k.candy?k.candy+'糖':'')+'</span> '+_chain(k.evolves_to);}).join("<br>")+'</div>';}
+  function _chain(node){var me=_nm(node);var tag='<span style="cursor:pointer;'+(node===sid?"color:var(--gold);font-weight:800":"color:var(--accent)")+'" onclick="detail(\''+node+'\')">'+esc(me.name_cn)+'</span>';var kids=rows("SELECT evolves_to,candy,condition FROM evolution WHERE species_id=?",[node]);if(!kids.length)return tag;if(kids.length===1)return tag+' <span class="tag">→'+(kids[0].candy?kids[0].candy+'糖':'')+(kids[0].condition?'·'+esc(kids[0].condition):'')+'</span> '+_chain(kids[0].evolves_to);return tag+'<div style="padding-left:16px;border-left:1px solid var(--line);margin:3px 0">'+kids.map(function(k){return '<span class="tag">→'+(k.candy?k.candy+'糖':'')+(k.condition?'·'+esc(k.condition):'')+'</span> '+_chain(k.evolves_to);}).join("<br>")+'</div>';}
   var evoHtml=_chain(_root);
   var hasEvo=rows("SELECT 1 FROM evolution WHERE species_id=? OR evolves_to=? LIMIT 1",[sid,sid]).length;
   var wb=rows("SELECT DISTINCT weather FROM weather_boost WHERE type=? OR type=?",[p.type1,p.type2||p.type1]);
@@ -69,10 +70,10 @@ function detail(sid){
   var ivh=ivs.map(function(v){return '<span class="tag" style="margin-right:8px">'+(ivmap[v.league]||v.league)+': L'+v.level+' '+v.iv_atk+'/'+v.iv_def+'/'+v.iv_sta+'</span>';}).join("")||"—";
   var WN={"sunny/clear":"☀️晴","rainy":"🌧雨","partly_cloudy":"⛅多云","cloudy":"☁️阴","windy":"🌬风","snow":"❄️雪","fog":"🌫雾"};
   document.getElementById("detail").innerHTML='<div class="detail"><h3>'+esc(p.name_cn)+' <small style="color:var(--dim);font-weight:400">'+esc(p.name_tw)+' · '+esc(p.name_en)+' · #'+p.dex+'</small></h3>'+
-    '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+art(p.dex)+'" style="width:90px;height:90px;object-fit:contain" onerror="this.style.opacity=.15"><div class="kv">'+
+    '<div style="display:flex;gap:14px;align-items:flex-start"><img src="'+(p.sprite||art(p.dex))+'" onerror="this.src=\''+art(p.dex)+'\'" style="width:90px;height:90px;object-fit:contain" onerror="this.style.opacity=.15"><div class="kv">'+
     '属性：'+tchip(p.type1)+tchip(p.type2)+'　第'+p.gen+'世代·'+esc(p.region)+(p.genus_cn?'　'+esc(p.genus_cn):'')+'<br>种族值：<b>攻 '+p.atk+'</b> / <b>防 '+p.def+'</b> / <b>体 '+p.hp+'</b>　L25满CP '+(p.level25cp||"?")+(p.height_m?'　📏'+p.height_m+'m '+p.weight_kg+'kg':'')+'<br>'+
     (flags.length?'<span style="color:var(--gold)">'+flags.join(" · ")+'</span><br>':'')+
-    '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km<br>'+
+    '✨异色：'+(p.shiny_released?'已实装 '+(p.shiny_date||""):'未实装')+'　糖果距离 '+(p.buddy_km||"?")+'km　'+genderStr(p.gender_rate)+'<br>'+
     'species_id：<code>'+esc(p.species_id)+'</code> 进化自：'+esc(p.family_parent||"—")+'</div></div>'+(p.flavor_cn?'<div class="kv" style="font-style:italic;color:#bcd;margin-top:8px">📖 '+esc(p.flavor_cn)+'</div>':'')+
     '<div class="kv" style="margin-top:10px"><b style="color:var(--gold)">🏆 PvP 最佳IV（rank-1）</b>：'+ivh+'</div>'+
     (pur?'<div class="kv">🌀 <b style="color:var(--gold)">净化成本</b>：'+pur.stardust+' 星尘 + '+pur.candy+' 糖果（暗影攻x1.2/防x0.83；净化去「祈愿」得「报恩」）</div>':'')+
@@ -89,8 +90,8 @@ function search(q){
   var res=document.getElementById("res");document.getElementById("detail").innerHTML="";
   if(!q){res.innerHTML="";return;}
   var like="%"+q.toLowerCase()+"%";
-  var r=rows("SELECT species_id,dex,name_cn cn,name_tw tw,name_en en,type1,type2 FROM pokemon WHERE lower(name_cn) LIKE ? OR lower(name_tw) LIKE ? OR lower(name_en) LIKE ? OR lower(species_id) LIKE ? OR dex=? ORDER BY dex LIMIT 80",[like,like,like,like,(/^\d+$/.test(q)?+q:-1)]);
-  res.innerHTML=r.length?r.map(function(p){return '<div class="r" onclick="detail(\''+p.species_id+'\')"><img loading="lazy" src="'+art(p.dex)+'" onerror="this.style.opacity=.15"><div><div class="rn">'+esc(p.cn)+'<small>'+esc(p.tw)+' · '+esc(p.en)+' · #'+p.dex+'</small></div><div style="margin-top:4px">'+tchip(p.type1)+tchip(p.type2)+'</div></div></div>';}).join(""):'<div class="note">没找到「'+esc(q)+'」</div>';
+  var r=rows("SELECT species_id,dex,name_cn cn,name_tw tw,name_en en,type1,type2,sprite FROM pokemon WHERE lower(name_cn) LIKE ? OR lower(name_tw) LIKE ? OR lower(name_en) LIKE ? OR lower(species_id) LIKE ? OR dex=? ORDER BY dex LIMIT 80",[like,like,like,like,(/^\d+$/.test(q)?+q:-1)]);
+  res.innerHTML=r.length?r.map(function(p){return '<div class="r" onclick="detail(\''+p.species_id+'\')"><img loading="lazy" src="'+(p.sprite||art(p.dex))+'" onerror="this.onerror=null;this.src=\''+art(p.dex)+'\'"><div><div class="rn">'+esc(p.cn)+'<small>'+esc(p.tw)+' · '+esc(p.en)+' · #'+p.dex+'</small></div><div style="margin-top:4px">'+tchip(p.type1)+tchip(p.type2)+'</div></div></div>';}).join(""):'<div class="note">没找到「'+esc(q)+'」</div>';
 }
 window.search=search;
 function runSQL(){
