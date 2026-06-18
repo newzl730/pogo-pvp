@@ -57,4 +57,4 @@ initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs
   return fetch("pokemon.db?v=20260618-67576").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));render();});
 }).catch(function(e){document.getElementById("tot").innerHTML='<span style="color:#ff7a8f">加载失败：'+esc(e.message)+'</span>';});
 </script>
-<script src="pokedex-modal.js?v=2"></script><script src="site-nav.js?v=2"></script></body></html>
+<script src="pokedex-modal.js?v=3"></script><script src="site-nav.js?v=2"></script></body></html>
