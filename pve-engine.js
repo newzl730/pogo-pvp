@@ -45,33 +45,38 @@ function calc(p,T,cpm){
   });
   return best;
 }
-function rankType(T){
-  if(_rc[T])return _rc[T];
+var _mk={score:function(b){return b.score;},dps:function(b){return b.DPS;}};
+function rankType(T,metric){
+  metric=metric==="dps"?"dps":"score";var key=T+"|"+metric;
+  if(_rc[key])return _rc[key];
   var cpm=CPM[40],res=[];
   POK.forEach(function(p){if(!p.released&&!p.is_mega)return;var b=calc(p,T,cpm);if(b)res.push({p:p,b:b});});
-  res.sort(function(a,b){return b.b.score-a.b.score;});
-  _rc[T]=res;return res;
+  var mk=_mk[metric];
+  res.sort(function(a,b){return mk(b.b)-mk(a.b);});
+  _rc[key]=res;return res;
 }
 function tierOf(r){return r>=.97?"S+":r>=.9?"S":r>=.82?"A":r>=.72?"B":"C";}
+// 找该 dex 在指定指标(metric=score 综合 / dps 纯输出)下的最佳属性 + 榜内排名/tier
+function bestRank(dex,metric){
+  metric=metric==="dps"?"dps":"score";var mk=_mk[metric];
+  var cands=POK.filter(function(p){return p.dex===+dex&&!p.is_shadow;});
+  if(!cands.length)return null;
+  var cpm=CPM[40],bestV=-1,bestT=null,bestP=null;
+  cands.forEach(function(p){
+    [p.type1,p.type2].filter(Boolean).forEach(function(T){
+      var b=calc(p,T,cpm);if(b&&mk(b)>bestV){bestV=mk(b);bestT=T;bestP=p;}
+    });
+  });
+  if(!bestT)return null;
+  var list=rankType(bestT,metric);
+  var idx=list.findIndex(function(x){return x.p.species_id===bestP.species_id;});
+  if(idx<0)return null;
+  var top=mk(list[0].b)||1,b=list[idx].b;
+  return {type:bestT,typeCn:TN[bestT],rank:idx+1,total:list.length,tier:tierOf(mk(b)/top),dps:b.DPS,tdo:b.TDO,sid:bestP.species_id};
+}
 window.PvEEngine={
   ready:function(cb){load().then(cb).catch(function(e){console.error("PvEEngine load fail",e);});},
-  // 找该 dex 的最佳属性 + 在该属性榜内的排名/tier
-  bestRank:function(dex){
-    var cands=POK.filter(function(p){return p.dex===+dex&&!p.is_shadow;});
-    if(!cands.length)return null;
-    var cpm=CPM[40],bestT=null,bestScore=-1,bestP=null;
-    cands.forEach(function(p){
-      [p.type1,p.type2].filter(Boolean).forEach(function(T){
-        var b=calc(p,T,cpm);if(b&&b.score>bestScore){bestScore=b.score;bestT=T;bestP=p;}
-      });
-    });
-    if(!bestT)return null;
-    var list=rankType(bestT);
-    var idx=list.findIndex(function(x){return x.p.species_id===bestP.species_id;});
-    if(idx<0)return null;
-    var topScore=list[0].b.score||1;
-    var b=list[idx].b;
-    return {type:bestT,typeCn:TN[bestT],rank:idx+1,total:list.length,tier:tierOf(b.score/topScore),dps:b.DPS,tdo:b.TDO,sid:bestP.species_id};
-  }
+  bestRank:function(dex){return bestRank(dex,"score");},
+  bestRankBy:function(dex,metric){return bestRank(dex,metric);}
 };
 })();
