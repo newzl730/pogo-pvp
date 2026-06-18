@@ -6,6 +6,7 @@ var L=[
   ["index.html","⚔️","PvP"],
   ["pve.html","🏟","团战"],
   ["sim.html","🎮","模拟"],
+  ["team.html","🛡️","队伍"],
   ["dmax.html","💥","极巨"],
   ["cal.html","📅","日历"],
   ["rocket.html","🚀","火箭队"],
