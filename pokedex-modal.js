@@ -36,7 +36,7 @@ function close(){var o=document.getElementById("pmOv");if(o)o.style.display="non
 function detailHtml(sid){
   var p=rows("SELECT * FROM pokemon WHERE species_id=?",[sid])[0];if(!p)return "未找到";
   function mv(slot){return rows("SELECT m.*,pm.is_elite FROM pokemon_moves pm JOIN moves m ON m.move_id=pm.move_id WHERE pm.species_id=? AND pm.slot=?",[sid,slot]);}
-  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0"><span style="cursor:pointer;color:#8fb0ff" onclick="moveModal(\''+esc(m.move_id)+'\')">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+'</span> '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
+  function mvl(a){return a.map(function(m){var bf=m.pvp_buffs?' <span style="color:#ffcb05">±buff</span>':'';return '<div style="padding:2px 0"><span style="cursor:help;color:#8fb0ff;border-bottom:1px dashed #4a5570" onclick="moveTip(event,\''+esc(m.move_id)+'\')">'+(m.is_elite?'🔑':'')+'<b>'+esc(m.name_cn)+'</b> / '+esc(m.name_en)+' ⓘ</span> '+tchip(m.type)+' <span class="tag">PvP '+m.pvp_power+'威 '+m.pvp_energy+'能'+bf+' · PvE '+m.pve_power+'威 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'')+'</span></div>';}).join("")||"—";}
   var ivs=rows("SELECT * FROM default_ivs WHERE species_id=?",[sid]);
   var pur=rows("SELECT * FROM shadow_purification WHERE species_id=? AND stardust IS NOT NULL",[sid])[0];
   function _nm(s){var r=rows("SELECT name_cn FROM pokemon WHERE species_id=?",[s])[0];return r?r.name_cn:s;}
@@ -95,10 +95,46 @@ function moveDetailHtml(mid){
     '<div class="kv" style="margin-top:10px">📚 <b style="color:#ffcb05">可学习的宝可梦</b>（'+users.length+'，🔑=需精英学习器）</div>'+
     '<div style="margin-top:4px;max-height:240px;overflow:auto">'+(chips||"—")+'</div>';
 }
+// 招式 tooltip（浮层，不替换详情弹窗）：紧凑显示威力/能量/时长/buff
+function moveTipHtml(mid){
+  var m=rows("SELECT * FROM moves WHERE move_id=?",[mid])[0];if(!m)return "未找到招式";
+  var slotName=m.slot==="fast"?"快攻":"大招";
+  var dpe=(m.pve_energy&&m.pve_power)?(m.pve_power/Math.abs(m.pve_energy)).toFixed(2):"";
+  var nUsers=rows("SELECT COUNT(DISTINCT species_id) n FROM pokemon_moves WHERE move_id=?",[mid])[0];
+  var buffTxt="";if(m.pvp_buffs){try{buffTxt=JSON.stringify(JSON.parse(m.pvp_buffs));}catch(e){buffTxt=m.pvp_buffs;}}
+  return '<div style="font-weight:800;font-size:13.5px;margin-bottom:4px">'+esc(m.name_cn)+' '+tchip(m.type)+' <span style="color:#9aa1b4;font-weight:400;font-size:11px">'+esc(m.name_en)+' · '+slotName+'</span></div>'+
+    '<div style="font-size:12px;line-height:1.7">'+
+    '⚔️ <b style="color:#ffcb05">PvE</b>：威力 '+(m.pve_power||0)+' · 能量 '+(m.pve_energy||0)+' · 时长 '+(m.pve_duration_ms?(m.pve_duration_ms/1000)+'s':'?')+(dpe?' · 威能比 '+dpe:'')+'<br>'+
+    '🥊 <b style="color:#ffcb05">PvP</b>：威力 '+(m.pvp_power||0)+' · 能量 '+(m.pvp_energy||0)+(buffTxt?'<br>✨ 效果：<span style="color:#ffcb05">'+esc(buffTxt)+'</span>':'')+'<br>'+
+    '<span style="color:#9aa1b4">📚 '+(nUsers?nUsers.n:0)+' 只可学 · <span style="color:#46d39a;cursor:pointer" onclick="moveModal(\''+esc(mid)+'\')">看完整名单 →</span></span>'+
+    '</div>';
+}
+function ensureTip(){
+  if(document.getElementById("pmTip"))return;
+  var t=document.createElement("div");t.id="pmTip";
+  t.style.cssText="display:none;position:fixed;z-index:10001;max-width:280px;background:#0f1320;border:1px solid #3a4258;border-radius:11px;padding:10px 12px;color:#e9ebf2;font-family:-apple-system,'PingFang SC',system-ui,sans-serif;box-shadow:0 12px 40px -8px rgba(0,0,0,.8)";
+  document.body.appendChild(t);
+}
+function hideTip(){var t=document.getElementById("pmTip");if(t)t.style.display="none";}
 window.pokeModal=function(dex){load().then(function(){var r=rows("SELECT species_id FROM pokemon WHERE dex=? AND is_shadow=0 ORDER BY length(species_id) LIMIT 1",[+dex]);if(r[0])show(r[0].species_id);});};
 window.pokeModalSid=function(sid){load().then(function(){show(sid);});};
 window.moveModal=function(mid){load().then(function(){showHtml(moveDetailHtml(mid));});};
+window.moveTip=function(ev,mid){
+  if(ev){ev.preventDefault();ev.stopPropagation();}
+  load().then(function(){
+    ensureTip();var t=document.getElementById("pmTip");
+    t.innerHTML=moveTipHtml(mid);t.style.display="block";
+    // 定位在点击点附近，做视口夹取
+    var x=(ev&&ev.clientX)||120,y=(ev&&ev.clientY)||120;
+    var w=t.offsetWidth,h=t.offsetHeight,vw=window.innerWidth,vh=window.innerHeight;
+    var left=Math.min(x+12,vw-w-10),top=y+14; if(top+h>vh-10)top=Math.max(10,y-h-12);
+    t.style.left=Math.max(10,left)+"px";t.style.top=top+"px";
+  });
+};
 window.pmClose=close;
+// 点击 tooltip 以外区域 / 滚动 / Esc 关闭 tooltip
+document.addEventListener("click",function(e){var t=document.getElementById("pmTip");if(t&&t.style.display==="block"&&!t.contains(e.target)&&!(e.target.closest&&e.target.closest('[onclick*="moveTip"]')))hideTip();},true);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")hideTip();});
 // 自动接线：把匹配选择器、且 src 含 official-artwork/<dex>.png 的图片标记为可点（data-pdex）。
 // 生成器无关：在页面加载后扫描现有 DOM，无论内容是静态还是脚本注入都能接上弹窗。
 window.pokeModalAutowire=function(sel){
