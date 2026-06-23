@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Pokémon GO 属性克制记忆训练 · 小游戏</title><style>
+:root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--panel3:#272c3b;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--accent2:#ffcb05;--good:#27c08a;--bad:#ff5c72;--warn:#ff9f43}
+*{box-sizing:border-box}html{overflow-x:hidden}
+body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.top{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.94);backdrop-filter:blur(8px);z-index:20}
+.top h1{margin:0;font-size:16px}.top h1 b{color:var(--accent2)}
+.main{max-width:760px;margin:0 auto;padding:14px 14px 90px}
+.modes{display:flex;gap:7px;margin:6px 0 14px;flex-wrap:wrap}
+.mtab{font-size:13px;font-weight:700;padding:8px 15px;border-radius:11px;cursor:pointer;background:var(--panel2);border:1px solid var(--line);color:var(--dim);transition:.14s}
+.mtab.on{background:linear-gradient(135deg,#3b6cff,#8a5cff);color:#fff;border-color:transparent;box-shadow:0 3px 14px -4px rgba(90,108,255,.7)}
+.hud{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.stat{flex:1;min-width:90px;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:10px 12px;text-align:center}
+.stat .v{font-size:22px;font-weight:800;line-height:1}.stat .l{font-size:10.5px;color:var(--dim);margin-top:4px}
+.combo .v{color:var(--accent2)}.acc .v{color:var(--good)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center}
+.qhint{font-size:12.5px;color:var(--dim);margin-bottom:14px}
+.matchup{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px 0 20px}
+.chip{font-weight:800;color:#0e1016;border-radius:12px;padding:9px 16px;font-size:17px;display:inline-block;box-shadow:0 3px 12px -4px rgba(0,0,0,.6)}
+.chip.sm{font-size:13px;padding:5px 11px;border-radius:9px}
+.arrow{font-size:22px;color:var(--dim);font-weight:800}
+.defcombo{display:flex;gap:7px;align-items:center}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+@media(max-width:520px){.opts{grid-template-columns:1fr}}
+.opt{padding:13px;border-radius:13px;border:1.5px solid var(--line);background:var(--panel2);color:var(--txt);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.12s;display:flex;align-items:center;justify-content:center;gap:8px}
+.opt:hover{border-color:var(--accent);transform:translateY(-1px)}
+.opt .mul{font-size:11.5px;color:var(--dim);font-weight:600}
+.opt.correct{background:rgba(39,192,138,.2);border-color:var(--good);color:var(--good)}
+.opt.wrong{background:rgba(255,92,114,.18);border-color:var(--bad);color:var(--bad)}
+.opt.dim{opacity:.4}
+.opt:disabled{cursor:default}
+.fb{margin-top:16px;font-size:14px;font-weight:700;min-height:22px}
+.fb .why{font-weight:400;font-size:12.5px;color:var(--dim);margin-top:5px;line-height:1.6}
+.next{margin-top:14px;padding:11px 26px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit}
+.next:active{transform:scale(.98)}
+/* weakness mode */
+.pool{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:4px 0 16px}
+.tcell{font-weight:700;color:#0e1016;border-radius:9px;padding:7px 11px;font-size:13px;cursor:pointer;border:2.5px solid transparent;transition:.1s;user-select:none}
+.tcell.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.25)}
+.tcell.hit{outline:3px solid var(--good);outline-offset:1px}
+.tcell.miss{outline:3px solid var(--bad);outline-offset:1px;opacity:.7}
+.tcell.shouldve{outline:3px dashed var(--warn);outline-offset:1px}
+/* reference */
+.ref{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px}
+.reftypes{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.rt{font-weight:700;color:#0e1016;border-radius:9px;padding:6px 10px;font-size:12.5px;cursor:pointer;opacity:.55;border:2px solid transparent}
+.rt.on{opacity:1;border-color:#fff}
+.refsec{margin:13px 0}.refsec h3{font-size:13px;margin:0 0 7px;color:var(--accent2)}
+.refrow{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.refrow .lbl{font-size:11.5px;color:var(--dim);width:96px;flex:none}
+.tag{font-size:11px;font-weight:700;color:#0e1016;border-radius:7px;padding:3px 8px}
+.note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.7}
+.bigchart{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:10px}
+.bigchart table{border-collapse:collapse;font-size:9px}
+.bigchart th,.bigchart td{width:20px;height:20px;text-align:center;border:1px solid #20242f}
+.bigchart th{position:sticky;background:var(--panel2);font-weight:700;color:#0e1016}
+.bigchart thead th{top:0;z-index:2}.bigchart tbody th{left:0;z-index:1}
+.bigchart .cc{font-size:9px;font-weight:700}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-top:8px;align-items:center}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:3px;vertical-align:-2px}
+</style></head><body>
+<div class="top"><h1>Pokémon GO <b>属性克制记忆训练</b></h1>
+<nav><a href="index.html">⚔️ PvP</a><a href="db.html">🗄️ 数据库</a></nav></div>
+<div class="main">
+<div class="modes" id="modes"></div>
+<div id="view"></div>
+<div class="note">PoGO 相克倍率体系：克制 ×1.6 / 一般 ×1 / 抵抗 ×0.625 / 双重抵抗 ×0.39（无 0 免疫）；双属性叠加相乘（双克 ×2.56、双抵 ×0.39、克+抵=×1）。数据与全站统一。</div>
+</div>
+<script>
+var EFF={"Normal":{"Normal":1,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":1,"Poison":1,"Ground":1,"Flying":1,"Psychic":1,"Bug":1,"Rock":0.625,"Ghost":0.390625,"Dragon":1,"Dark":1,"Steel":0.625,"Fairy":1},"Fire":{"Normal":1,"Fire":0.625,"Water":0.625,"Electric":1,"Grass":1.6,"Ice":1.6,"Fighting":1,"Poison":1,"Ground":1,"Flying":1,"Psychic":1,"Bug":1.6,"Rock":0.625,"Ghost":1,"Dragon":0.625,"Dark":1,"Steel":1.6,"Fairy":1},"Water":{"Normal":1,"Fire":1.6,"Water":0.625,"Electric":1,"Grass":0.625,"Ice":1,"Fighting":1,"Poison":1,"Ground":1.6,"Flying":1,"Psychic":1,"Bug":1,"Rock":1.6,"Ghost":1,"Dragon":0.625,"Dark":1,"Steel":1,"Fairy":1},"Electric":{"Normal":1,"Fire":1,"Water":1.6,"Electric":0.625,"Grass":0.625,"Ice":1,"Fighting":1,"Poison":1,"Ground":0.390625,"Flying":1.6,"Psychic":1,"Bug":1,"Rock":1,"Ghost":1,"Dragon":0.625,"Dark":1,"Steel":1,"Fairy":1},"Grass":{"Normal":1,"Fire":0.625,"Water":1.6,"Electric":1,"Grass":0.625,"Ice":1,"Fighting":1,"Poison":0.625,"Ground":1.6,"Flying":0.625,"Psychic":1,"Bug":0.625,"Rock":1.6,"Ghost":1,"Dragon":0.625,"Dark":1,"Steel":0.625,"Fairy":1},"Ice":{"Normal":1,"Fire":0.625,"Water":0.625,"Electric":1,"Grass":1.6,"Ice":0.625,"Fighting":1,"Poison":1,"Ground":1.6,"Flying":1.6,"Psychic":1,"Bug":1,"Rock":1,"Ghost":1,"Dragon":1.6,"Dark":1,"Steel":0.625,"Fairy":1},"Fighting":{"Normal":1.6,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1.6,"Fighting":1,"Poison":0.625,"Ground":1,"Flying":0.625,"Psychic":0.625,"Bug":0.625,"Rock":1.6,"Ghost":0.390625,"Dragon":1,"Dark":1.6,"Steel":1.6,"Fairy":0.625},"Poison":{"Normal":1,"Fire":1,"Water":1,"Electric":1,"Grass":1.6,"Ice":1,"Fighting":1,"Poison":0.625,"Ground":0.625,"Flying":1,"Psychic":1,"Bug":1,"Rock":0.625,"Ghost":0.625,"Dragon":1,"Dark":1,"Steel":0.390625,"Fairy":1.6},"Ground":{"Normal":1,"Fire":1.6,"Water":1,"Electric":1.6,"Grass":0.625,"Ice":1,"Fighting":1,"Poison":1.6,"Ground":1,"Flying":0.390625,"Psychic":1,"Bug":0.625,"Rock":1.6,"Ghost":1,"Dragon":1,"Dark":1,"Steel":1.6,"Fairy":1},"Flying":{"Normal":1,"Fire":1,"Water":1,"Electric":0.625,"Grass":1.6,"Ice":1,"Fighting":1.6,"Poison":1,"Ground":1,"Flying":1,"Psychic":1,"Bug":1.6,"Rock":0.625,"Ghost":1,"Dragon":1,"Dark":1,"Steel":0.625,"Fairy":1},"Psychic":{"Normal":1,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":1.6,"Poison":1.6,"Ground":1,"Flying":1,"Psychic":0.625,"Bug":1,"Rock":1,"Ghost":1,"Dragon":1,"Dark":0.390625,"Steel":0.625,"Fairy":1},"Bug":{"Normal":1,"Fire":0.625,"Water":1,"Electric":1,"Grass":1.6,"Ice":1,"Fighting":0.625,"Poison":0.625,"Ground":1,"Flying":0.625,"Psychic":1.6,"Bug":1,"Rock":1,"Ghost":0.625,"Dragon":1,"Dark":1.6,"Steel":0.625,"Fairy":0.625},"Rock":{"Normal":1,"Fire":1.6,"Water":1,"Electric":1,"Grass":1,"Ice":1.6,"Fighting":0.625,"Poison":1,"Ground":0.625,"Flying":1.6,"Psychic":1,"Bug":1.6,"Rock":1,"Ghost":1,"Dragon":1,"Dark":1,"Steel":0.625,"Fairy":1},"Ghost":{"Normal":0.390625,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":1,"Poison":1,"Ground":1,"Flying":1,"Psychic":1.6,"Bug":1,"Rock":1,"Ghost":1.6,"Dragon":1,"Dark":0.625,"Steel":1,"Fairy":1},"Dragon":{"Normal":1,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":1,"Poison":1,"Ground":1,"Flying":1,"Psychic":1,"Bug":1,"Rock":1,"Ghost":1,"Dragon":1.6,"Dark":1,"Steel":0.625,"Fairy":0.390625},"Dark":{"Normal":1,"Fire":1,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":0.625,"Poison":1,"Ground":1,"Flying":1,"Psychic":1.6,"Bug":1,"Rock":1,"Ghost":1.6,"Dragon":1,"Dark":0.625,"Steel":1,"Fairy":0.625},"Steel":{"Normal":1,"Fire":0.625,"Water":0.625,"Electric":0.625,"Grass":1,"Ice":1.6,"Fighting":1,"Poison":1,"Ground":1,"Flying":1,"Psychic":1,"Bug":1,"Rock":1.6,"Ghost":1,"Dragon":1,"Dark":1,"Steel":0.625,"Fairy":1.6},"Fairy":{"Normal":1,"Fire":0.625,"Water":1,"Electric":1,"Grass":1,"Ice":1,"Fighting":1.6,"Poison":0.625,"Ground":1,"Flying":1,"Psychic":1,"Bug":1,"Rock":1,"Ghost":1,"Dragon":1.6,"Dark":1.6,"Steel":0.625,"Fairy":1}};
+var TYPES=["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"];
+var CN={Normal:"一般",Fire:"火",Water:"水",Electric:"电",Grass:"草",Ice:"冰",Fighting:"格斗",Poison:"毒",Ground:"地面",Flying:"飞行",Psychic:"超能力",Bug:"虫",Rock:"岩石",Ghost:"幽灵",Dragon:"龙",Dark:"恶",Steel:"钢",Fairy:"妖精"};
+var COL={Normal:"#9099a1",Fire:"#ff6b3d",Water:"#4f9fff",Electric:"#ffd23d",Grass:"#5fbf52",Ice:"#7fd6d6",Fighting:"#d3425f",Poison:"#a95fc9",Ground:"#d9ab55",Flying:"#92a8ff",Psychic:"#ff5f8f",Bug:"#9fb336",Rock:"#c8b681",Ghost:"#6f5b9e",Dragon:"#5a78e0",Dark:"#5a5468",Steel:"#5a8fa0",Fairy:"#f08fc7"};
+function $(id){return document.getElementById(id);}
+function chip(t,sm){return '<span class="chip'+(sm?' sm':'')+'" style="background:'+COL[t]+'">'+CN[t]+'</span>';}
+function rnd(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+// 攻击属性 atk 对 防守属性数组 defs 的总倍率
+function mult(atk,defs){var m=1;for(var i=0;i<defs.length;i++)m*=EFF[atk][defs[i]];return m;}
+// 倍率→类别
+var BUCKETS=[
+  {key:"de",lo:2.0,hi:9,cn:"双重克制",mul:"×2.56",col:"#ff3b5c"},
+  {key:"se",lo:1.2,hi:2.0,cn:"克制",mul:"×1.6",col:"#ff8a3d"},
+  {key:"nu",lo:0.8,hi:1.2,cn:"一般",mul:"×1",col:"#9aa1b4"},
+  {key:"re",lo:0.5,hi:0.8,cn:"抵抗",mul:"×0.625",col:"#4f9fff"},
+  {key:"dr",lo:0,hi:0.5,cn:"双重抵抗",mul:"×0.39",col:"#5a78e0"}
+];
+function bucket(m){for(var i=0;i<BUCKETS.length;i++)if(m>=BUCKETS[i].lo&&m<BUCKETS[i].hi)return BUCKETS[i];return BUCKETS[2];}
+function mulText(m){return "×"+(Math.round(m*1000)/1000);}
+
+var MODE="judge";
+var S={score:0,combo:0,best:0,right:0,total:0};
+var MODES=[["judge","⚔️ 克制判定"],["weak","🛡️ 找弱点"],["ref","📖 属性速查"]];
+function renderModes(){
+  $("modes").innerHTML=MODES.map(function(m){return '<span class="mtab'+(m[0]===MODE?" on":"")+'" onclick="setMode(\''+m[0]+'\')">'+m[1]+'</span>';}).join("");
+}
+function setMode(m){MODE=m;renderModes();if(m==="judge")newJudge();else if(m==="weak")newWeak();else renderRef();}
+window.setMode=setMode;
+function hud(){
+  return '<div class="hud">'+
+    '<div class="stat"><div class="v">'+S.score+'</div><div class="l">得分</div></div>'+
+    '<div class="stat combo"><div class="v">'+S.combo+'🔥</div><div class="l">连击（最高 '+S.best+'）</div></div>'+
+    '<div class="stat acc"><div class="v">'+(S.total?Math.round(S.right/S.total*100):0)+'%</div><div class="l">正确率 '+S.right+'/'+S.total+'</div></div>'+
+    '</div>';
+}
+function award(ok){
+  S.total++;
+  if(ok){S.right++;S.combo++;if(S.combo>S.best)S.best=S.combo;S.score+=10+Math.min(S.combo,10)*2;}
+  else{S.combo=0;}
+}
+
+// ===== 模式1：克制判定 =====
+var curJ=null;
+function newJudge(){
+  var atk=rnd(TYPES);
+  var dual=Math.random()<0.45;
+  var defs=[rnd(TYPES)];
+  if(dual){var d2=rnd(TYPES);var g=0;while(d2===defs[0]&&g++<10)d2=rnd(TYPES);if(d2!==defs[0])defs.push(d2);}
+  var m=mult(atk,defs);
+  curJ={atk:atk,defs:defs,m:m,b:bucket(m),done:false};
+  var defHtml=defs.map(function(t){return chip(t,true);}).join('<span style="color:#6b7280">/</span>');
+  var opts=BUCKETS.map(function(b){return '<button class="opt" onclick="ansJudge(\''+b.key+'\')"><span>'+b.cn+'</span><span class="mul">'+b.mul+'</span></button>';}).join("");
+  $("view").innerHTML=hud()+
+    '<div class="card"><div class="qhint">下面这个<b>攻击属性</b>打这个<b>防守宝可梦</b>，效果是？</div>'+
+    '<div class="matchup">'+chip(curJ.atk)+'<span class="arrow">→</span><span class="defcombo">'+defHtml+'</span></div>'+
+    '<div class="opts" id="jopts">'+opts+'</div>'+
+    '<div class="fb" id="jfb"></div></div>';
+}
+window.newJudge=newJudge;
+function ansJudge(key){
+  if(curJ.done)return;curJ.done=true;
+  var ok=key===curJ.b.key;award(ok);
+  var btns=$("jopts").querySelectorAll(".opt");
+  btns.forEach(function(btn,i){
+    var bk=BUCKETS[i].key;btn.disabled=true;
+    if(bk===curJ.b.key)btn.className="opt correct";
+    else if(bk===key)btn.className="opt wrong";
+    else btn.className="opt dim";
+  });
+  var defNames=curJ.defs.map(function(t){return CN[t];}).join("/");
+  var why="";
+  if(curJ.defs.length>1){
+    why=CN[curJ.atk]+" 打 "+CN[curJ.defs[0]]+" ="+mulText(EFF[curJ.atk][curJ.defs[0]])+"，打 "+CN[curJ.defs[1]]+" ="+mulText(EFF[curJ.atk][curJ.defs[1]])+"，相乘 = "+mulText(curJ.m);
+  }else{
+    why="实际倍率 "+mulText(curJ.m);
+  }
+  $("jfb").innerHTML=(ok?'<span style="color:var(--good)">✓ 正确！+'+(10+Math.min(S.combo,10)*2)+'</span>':'<span style="color:var(--bad)">✗ 正确答案：'+curJ.b.cn+'</span>')+
+    '<div class="why">'+why+'</div>'+
+    '<button class="next" onclick="newJudge()">下一题 →</button>';
+  $("view").querySelector(".hud").outerHTML=hud();
+}
+window.ansJudge=ansJudge;
+
+// ===== 模式2：找弱点（多选）=====
+var curW=null;
+function newWeak(){
+  var dual=Math.random()<0.6;
+  var defs=[rnd(TYPES)];
+  if(dual){var d2=rnd(TYPES);var g=0;while(d2===defs[0]&&g++<10)d2=rnd(TYPES);if(d2!==defs[0])defs.push(d2);}
+  var weak={};TYPES.forEach(function(a){if(mult(a,defs)>1.2)weak[a]=1;});
+  curW={defs:defs,weak:weak,sel:{},done:false};
+  var defHtml=defs.map(function(t){return chip(t,true);}).join('<span style="color:#6b7280">/</span>');
+  var pool=TYPES.map(function(t){return '<span class="tcell" id="w_'+t+'" style="background:'+COL[t]+'" onclick="toggleW(\''+t+'\')">'+CN[t]+'</span>';}).join("");
+  $("view").innerHTML=hud()+
+    '<div class="card"><div class="qhint">选出所有能<b>克制</b>（打出 ×1.6 或更高）下面这只宝可梦的属性，可多选：</div>'+
+    '<div class="matchup"><span class="defcombo">'+defHtml+'</span></div>'+
+    '<div class="pool">'+pool+'</div>'+
+    '<button class="next" id="wsubmit" onclick="submitW()">提交答案</button>'+
+    '<div class="fb" id="wfb"></div></div>';
+}
+window.newWeak=newWeak;
+function toggleW(t){
+  if(curW.done)return;
+  if(curW.sel[t])delete curW.sel[t];else curW.sel[t]=1;
+  $("w_"+t).classList.toggle("sel",!!curW.sel[t]);
+}
+window.toggleW=toggleW;
+function submitW(){
+  if(curW.done)return;curW.done=true;
+  var allRight=true;
+  TYPES.forEach(function(t){
+    var el=$("w_"+t);el.style.cursor="default";
+    var should=!!curW.weak[t],picked=!!curW.sel[t];
+    el.classList.remove("sel");
+    if(picked&&should)el.classList.add("hit");
+    else if(picked&&!should){el.classList.add("miss");allRight=false;}
+    else if(!picked&&should){el.classList.add("shouldve");allRight=false;}
+    else el.style.opacity=.3;
+  });
+  award(allRight);
+  var weakList=Object.keys(curW.weak).map(function(t){return CN[t];});
+  $("wsubmit").style.display="none";
+  $("wfb").innerHTML=(allRight?'<span style="color:var(--good)">✓ 全对！+'+(10+Math.min(S.combo,10)*2)+'</span>':'<span style="color:var(--bad)">✗ 有偏差</span>')+
+    '<div class="why">弱点（×1.6+）：'+(weakList.length?weakList.join("、"):"无（强壮的防御组合！）")+'<br><span style="color:var(--good)">绿=选对</span> · <span style="color:var(--bad)">红=多选</span> · <span style="color:var(--warn)">黄虚线=漏选</span></div>'+
+    '<button class="next" onclick="newWeak()">下一题 →</button>';
+  $("view").querySelector(".hud").outerHTML=hud();
+}
+window.submitW=submitW;
+
+// ===== 模式3：属性速查 =====
+var refT="Fire";
+function renderRef(){
+  var t=refT;
+  // 进攻：t 打谁
+  var atkSE=[],atkRe=[];
+  TYPES.forEach(function(d){var m=EFF[t][d];if(m>1.2)atkSE.push(d);else if(m<0.8)atkRe.push(d);});
+  // 防守：谁打 t
+  var defWeak=[],defRes=[];
+  TYPES.forEach(function(a){var m=EFF[a][t];if(m>1.2)defWeak.push(a);else if(m<0.8)defRes.push(a);});
+  function tags(arr){return arr.length?arr.map(function(x){return '<span class="tag" style="background:'+COL[x]+'">'+CN[x]+'</span>';}).join(""):'<span style="color:var(--dim);font-size:11.5px">无</span>';}
+  var typeBtns=TYPES.map(function(x){return '<span class="rt'+(x===t?" on":"")+'" style="background:'+COL[x]+'" onclick="setRef(\''+x+'\')">'+CN[x]+'</span>';}).join("");
+  $("view").innerHTML='<div class="ref"><div class="reftypes">'+typeBtns+'</div>'+
+    '<div style="text-align:center;margin-bottom:6px">'+chip(t)+'</div>'+
+    '<div class="refsec"><h3>⚔️ 进攻（'+CN[t]+'系招式打谁）</h3>'+
+      '<div class="refrow"><span class="lbl">克制 ×1.6 →</span>'+tags(atkSE)+'</div>'+
+      '<div class="refrow"><span class="lbl">被抵抗 ↓</span>'+tags(atkRe)+'</div></div>'+
+    '<div class="refsec"><h3>🛡️ 防守（'+CN[t]+'系宝可梦怕谁）</h3>'+
+      '<div class="refrow"><span class="lbl">弱点 ×1.6 ↑</span>'+tags(defWeak)+'</div>'+
+      '<div class="refrow"><span class="lbl">抵抗 ↓</span>'+tags(defRes)+'</div></div>'+
+    chartHtml()+'</div>';
+}
+window.renderRef=renderRef;
+function setRef(t){refT=t;renderRef();}
+window.setRef=setRef;
+function chartHtml(){
+  var head='<tr><th title="行=攻击, 列=防守">▢</th>'+TYPES.map(function(d){return '<th style="background:'+COL[d]+'">'+CN[d].slice(0,1)+'</th>';}).join("")+'</tr>';
+  var body=TYPES.map(function(a){
+    var tds=TYPES.map(function(d){var m=EFF[a][d];var b=bucket(m);var sym=m>1.2?"+":(m<0.5?"=":(m<0.8?"−":""));var bg=m>1.2?"rgba(255,138,61,.85)":(m<0.5?"rgba(90,120,224,.85)":(m<0.8?"rgba(79,159,255,.55)":"transparent"));return '<td class="cc" style="background:'+bg+';color:'+(m!==1?"#0e1016":"#3a4150")+'">'+(sym||"·")+'</td>';}).join("");
+    return '<tr><th style="background:'+COL[a]+'">'+CN[a].slice(0,1)+'</th>'+tds+'</tr>';
+  }).join("");
+  return '<div class="refsec"><h3>📊 全表（行=攻击 列=防守）</h3><div class="bigchart"><table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></div>'+
+    '<div class="legend"><span><i style="background:rgba(255,138,61,.85)"></i>克制 +</span><span><i style="background:rgba(79,159,255,.55)"></i>抵抗 −</span><span><i style="background:rgba(90,120,224,.85)"></i>双抵 =</span><span>· 一般</span></div></div>';
+}
+renderModes();newJudge();
+</script>
+<script src="site-nav.js?v=4"></script>
+</body></html>
