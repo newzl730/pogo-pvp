@@ -76,14 +76,15 @@ a{color:var(--accent)}
 <script>
 var DB,MOVEID,META,curFilter=null,ALL=[],sortKey='dex',sortDir=1;
 var TYPES=["normal","fire","water","electric","grass","ice","fighting","poison","ground","flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"];
-var BASE={},NAME={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={};
+var BASE={},NAME={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={},PMDEX={};
+var NONSPECIAL={FRUSTRATION:1,RETURN:1};// 暗影默认招/报恩，不算"特殊招"
 function $(i){return document.getElementById(i);}
 function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
 function setStatus(t){$("status").innerHTML=t;}
 // ---- load engine data ----
 Promise.all([
   initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){return fetch("pokemon.db?v=box1").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));});}),
-  fetch("moveid.json").then(function(r){return r.json();}).then(function(j){MOVEID=j;}),
+  fetch("moveid.json?v=2").then(function(r){return r.json();}).then(function(j){MOVEID=j;}),
   fetch("metascore.json").then(function(r){return r.json();}).then(function(j){META=j;})
 ]).then(function(){
   rows("SELECT level,cpm FROM cpm").forEach(function(r){CPM[r.level]=r.cpm;});
@@ -96,6 +97,8 @@ Promise.all([
   });
   rows("SELECT move_id,type,slot,pve_power,pve_energy,pve_duration_ms FROM moves").forEach(function(m){MOVE[m.move_id]=m;});
   rows("SELECT species_id,move_id,slot FROM pokemon_moves").forEach(function(r){(PM[r.species_id]=PM[r.species_id]||[]).push(r);});
+  // dex -> 该图鉴号所有形态/暗影的合法招式并集（特殊招判定用，避免地区形态误判）
+  rows("SELECT pm.move_id mid,p.dex dex FROM pokemon_moves pm JOIN pokemon p ON p.species_id=pm.species_id").forEach(function(r){(PMDEX[r.dex]=PMDEX[r.dex]||{})[r.mid]=1;});
   rows("SELECT species_id,evolves_to FROM evolution").forEach(function(r){var a=SP[r.species_id],b=SP[r.evolves_to];if(a&&b){(EDGES[a.dex]=EDGES[a.dex]||[]).push(b.dex);}});
   setStatus("✅ 引擎就绪。拖入 PGStats.json 开始分析（本地处理，不上传）。");
   $("drop").style.borderColor="var(--good)";
@@ -142,9 +145,9 @@ function analyze(mons){
     x._event=(x.originEvents||[])[0]||"";x._size=x.size;
     // moves decode + legacy
     var sid=SIDOF[x._dex+"_"+x._sh]||SIDOF[x._dex+"_0"];x._sid=sid;
-    var legal={};(PM[sid]||[]).forEach(function(r){legal[r.move_id]=1;});
+    var legalDex=PMDEX[x._dex]||{};
     var mv=[],leg=false;
-    [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info)return;var sp=!legal[info.id];if(sp)leg=true;mv.push((sp?'🔑':'')+info.cn);});
+    [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info){mv.push("?#"+mi);return;}var sp=!legalDex[info.id]&&!NONSPECIAL[info.id];if(sp)leg=true;mv.push((sp?'🔑':'')+info.cn);});
     x._moves=mv.join("/");x._legacy=leg;x._2c=(x.move3||0)!==0;
     // PvE 最佳DPS：当前等级 & L40基准
     var spp=SP[sid];
