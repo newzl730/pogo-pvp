@@ -14,7 +14,8 @@ var L=[
   ["shiny.html","✨","异色"],
   ["myth.html","🔮","幻兽"],
   ["search.html","🔍","搜索"],
-  ["db.html","🗄️","数据库"]
+  ["db.html","🗄️","数据库"],
+  ["box.html","📦","盒子"]
 ];
 var NAVPAGES={};L.forEach(function(x){NAVPAGES[x[0]]=1;});
 function curPage(){
