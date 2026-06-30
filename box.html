@@ -23,9 +23,9 @@ body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e101
 .btn.g{background:var(--good)}.btn2{background:var(--panel3);color:var(--txt);border:1px solid var(--line)}
 table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
 th,td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
-th{position:sticky;top:54px;background:var(--panel2);cursor:pointer;font-size:11px;color:var(--dim);z-index:5}
+th{position:sticky;top:0;background:var(--panel2);cursor:pointer;font-size:11px;color:var(--dim);z-index:5}
 tr:hover td{background:rgba(255,255,255,.03)}
-.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.tablewrap{max-height:72vh;overflow:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel);-webkit-overflow-scrolling:touch}
 .act{font-weight:800;font-size:11px;border-radius:6px;padding:2px 7px}
 .a-KEEP{background:rgba(39,192,138,.2);color:var(--good)}.a-HESITATE{background:rgba(255,159,67,.2);color:var(--warn)}
 .a-TRADE{background:rgba(59,108,255,.2);color:#7ea2ff}.a-TRANSFER{background:rgba(255,92,114,.2);color:var(--bad)}
