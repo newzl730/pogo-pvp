@@ -1,0 +1,243 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Pokémon GO 盒子整理分析器 · PGStats</title><style>
+:root{--bg:#0e1016;--panel:#171a23;--panel2:#1f2330;--panel3:#272c3b;--line:#2c3142;--txt:#e9ebf2;--dim:#9aa1b4;--accent:#3b6cff;--accent2:#ffcb05;--good:#27c08a;--bad:#ff5c72;--warn:#ff9f43;--purple:#8a5cff}
+*{box-sizing:border-box}html{overflow-x:hidden}
+body{margin:0;background:radial-gradient(1100px 600px at 70% -12%,#16203a,#0e1016);color:var(--txt);font-family:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.top{padding:13px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;background:rgba(14,16,22,.94);backdrop-filter:blur(8px);z-index:20}
+.top h1{margin:0;font-size:16px}.top h1 b{color:var(--accent2)}
+.main{max-width:1000px;margin:0 auto;padding:14px 12px 90px}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:30px 18px;text-align:center;background:var(--panel);cursor:pointer;transition:.15s}
+.drop.over{border-color:var(--accent);background:var(--panel2)}
+.drop b{color:var(--accent2)}.drop .sub{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.7}
+.status{font-size:12.5px;color:var(--dim);margin:10px 2px}
+.sum{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}
+.scard{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center;cursor:pointer;transition:.12s}
+.scard:hover{border-color:var(--accent)}.scard.on{border-color:var(--accent2);box-shadow:0 0 0 1px var(--accent2)}
+.scard .v{font-size:26px;font-weight:800;line-height:1}.scard .l{font-size:11px;color:var(--dim);margin-top:5px}
+.scard .d{font-size:10px;color:var(--dim);margin-top:4px;line-height:1.5}
+.kc{color:var(--good)}.hc{color:var(--warn)}.tc{color:var(--accent)}.xc{color:var(--bad)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0;font-size:12.5px;color:var(--dim)}
+.bar input,.bar select{background:var(--panel3);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:6px 9px;font-size:12.5px;font-family:inherit;outline:none}
+.chip{display:inline-block;font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;color:#0e1016}
+.btn{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:7px 13px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn.g{background:var(--good)}.btn2{background:var(--panel3);color:var(--txt);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+th,td{padding:6px 7px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{position:sticky;top:54px;background:var(--panel2);cursor:pointer;font-size:11px;color:var(--dim);z-index:5}
+tr:hover td{background:rgba(255,255,255,.03)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.act{font-weight:800;font-size:11px;border-radius:6px;padding:2px 7px}
+.a-KEEP{background:rgba(39,192,138,.2);color:var(--good)}.a-HESITATE{background:rgba(255,159,67,.2);color:var(--warn)}
+.a-TRADE{background:rgba(59,108,255,.2);color:#7ea2ff}.a-TRANSFER{background:rgba(255,92,114,.2);color:var(--bad)}
+.search{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0;font-size:12.5px;line-height:1.9}
+.search code{background:var(--panel3);border-radius:5px;padding:1px 6px;color:#9fe0c0;user-select:all}
+.search h3{margin:0 0 8px;font-size:14px;color:var(--accent2)}
+.note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.8}
+.hide{display:none}
+a{color:var(--accent)}
+</style></head><body>
+<div class="top"><h1>Pokémon GO <b>盒子整理分析器</b></h1>
+<nav><a href="index.html">⚔️ PvP</a><a href="team.html">🛡️ 队伍</a><a href="db.html">🗄️ 数据库</a></nav></div>
+<div class="main">
+<div id="drop" class="drop">
+  <div style="font-size:30px">📦</div>
+  <div>把 <b>PGStats.json</b> 拖进来，或点此选择文件</div>
+  <div class="sub">完全在你浏览器本地分析，<b>不上传任何数据</b>。<br>导出方式：PGStats / Poke Genie 等工具导出账号 JSON。</div>
+  <input type="file" id="file" accept=".json,application/json" class="hide">
+</div>
+<div class="status" id="status">等待引擎数据…</div>
+<div id="results" class="hide">
+  <div class="sum" id="sum"></div>
+  <div class="bar">
+    <input id="q" placeholder="搜名字/图鉴号…" oninput="render()" style="flex:1;min-width:140px">
+    <label><input type="checkbox" id="fsh" onchange="render()"> 只看暗影</label>
+    <label><input type="checkbox" id="fdyn" onchange="render()"> 只看极巨</label>
+    <select id="frar" onchange="render()"><option value="">全部稀有度</option><option>legendary</option><option>mythical</option><option>ultrabeast</option><option>regional</option><option>common</option></select>
+    <button class="btn g" onclick="exportCSV()">⬇ 导出CSV</button>
+  </div>
+  <div class="search" id="searchbox"></div>
+  <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
+<script>
+var DB,MOVEID,META,curFilter=null,ALL=[],sortKey='dex',sortDir=1;
+var TYPES=["normal","fire","water","electric","grass","ice","fighting","poison","ground","flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"];
+var BASE={},NAME={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={};
+function $(i){return document.getElementById(i);}
+function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
+function setStatus(t){$("status").innerHTML=t;}
+// ---- load engine data ----
+Promise.all([
+  initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){return fetch("pokemon.db?v=box1").then(function(r){return r.arrayBuffer();}).then(function(b){DB=new SQL.Database(new Uint8Array(b));});}),
+  fetch("moveid.json").then(function(r){return r.json();}).then(function(j){MOVEID=j;}),
+  fetch("metascore.json").then(function(r){return r.json();}).then(function(j){META=j;})
+]).then(function(){
+  rows("SELECT level,cpm FROM cpm").forEach(function(r){CPM[r.level]=r.cpm;});
+  LEVELS=Object.keys(CPM).map(Number).sort(function(a,b){return a-b;});
+  rows("SELECT species_id,dex,name_cn,name_en,type1,type2,atk,def,hp,is_shadow,is_mega,is_legendary,is_mythical,is_ultrabeast,is_regional,released FROM pokemon ORDER BY length(species_id)").forEach(function(p){
+    SP[p.species_id]=p;
+    if(!p.is_mega) if(!SIDOF[p.dex+"_"+p.is_shadow]) SIDOF[p.dex+"_"+p.is_shadow]=p.species_id;
+    if(p.is_mega){MEGADEX[p.dex]=1;return;}
+    if(BASE[p.dex]===undefined){BASE[p.dex]=[p.atk,p.def,p.hp];NAME[p.dex]=p.name_cn;EN[p.dex]=(p.name_en||"").toLowerCase();FLAG[p.dex]={leg:p.is_legendary,my:p.is_mythical,ub:p.is_ultrabeast,reg:p.is_regional};}
+  });
+  rows("SELECT move_id,type,slot,pve_power,pve_energy,pve_duration_ms FROM moves").forEach(function(m){MOVE[m.move_id]=m;});
+  rows("SELECT species_id,move_id,slot FROM pokemon_moves").forEach(function(r){(PM[r.species_id]=PM[r.species_id]||[]).push(r);});
+  rows("SELECT species_id,evolves_to FROM evolution").forEach(function(r){var a=SP[r.species_id],b=SP[r.evolves_to];if(a&&b){(EDGES[a.dex]=EDGES[a.dex]||[]).push(b.dex);}});
+  setStatus("✅ 引擎就绪。拖入 PGStats.json 开始分析（本地处理，不上传）。");
+  $("drop").style.borderColor="var(--good)";
+}).catch(function(e){setStatus('<span style="color:var(--bad)">引擎加载失败：'+e.message+'</span>');});
+
+// ---- engine ----
+function cpAt(a,d,s,m){return Math.max(10,Math.floor(a*Math.sqrt(d)*Math.sqrt(s)*m*m/10));}
+function spOf(base,iv,cap){var bL=0;for(var i=0;i<LEVELS.length;i++){var L=LEVELS[i];if(cpAt(base[0]+iv[0],base[1]+iv[1],base[2]+iv[2],CPM[L])<=cap)bL=L;}if(!bL)return 0;var m=CPM[bL];return (base[0]+iv[0])*m*((base[1]+iv[1])*m)*Math.floor((base[2]+iv[2])*m);}
+var _rk={};
+function rankOf(dex,iv,cap){var base=BASE[dex];if(!base)return null;var k=dex+"_"+cap;if(!_rk[k]){var v=[];for(var a=0;a<16;a++)for(var d=0;d<16;d++)for(var s=0;s<16;s++)v.push(spOf(base,[a,d,s],cap));v.sort(function(x,y){return x-y;});_rk[k]=v;}var asc=_rk[k],mine=spOf(base,iv,cap);var lo=0,hi=asc.length;while(lo<hi){var mid=(lo+hi)>>1;if(asc[mid]<=mine)lo=mid+1;else hi=mid;}return asc.length-lo+1;}
+function descendants(dex){var seen={},st=[dex];while(st.length){var c=st.pop();(EDGES[c]||[]).forEach(function(n){if(!seen[n]){seen[n]=1;st.push(n);}});}return seen;}
+function bestMoveset(sid,T){var fa=[],ch=[];(PM[sid]||[]).forEach(function(r){var mv=MOVE[r.move_id];if(!mv||mv.type!==T||!mv.pve_duration_ms||mv.pve_duration_ms<=0)return;if(r.slot==="fast"&&mv.pve_energy>0)fa.push(mv);else if(r.slot==="charged"&&mv.pve_energy<0)ch.push(mv);});return [fa,ch];}
+function pveScore(eA,eD,eH,types,fa,ch,T){function dm(pw,mt){return 0.5*pw*(eA/180)*(types.indexOf(mt)>=0?1.2:1)+1;}var best=0;for(var i=0;i<fa.length;i++){var f=fa[i],Tf=f.pve_duration_ms/1000,fd=dm(f.pve_power,f.type)/Tf,fe=f.pve_energy/Tf;for(var j=0;j<ch.length;j++){var cc=ch[j],Tc=cc.pve_duration_ms/1000,cd=dm(cc.pve_power,cc.type)/Tc,ce=Math.abs(cc.pve_energy)/Tc;var DPS=(fd*ce+cd*fe)/(ce+fe),TDO=DPS*eH*(eD/180)/100,sc=DPS*Math.sqrt(TDO);if(sc>best)best=sc;}}return best;}
+function pveRelevant(dex,PVEset){if(PVEset[dex])return 'final';var f=FLAG[dex]||{};if(f.leg||f.my||f.ub)return 'final';var desc=descendants(dex);for(var dd in desc){if(PVEset[dd])return 'fodder';var f2=FLAG[dd]||{};if(f2.leg||f2.my||f2.ub)return 'fodder';}return null;}
+
+function analyze(mons){
+  // annotate
+  mons.forEach(function(x){
+    var pd=x.pokemonDisplay||{};
+    x._dex=x.pokemonId;x._sh=pd.alignment===1?1:0;
+    x._iv=[x.individualAttack||0,x.individualDefense||0,x.individualStamina||0];x._ivs=x._iv[0]+x._iv[1]+x._iv[2];
+    x._cp=x.cp||0;x._ecpm=(x.cpMultiplier||0)+(x.additionalCpMultiplier||0);
+    x._gl=rankOf(x._dex,x._iv,1500);x._ul=rankOf(x._dex,x._iv,2500);
+    var ms=META[x._dex]||{gl:0,ul:0};x._glv=ms.gl;x._ulv=ms.ul;
+    var f=FLAG[x._dex]||{};x._rare=f.leg?'legendary':f.my?'mythical':f.ub?'ultrabeast':f.reg?'regional':'common';
+    x._card=!!(pd.locationCard);x._cost=pd.costume||0;x._shiny=!!pd.shiny;x._lucky=!!x.isLucky;x._fav=!!x.favorite;
+    x._dyn=!!(x.breadMoves&&x.breadMoves.length)||(pd.breadModeEnum||0)>0;
+    x._collect=x._fav||x._shiny||x._lucky||!!x._cost||x._ivs===45||x._card;
+    x._event=(x.originEvents||[])[0]||"";x._size=x.size;
+    // moves decode + legacy
+    var sid=SIDOF[x._dex+"_"+x._sh]||SIDOF[x._dex+"_0"];x._sid=sid;
+    var legal={};(PM[sid]||[]).forEach(function(r){legal[r.move_id]=1;});
+    var mv=[],leg=false;
+    [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info)return;mv.push(info.cn);if(!legal[info.id])leg=true;});
+    x._moves=mv.join("/");x._legacy=leg;x._2c=(x.move3||0)!==0;
+  });
+  // PvE top-20 per type by actual power
+  var PVEset={},perT={};
+  mons.forEach(function(x){
+    var sid=x._sid;if(!sid||!SP[sid])return;var sp=SP[sid];var types=[sp.type1,sp.type2].filter(Boolean);
+    var m=x._ecpm||CPM[20];var eA=(sp.atk+x._iv[0])*m*(x._sh?1.2:1),eD=(sp.def+x._iv[1])*m*(x._sh?0.8333:1),eH=Math.floor((sp.hp+x._iv[2])*m);
+    types.forEach(function(T){var ms=bestMoveset(sid,T);if(!ms[0].length||!ms[1].length)return;var s=pveScore(eA,eD,eH,types,ms[0],ms[1],T);if(s>0)(perT[T]=perT[T]||[]).push([s,x]);});
+  });
+  TYPES.forEach(function(T){(perT[T]||[]).sort(function(a,b){return b[0]-a[0];});(perT[T]||[]).slice(0,20).forEach(function(p){p[1]._pve=1;});});
+
+  // classify, grouped by (dex,shadow)
+  var by={};mons.forEach(function(x){(by[x._dex+"_"+x._sh]=by[x._dex+"_"+x._sh]||[]).push(x);});
+  function cval(x){return x._fav*100+x._lucky*40+x._card*30+(x._ivs===45)*25+(x._size===5?8:0)+Math.max(x._gl||999>500?0:0,0)+x._cp/2000+x._legacy*15+x._2c*5+(1000-(Math.min(x._gl||999,x._ul||999)))/200;}
+  Object.keys(by).forEach(function(key){
+    var lst=by[key];lst.sort(function(a,b){return b._cp-a._cp;});
+    var dex=lst[0]._dex,f=FLAG[dex]||{};
+    var rel=pveRelevant(dex,PVEset);
+    var fodderN=rel==='fodder'?2:0,fodderKept=0;
+    var col={},dyn=[];
+    lst.forEach(function(x){
+      var r=null;
+      if(x._pve) r='pve-type';
+      else if(x._dyn){ if(x._collect){x._act='KEEP';x._reason='dynamax';} else dyn.push(x); return; }
+      else if(x._collect){ var sig=x._shiny+"_"+x._cost; (col[sig]=col[sig]||[]).push(x); return; }
+      else if((x._gl&&x._gl<=10)||(x._ul&&x._ul<=10)) r=((x._glv>=80||x._ulv>=80)?'pvp':'pvp-future');
+      else if(rel==='fodder'&&fodderKept<fodderN){r='evolve-fodder';fodderKept++;}
+      else if(x._legacy&&(x._rare!=='common'||x._glv>=80||x._ulv>=80)) r='legacy';
+      if(r){x._act='KEEP';x._reason=r;}
+      else if(x._sh){x._act='TRANSFER';x._reason='shadow-junk';}
+      else if(x._rare!=='common'){x._act='TRADE';x._reason='rare-spare';}
+      else {x._act='TRANSFER';x._reason='junk';}
+    });
+    Object.keys(col).forEach(function(sig){var g=col[sig];g.sort(function(a,b){return cval(b)-cval(a);});g[0]._act='KEEP';g[0]._reason='collect';g.slice(1).forEach(function(x){x._act='HESITATE';x._reason='collect-dup';});});
+    dyn.sort(function(a,b){return (b._ivs-a._ivs)||(b._cp-a._cp);});dyn.forEach(function(x,i){if(i===0){x._act='KEEP';x._reason='dynamax';}else{x._act='HESITATE';x._reason='dynamax-dup';}});
+  });
+  return mons;
+}
+
+// ---- file handling ----
+function handleFile(file){
+  setStatus("读取中…");
+  var fr=new FileReader();
+  fr.onload=function(){
+    try{
+      var d=JSON.parse(fr.result);
+      var mons=(d.pokemons||[]).filter(function(x){return x.pokemonDisplay&&!x.isEgg;});
+      if(!mons.length){setStatus('<span style="color:var(--bad)">没找到宝可梦数据（需要 PGStats 账号导出的 JSON）</span>');return;}
+      setStatus("分析 "+mons.length+" 只中…（PvP 排名枚举约 15-20 秒，请稍候）");
+      setTimeout(function(){
+        ALL=analyze(mons);
+        $("results").classList.remove("hide");
+        renderSummary();render();
+        setStatus("✅ 完成。导出时间："+(d.time||"?")+" · 共 "+mons.length+" 只");
+        $("results").scrollIntoView({behavior:"smooth",block:"start"});
+      },30);
+    }catch(e){setStatus('<span style="color:var(--bad)">解析失败：'+e.message+'</span>');}
+  };
+  fr.readAsText(file);
+}
+var dz=$("drop");
+dz.onclick=function(){$("file").click();};
+$("file").onchange=function(e){if(e.target.files[0])handleFile(e.target.files[0]);};
+dz.ondragover=function(e){e.preventDefault();dz.classList.add("over");};
+dz.ondragleave=function(){dz.classList.remove("over");};
+dz.ondrop=function(e){e.preventDefault();dz.classList.remove("over");if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);};
+
+// ---- render ----
+var ACTMETA={KEEP:['保留','kc'],HESITATE:['犹豫','hc'],TRADE:['交换','tc'],TRANSFER:['分解','xc']};
+function renderSummary(){
+  var cnt={KEEP:0,HESITATE:0,TRADE:0,TRANSFER:0},rs={};
+  ALL.forEach(function(x){cnt[x._act]++;rs[x._act]=rs[x._act]||{};rs[x._act][x._reason]=(rs[x._act][x._reason]||0)+1;});
+  var order=['KEEP','HESITATE','TRADE','TRANSFER'];
+  $("sum").innerHTML=order.map(function(a){
+    var m=ACTMETA[a],sub=Object.keys(rs[a]||{}).map(function(k){return k+" "+rs[a][k];}).join(" · ");
+    return '<div class="scard'+(curFilter===a?' on':'')+'" onclick="toggleFilter(\''+a+'\')"><div class="v '+m[1]+'">'+cnt[a]+'</div><div class="l">'+m[0]+'</div><div class="d">'+sub+'</div></div>';
+  }).join("");
+}
+function toggleFilter(a){curFilter=curFilter===a?null:a;renderSummary();render();}
+var COLS=[['name','名字'],['dex','图鉴'],['_sh','暗影'],['_dyn','极巨'],['cp','CP'],['ivp','iv%'],['iva','攻'],['ivd','防'],['ivs','体'],['gl','GL名次'],['ul','UL名次'],['rare','稀有'],['act','处理'],['reason','原因'],['flags','标记'],['moves','招式']];
+function rowData(x){return {name:NAME[x._dex]||x._dex,dex:x._dex,_sh:x._sh?'暗':'',_dyn:x._dyn?'极':'',cp:x._cp,ivp:Math.round(x._ivs/45*100),iva:x._iv[0],ivd:x._iv[1],ivs:x._iv[2],gl:x._gl,ul:x._ul,rare:x._rare,act:x._act,reason:x._reason,flags:(x._shiny?'✨':'')+(x._lucky?'🍀':'')+(x._cost?'🎩':'')+(x._card?'🖼':'')+(x._legacy?'🔑':''),moves:x._moves};}
+function render(){
+  if(!ALL.length)return;
+  var q=($("q").value||"").toLowerCase().trim(),fsh=$("fsh").checked,fdyn=$("fdyn").checked,frar=$("frar").value;
+  var data=ALL.filter(function(x){
+    if(curFilter&&x._act!==curFilter)return false;
+    if(fsh&&!x._sh)return false;if(fdyn&&!x._dyn)return false;if(frar&&x._rare!==frar)return false;
+    if(q){var nm=(NAME[x._dex]||"").toLowerCase(),en=(EN[x._dex]||"");if(nm.indexOf(q)<0&&en.indexOf(q)<0&&(""+x._dex)!==q)return false;}
+    return true;
+  }).map(rowData);
+  data.sort(function(a,b){var va=a[sortKey],vb=b[sortKey];if(typeof va==='number')return (va-vb)*sortDir;return (''+va).localeCompare(''+vb)*sortDir;});
+  $("tbl").tHead.innerHTML="<tr>"+COLS.map(function(c){return '<th onclick="setSort(\''+c[0]+'\')">'+c[1]+(sortKey===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>';}).join("")+"</tr>";
+  var tb=$("tbl").tBodies[0];
+  tb.innerHTML=data.slice(0,1500).map(function(r){return "<tr>"+COLS.map(function(c){var v=r[c[0]];if(c[0]==='act')return '<td><span class="act a-'+v+'">'+ACTMETA[v][0]+'</span></td>';if(c[0]==='gl'||c[0]==='ul')return '<td'+(v&&v<=10?' style="color:var(--accent2);font-weight:700"':'')+'>'+(v==null?'-':'#'+v)+'</td>';return '<td>'+(v==null?'':v)+'</td>';}).join("")+"</tr>";}).join("");
+  renderSearch();
+}
+function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}render();}
+function renderSearch(){
+  // per-species swap/transfer instructions for current view
+  var bySp={};ALL.forEach(function(x){var k=x._dex+"_"+x._sh;(bySp[k]=bySp[k]||{KEEP:0,pve:0,TRADE:0,TRANSFER:0,HESITATE:0})[x._act]++;if(x._reason==='pve-type')bySp[k].pve++;});
+  var swap=[],tr=[];
+  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=NAME[dex]||dex,en=EN[dex]||dex;var pre=sh?'shadow ':'';
+    if(v.TRADE>=2)swap.push('<code>'+pre+en+'&!favorite</code> '+(NAME[dex]||'')+' 留CP最高'+v.pve+',换'+v.TRADE);
+    if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+pre+en+'&!favorite</code> '+(NAME[dex]||'')+' 留'+v.pve+',清'+v.TRANSFER);
+  });
+  swap.sort();tr.sort();
+  $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（先把 shiny/lucky/costume/4* 打★保护）</h3>'+
+    '<div><b style="color:#7ea2ff">🔁 交换</b>（搜名字→按CP→留前N→其余打Swap）：<br>'+(swap.slice(0,12).join('<br>')||'无')+'</div>'+
+    '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解</b>（&!favorite 后剩下全清）：<br>'+(tr.slice(0,12).join('<br>')||'无')+'</div>'+
+    '<div style="margin-top:8px;color:var(--dim)">暗影不能交易；垃圾整种：<code>shadow&!favorite&!4*&!shiny</code></div>';
+}
+function exportCSV(){
+  var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
+  var data=ALL.slice().sort(function(a,b){return (a._dex-b._dex)||(b._cp-a._cp);});
+  var lines=[hdr.join(",")];
+  data.forEach(function(x){var nm=NAME[x._dex]||x._dex,en=EN[x._dex]||x._dex;var srch=(x._sh?'shadow ':'')+en+(x._act==='TRADE'?'&!shiny&!lucky&!4*':'');
+    lines.push([ACTMETA[x._act][0],x._reason,nm,x._dex,x._sh,x._dyn?'极':'',x._cp,Math.round(x._ivs/45*100),x._iv[0],x._iv[1],x._iv[2],x._gl||'',x._ul||'',x._rare,x._shiny?1:'',x._lucky?1:'',x._cost||'',x._card?1:'',x._legacy?1:'','"'+x._moves+'"',srch].join(","));});
+  var blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="盒子整理.csv";a.click();
+}
+window.toggleFilter=toggleFilter;window.setSort=setSort;window.render=render;window.exportCSV=exportCSV;
+</script>
+<script src="site-nav.js?v=4"></script>
+</body></html>
