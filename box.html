@@ -56,6 +56,10 @@ a{color:var(--accent)}
     <button class="btn g" onclick="exportCSV()">⬇ 导出CSV</button>
   </div>
   <div class="search" id="searchbox"></div>
+  <div style="font-size:11.5px;color:var(--dim);margin:8px 2px;line-height:1.9">
+    <b style="color:var(--txt)">标记说明：</b> ✨闪光 · 🍀幸运 · 🎩特殊造型 · 🖼活动卡背 · 🔑<b style="color:var(--accent2)">传承/特殊招式</b>　|
+    <b style="color:var(--txt)">列：</b>「暗」=暗影 ·「极」=极巨化 ·「GL/UL名次」=该联赛真实IV排名(越小越好, ≤10金色) ·「招式」<b style="color:var(--accent2)">含传承招会标🔑</b>
+  </div>
   <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
 </div>
 </div>
@@ -116,7 +120,7 @@ function analyze(mons){
     var sid=SIDOF[x._dex+"_"+x._sh]||SIDOF[x._dex+"_0"];x._sid=sid;
     var legal={};(PM[sid]||[]).forEach(function(r){legal[r.move_id]=1;});
     var mv=[],leg=false;
-    [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info)return;mv.push(info.cn);if(!legal[info.id])leg=true;});
+    [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info)return;var sp=!legal[info.id];if(sp)leg=true;mv.push((sp?'🔑':'')+info.cn);});
     x._moves=mv.join("/");x._legacy=leg;x._2c=(x.move3||0)!==0;
   });
   // PvE top-20 per type by actual power
@@ -210,7 +214,7 @@ function render(){
   data.sort(function(a,b){var va=a[sortKey],vb=b[sortKey];if(typeof va==='number')return (va-vb)*sortDir;return (''+va).localeCompare(''+vb)*sortDir;});
   $("tbl").tHead.innerHTML="<tr>"+COLS.map(function(c){return '<th onclick="setSort(\''+c[0]+'\')">'+c[1]+(sortKey===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>';}).join("")+"</tr>";
   var tb=$("tbl").tBodies[0];
-  tb.innerHTML=data.slice(0,1500).map(function(r){return "<tr>"+COLS.map(function(c){var v=r[c[0]];if(c[0]==='act')return '<td><span class="act a-'+v+'">'+ACTMETA[v][0]+'</span></td>';if(c[0]==='gl'||c[0]==='ul')return '<td'+(v&&v<=10?' style="color:var(--accent2);font-weight:700"':'')+'>'+(v==null?'-':'#'+v)+'</td>';return '<td>'+(v==null?'':v)+'</td>';}).join("")+"</tr>";}).join("");
+  tb.innerHTML=data.map(function(r){return "<tr>"+COLS.map(function(c){var v=r[c[0]];if(c[0]==='act')return '<td><span class="act a-'+v+'">'+ACTMETA[v][0]+'</span></td>';if(c[0]==='gl'||c[0]==='ul')return '<td'+(v&&v<=10?' style="color:var(--accent2);font-weight:700"':'')+'>'+(v==null?'-':'#'+v)+'</td>';return '<td>'+(v==null?'':v)+'</td>';}).join("")+"</tr>";}).join("");
   renderSearch();
 }
 function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}render();}
