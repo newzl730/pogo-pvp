@@ -35,6 +35,13 @@ tr:hover td{background:rgba(255,255,255,.03)}
 .note{font-size:11px;color:var(--dim);text-align:center;margin-top:22px;line-height:1.8}
 .hide{display:none}
 a{color:var(--accent)}
+#mov{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.66);backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;overflow:auto;padding:24px 10px}
+#mcard{max-width:540px;width:100%;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;position:relative;box-shadow:0 20px 60px -10px rgba(0,0,0,.7)}
+#mx{position:absolute;top:8px;right:14px;font-size:26px;color:var(--dim);cursor:pointer;line-height:1}
+#mcard h3{margin:0 0 6px;font-size:18px}
+.adv{font-size:13px;line-height:1.85;color:var(--txt)}
+.advsec{margin-top:10px;padding-top:9px;border-top:1px solid var(--line);font-size:13px;line-height:1.9}
+.advsec b{color:var(--accent2)}
 </style></head><body>
 <div class="top"><h1>Pokémon GO <b>盒子整理分析器</b></h1>
 <nav><a href="index.html">⚔️ PvP</a><a href="team.html">🛡️ 队伍</a><a href="db.html">🗄️ 数据库</a></nav></div>
@@ -61,8 +68,10 @@ a{color:var(--accent)}
     <b style="color:var(--txt)">列：</b>「暗」=暗影 ·「极」=极巨化 ·「GL/UL名次」=该联赛真实IV排名(越小越好, ≤10金色) ·「招式」<b style="color:var(--accent2)">含传承招会标🔑</b>
   </div>
   <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  <div style="font-size:11px;color:var(--dim);margin-top:6px">💡 点任意一行查看该只的<b>发展建议</b>（联赛适配 / 打团DPS / 培养优先级）</div>
 </div>
 </div>
+<div id="mov"><div id="mcard"></div></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
 <script>
 var DB,MOVEID,META,curFilter=null,ALL=[],sortKey='dex',sortDir=1;
@@ -94,22 +103,37 @@ Promise.all([
 
 // ---- engine ----
 function cpAt(a,d,s,m){return Math.max(10,Math.floor(a*Math.sqrt(d)*Math.sqrt(s)*m*m/10));}
-function spOf(base,iv,cap){var bL=0;for(var i=0;i<LEVELS.length;i++){var L=LEVELS[i];if(cpAt(base[0]+iv[0],base[1]+iv[1],base[2]+iv[2],CPM[L])<=cap)bL=L;}if(!bL)return 0;var m=CPM[bL];return (base[0]+iv[0])*m*((base[1]+iv[1])*m)*Math.floor((base[2]+iv[2])*m);}
+function spOf(base,iv,cap){var a=base[0]+iv[0],d=base[1]+iv[1],s=base[2]+iv[2],bL=0;for(var i=LEVELS.length-1;i>=0;i--){var L=LEVELS[i];if(cpAt(a,d,s,CPM[L])<=cap){bL=L;break;}}if(!bL)return 0;var m=CPM[bL];return a*m*(d*m)*Math.floor(s*m);}
 var _rk={};
 function rankOf(dex,iv,cap){var base=BASE[dex];if(!base)return null;var k=dex+"_"+cap;if(!_rk[k]){var v=[];for(var a=0;a<16;a++)for(var d=0;d<16;d++)for(var s=0;s<16;s++)v.push(spOf(base,[a,d,s],cap));v.sort(function(x,y){return x-y;});_rk[k]=v;}var asc=_rk[k],mine=spOf(base,iv,cap);var lo=0,hi=asc.length;while(lo<hi){var mid=(lo+hi)>>1;if(asc[mid]<=mine)lo=mid+1;else hi=mid;}return asc.length-lo+1;}
 function descendants(dex){var seen={},st=[dex];while(st.length){var c=st.pop();(EDGES[c]||[]).forEach(function(n){if(!seen[n]){seen[n]=1;st.push(n);}});}return seen;}
 function bestMoveset(sid,T){var fa=[],ch=[];(PM[sid]||[]).forEach(function(r){var mv=MOVE[r.move_id];if(!mv||mv.type!==T||!mv.pve_duration_ms||mv.pve_duration_ms<=0)return;if(r.slot==="fast"&&mv.pve_energy>0)fa.push(mv);else if(r.slot==="charged"&&mv.pve_energy<0)ch.push(mv);});return [fa,ch];}
 function pveScore(eA,eD,eH,types,fa,ch,T){function dm(pw,mt){return 0.5*pw*(eA/180)*(types.indexOf(mt)>=0?1.2:1)+1;}var best=0;for(var i=0;i<fa.length;i++){var f=fa[i],Tf=f.pve_duration_ms/1000,fd=dm(f.pve_power,f.type)/Tf,fe=f.pve_energy/Tf;for(var j=0;j<ch.length;j++){var cc=ch[j],Tc=cc.pve_duration_ms/1000,cd=dm(cc.pve_power,cc.type)/Tc,ce=Math.abs(cc.pve_energy)/Tc;var DPS=(fd*ce+cd*fe)/(ce+fe),TDO=DPS*eH*(eD/180)/100,sc=DPS*Math.sqrt(TDO);if(sc>best)best=sc;}}return best;}
 function pveRelevant(dex,PVEset){if(PVEset[dex])return 'final';var f=FLAG[dex]||{};if(f.leg||f.my||f.ub)return 'final';var desc=descendants(dex);for(var dd in desc){if(PVEset[dd])return 'fodder';var f2=FLAG[dd]||{};if(f2.leg||f2.my||f2.ub)return 'fodder';}return null;}
+// best raw PvE DPS over the mon's STAB types at a given cpm
+function pveBest(sp,iv,cpm,sh){
+  var types=[sp.type1,sp.type2].filter(Boolean);
+  var eA=(sp.atk+iv[0])*cpm*(sh?1.2:1),eD=(sp.def+iv[1])*cpm*(sh?0.8333:1),eH=Math.floor((sp.hp+iv[2])*cpm);
+  var bd=0,bt=null,btdo=0,bf=null,bc=null;
+  types.forEach(function(T){
+    var ms=bestMoveset(sp.species_id,T);if(!ms[0].length||!ms[1].length)return;
+    function dm(pw,mt){return 0.5*pw*(eA/180)*(types.indexOf(mt)>=0?1.2:1)+1;}
+    ms[0].forEach(function(f){var Tf=f.pve_duration_ms/1000,fd=dm(f.pve_power,f.type)/Tf,fe=f.pve_energy/Tf;
+      ms[1].forEach(function(cc){var Tc=cc.pve_duration_ms/1000,cd=dm(cc.pve_power,cc.type)/Tc,ce=Math.abs(cc.pve_energy)/Tc;
+        var DPS=(fd*ce+cd*fe)/(ce+fe);if(DPS>bd){bd=DPS;bt=T;btdo=DPS*eH*(eD/180)/100;bf=f;bc=cc;}});});
+  });
+  return {dps:bd,type:bt,tdo:btdo,f:bf,c:bc};
+}
 
 function analyze(mons){
   // annotate
-  mons.forEach(function(x){
+  mons.forEach(function(x,_i){
+    x._i=_i;
     var pd=x.pokemonDisplay||{};
     x._dex=x.pokemonId;x._sh=pd.alignment===1?1:0;
     x._iv=[x.individualAttack||0,x.individualDefense||0,x.individualStamina||0];x._ivs=x._iv[0]+x._iv[1]+x._iv[2];
     x._cp=x.cp||0;x._ecpm=(x.cpMultiplier||0)+(x.additionalCpMultiplier||0);
-    x._gl=rankOf(x._dex,x._iv,1500);x._ul=rankOf(x._dex,x._iv,2500);
+    x._gl=rankOf(x._dex,x._iv,1500);x._ul=rankOf(x._dex,x._iv,2500);x._ml=rankOf(x._dex,x._iv,1000000);
     var ms=META[x._dex]||{gl:0,ul:0};x._glv=ms.gl;x._ulv=ms.ul;
     var f=FLAG[x._dex]||{};x._rare=f.leg?'legendary':f.my?'mythical':f.ub?'ultrabeast':f.reg?'regional':'common';
     x._card=!!(pd.locationCard);x._cost=pd.costume||0;x._shiny=!!pd.shiny;x._lucky=!!x.isLucky;x._fav=!!x.favorite;
@@ -122,6 +146,11 @@ function analyze(mons){
     var mv=[],leg=false;
     [x.move1,x.move2,x.move3].forEach(function(mi){if(!mi)return;var info=MOVEID[mi];if(!info)return;var sp=!legal[info.id];if(sp)leg=true;mv.push((sp?'🔑':'')+info.cn);});
     x._moves=mv.join("/");x._legacy=leg;x._2c=(x.move3||0)!==0;
+    // PvE 最佳DPS：当前等级 & L40基准
+    var spp=SP[sid];
+    if(spp){var pbN=pveBest(spp,x._iv,x._ecpm||CPM[40],x._sh);var pb40=pveBest(spp,x._iv,CPM[40],x._sh);
+      x._pdps=Math.round((pbN.dps||0)*10)/10;x._pdps40=Math.round((pb40.dps||0)*10)/10;x._ptype=pbN.type;x._ptdo=Math.round(pbN.tdo||0);}
+    else{x._pdps=0;x._pdps40=0;x._ptype=null;}
   });
   // PvE top-20 per type by actual power
   var PVEset={},perT={};
@@ -200,8 +229,9 @@ function renderSummary(){
   }).join("");
 }
 function toggleFilter(a){curFilter=curFilter===a?null:a;renderSummary();render();}
-var COLS=[['name','名字'],['dex','图鉴'],['_sh','暗影'],['_dyn','极巨'],['cp','CP'],['ivp','iv%'],['iva','攻'],['ivd','防'],['ivs','体'],['gl','GL名次'],['ul','UL名次'],['rare','稀有'],['act','处理'],['reason','原因'],['flags','标记'],['moves','招式']];
-function rowData(x){return {name:NAME[x._dex]||x._dex,dex:x._dex,_sh:x._sh?'暗':'',_dyn:x._dyn?'极':'',cp:x._cp,ivp:Math.round(x._ivs/45*100),iva:x._iv[0],ivd:x._iv[1],ivs:x._iv[2],gl:x._gl,ul:x._ul,rare:x._rare,act:x._act,reason:x._reason,flags:(x._shiny?'✨':'')+(x._lucky?'🍀':'')+(x._cost?'🎩':'')+(x._card?'🖼':'')+(x._legacy?'🔑':''),moves:x._moves};}
+var TCN={normal:"一般",fire:"火",water:"水",electric:"电",grass:"草",ice:"冰",fighting:"格斗",poison:"毒",ground:"地面",flying:"飞行",psychic:"超能力",bug:"虫",rock:"岩石",ghost:"幽灵",dragon:"龙",dark:"恶",steel:"钢",fairy:"妖精"};
+var COLS=[['name','名字'],['dex','图鉴'],['_sh','暗影'],['_dyn','极巨'],['cp','CP'],['ivp','iv%'],['iva','攻'],['ivd','防'],['ivs','体'],['gl','GL名次'],['ul','UL名次'],['ml','ML名次'],['pdps','PvE打团'],['rare','稀有'],['act','处理'],['reason','原因'],['flags','标记'],['moves','招式']];
+function rowData(x){return {__i:x._i,name:NAME[x._dex]||x._dex,dex:x._dex,_sh:x._sh?'暗':'',_dyn:x._dyn?'极':'',cp:x._cp,ivp:Math.round(x._ivs/45*100),iva:x._iv[0],ivd:x._iv[1],ivs:x._iv[2],gl:x._gl,ul:x._ul,ml:x._ml,pdps:x._pdps40?(x._pdps40+(x._ptype?' '+TCN[x._ptype]:'')):'-',rare:x._rare,act:x._act,reason:x._reason,flags:(x._shiny?'✨':'')+(x._lucky?'🍀':'')+(x._cost?'🎩':'')+(x._card?'🖼':'')+(x._legacy?'🔑':''),moves:x._moves};}
 function render(){
   if(!ALL.length)return;
   var q=($("q").value||"").toLowerCase().trim(),fsh=$("fsh").checked,fdyn=$("fdyn").checked,frar=$("frar").value;
@@ -214,7 +244,7 @@ function render(){
   data.sort(function(a,b){var va=a[sortKey],vb=b[sortKey];if(typeof va==='number')return (va-vb)*sortDir;return (''+va).localeCompare(''+vb)*sortDir;});
   $("tbl").tHead.innerHTML="<tr>"+COLS.map(function(c){return '<th onclick="setSort(\''+c[0]+'\')">'+c[1]+(sortKey===c[0]?(sortDir>0?' ▲':' ▼'):'')+'</th>';}).join("")+"</tr>";
   var tb=$("tbl").tBodies[0];
-  tb.innerHTML=data.map(function(r){return "<tr>"+COLS.map(function(c){var v=r[c[0]];if(c[0]==='act')return '<td><span class="act a-'+v+'">'+ACTMETA[v][0]+'</span></td>';if(c[0]==='gl'||c[0]==='ul')return '<td'+(v&&v<=10?' style="color:var(--accent2);font-weight:700"':'')+'>'+(v==null?'-':'#'+v)+'</td>';return '<td>'+(v==null?'':v)+'</td>';}).join("")+"</tr>";}).join("");
+  tb.innerHTML=data.map(function(r){return '<tr onclick="advise('+r.__i+')" style="cursor:pointer">'+COLS.map(function(c){var v=r[c[0]];if(c[0]==='act')return '<td><span class="act a-'+v+'">'+ACTMETA[v][0]+'</span></td>';if(c[0]==='gl'||c[0]==='ul'||c[0]==='ml')return '<td'+(v&&v<=10?' style="color:var(--accent2);font-weight:700"':'')+'>'+(v==null?'-':'#'+v)+'</td>';return '<td>'+(v==null?'':v)+'</td>';}).join("")+"</tr>";}).join("");
   renderSearch();
 }
 function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}render();}
@@ -233,14 +263,53 @@ function renderSearch(){
     '<div style="margin-top:8px;color:var(--dim)">暗影不能交易；垃圾整种：<code>shadow&!favorite&!4*&!shiny</code></div>';
 }
 function exportCSV(){
-  var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
+  var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','ML名次','PvE_L40','PvE属性','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
   var data=ALL.slice().sort(function(a,b){return (a._dex-b._dex)||(b._cp-a._cp);});
   var lines=[hdr.join(",")];
   data.forEach(function(x){var nm=NAME[x._dex]||x._dex,en=EN[x._dex]||x._dex;var srch=(x._sh?'shadow ':'')+en+(x._act==='TRADE'?'&!shiny&!lucky&!4*':'');
-    lines.push([ACTMETA[x._act][0],x._reason,nm,x._dex,x._sh,x._dyn?'极':'',x._cp,Math.round(x._ivs/45*100),x._iv[0],x._iv[1],x._iv[2],x._gl||'',x._ul||'',x._rare,x._shiny?1:'',x._lucky?1:'',x._cost||'',x._card?1:'',x._legacy?1:'','"'+x._moves+'"',srch].join(","));});
+    lines.push([ACTMETA[x._act][0],x._reason,nm,x._dex,x._sh,x._dyn?'极':'',x._cp,Math.round(x._ivs/45*100),x._iv[0],x._iv[1],x._iv[2],x._gl||'',x._ul||'',x._ml||'',x._pdps40||'',x._ptype?TCN[x._ptype]:'',x._rare,x._shiny?1:'',x._lucky?1:'',x._cost||'',x._card?1:'',x._legacy?1:'','"'+x._moves+'"',srch].join(","));});
   var blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="盒子整理.csv";a.click();
 }
+// ---- 发展建议弹窗 ----
+function buildRec(x,p40,p50){
+  var r=[];
+  var bestPvpRank=Math.min(x._gl||9999,x._ul||9999,x._ml||9999);
+  if(x._reason==='collect'){r.push('🏅 收藏品（闪光/幸运/造型/卡背/满IV），保留不动。');}
+  if(x._act==='TRANSFER'){r.push('🗑️ 无保留价值，可<b>分解换糖</b>'+(x._sh?'（暗影不能交易，只能分解）':'')+'。');}
+  if(x._act==='TRADE'){r.push('🔁 稀有但多余，建议<b>换幸运</b>(降IV地板+省升级星尘)或送朋友。');}
+  if(x._reason==='pve-type'||x._reason==='evolve-fodder'){
+    r.push('🏟 团战'+(x._ptype?TCN[x._ptype]+'系':'')+'打手：练到 <b>L40</b>（团战标准，DPS '+p40+'），愿投入冲 <b>L50</b>（DPS '+p50+'）。'+(x._reason==='evolve-fodder'?'（先进化）':''));
+    if(x._sh)r.push('🌑 暗影攻击+20%，打团别净化（净化会失去加成）。');
+  }
+  if(x._reason==='pvp'||x._reason==='pvp-future'){
+    var lg=bestPvpRank===x._gl?'超级(1500)':bestPvpRank===x._ul?'高级(2500)':'大师';
+    r.push('🥊 PvP 神 IV（rank≤10）：练到 <b>'+lg+'联赛</b>CP上限。');
+    if(!x._2c)r.push('⚠️ 还没解锁<b>第二大招</b>，PvP 强烈建议解锁。');
+  }
+  if(x._reason==='dynamax')r.push('💥 极巨化（获取受限），打极巨战用，保留。');
+  if(!r.length)r.push('按其最佳用途保留。');
+  return r;
+}
+function advise(i){
+  var x=ALL[i];if(!x)return;var sp=SP[x._sid];
+  var nm=NAME[x._dex]||x._dex,iv=x._iv,ivp=Math.round(x._ivs/45*100);
+  var p40=x._pdps40||0,pNow=x._pdps||0,p50=sp?Math.round(pveBest(sp,iv,CPM[50],x._sh).dps*10)/10:0;
+  function lf(rank,score,name){if(!rank)return '';var q=rank<=10?'<b>神级</b>':rank<=100?'好':rank<=500?'中等':'偏差';var meta=score>=85?' · 该种T0-T1':score>=75?' · 该种可用':score>0?' · 该种冷门':'';return name+' <b'+(rank<=10?' style="color:var(--accent2)"':'')+'>#'+rank+'</b> '+q+meta;}
+  var pvp=[lf(x._gl,x._glv,'超级GL'),lf(x._ul,x._ulv,'高级UL'),lf(x._ml,0,'大师ML')].filter(Boolean);
+  var types=sp?[sp.type1,sp.type2].filter(Boolean).map(function(t){return TCN[t];}).join('/'):'';
+  $("mcard").innerHTML='<span id="mx" onclick="closeM()">×</span>'+
+    '<h3>'+nm+(x._sh?' 🌑暗影':'')+(x._dyn?' 💥极巨':'')+'</h3>'+
+    '<div class="adv">CP '+x._cp+' · IV '+iv.join('/')+' ('+ivp+'%) · '+types+'<br>招式：'+x._moves+(x._legacy?' <b style="color:var(--accent2)">含传承招🔑</b>':'')+'</div>'+
+    '<div class="advsec"><b>📋 处理</b>：'+ACTMETA[x._act][0]+'（'+x._reason+'）</div>'+
+    '<div class="advsec"><b>🥊 PvP IV 排名</b><br>'+(pvp.join('<br>')||'无数据')+'</div>'+
+    '<div class="advsec"><b>🏟 PvE 打团</b><br>最佳：'+(x._ptype?TCN[x._ptype]+'系':'-')+' · 当前 L 约 DPS '+pNow+' · L40 '+p40+' · L50 '+p50+(x._pve?'<br><b style="color:var(--good)">★ 当前该系前 20 强打手</b>':'')+'</div>'+
+    '<div class="advsec"><b>💡 培养建议</b><br>'+buildRec(x,p40,p50).join('<br>')+'</div>';
+  $("mov").style.display="flex";$("mov").scrollTop=0;
+}
+function closeM(){$("mov").style.display="none";}
+$("mov").addEventListener("click",function(e){if(e.target===$("mov"))closeM();});
+window.advise=advise;window.closeM=closeM;
 window.toggleFilter=toggleFilter;window.setSort=setSort;window.render=render;window.exportCSV=exportCSV;
 </script>
 <script src="site-nav.js?v=5"></script>
