@@ -60,6 +60,7 @@ a{color:var(--accent)}
     <label><input type="checkbox" id="fsh" onchange="render()"> 只看暗影</label>
     <label><input type="checkbox" id="fdyn" onchange="render()"> 只看极巨</label>
     <select id="frar" onchange="render()"><option value="">全部稀有度</option><option>legendary</option><option>mythical</option><option>ultrabeast</option><option>regional</option><option>common</option></select>
+    <span>搜索串语言 <select id="slang" onchange="render()"><option value="tw" selected>繁體中文</option><option value="cn">简体中文</option><option value="en">English</option></select></span>
     <button class="btn g" onclick="exportCSV()">⬇ 导出CSV</button>
   </div>
   <div class="search" id="searchbox"></div>
@@ -76,8 +77,15 @@ a{color:var(--accent)}
 <script>
 var DB,MOVEID,META,curFilter=null,ALL=[],sortKey='dex',sortDir=1;
 var TYPES=["normal","fire","water","electric","grass","ice","fighting","poison","ground","flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"];
-var BASE={},NAME={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={},PMDEX={};
+var BASE={},NAME={},TW={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={},PMDEX={};
 var NONSPECIAL={FRUSTRATION:1,RETURN:1};// 暗影默认招/报恩，不算"特殊招"
+// 游戏内搜索：关键字随客户端语言本地化。名字用该语言的物种名。
+var KW={en:{fav:'favorite',shiny:'shiny',lucky:'lucky',shadow:'shadow',legendary:'legendary',s4:'4*'},
+        tw:{fav:'最愛',shiny:'閃光',lucky:'幸運',shadow:'暗影',legendary:'傳說',s4:'4*'},
+        cn:{fav:'最爱',shiny:'闪光',lucky:'幸运',shadow:'暗影',legendary:'传说',s4:'4*'}};
+function LANG(){var e=document.getElementById('slang');return e?e.value:'tw';}
+function spName(dex){var l=LANG();return l==='en'?(EN[dex]||dex):l==='cn'?(NAME[dex]||dex):(TW[dex]||NAME[dex]||dex);}
+function kw(k){return KW[LANG()][k];}
 function $(i){return document.getElementById(i);}
 function rows(sql){var st=DB.prepare(sql),o=[];while(st.step())o.push(st.getAsObject());st.free();return o;}
 function setStatus(t){$("status").innerHTML=t;}
@@ -89,11 +97,11 @@ Promise.all([
 ]).then(function(){
   rows("SELECT level,cpm FROM cpm").forEach(function(r){CPM[r.level]=r.cpm;});
   LEVELS=Object.keys(CPM).map(Number).sort(function(a,b){return a-b;});
-  rows("SELECT species_id,dex,name_cn,name_en,type1,type2,atk,def,hp,is_shadow,is_mega,is_legendary,is_mythical,is_ultrabeast,is_regional,released FROM pokemon ORDER BY length(species_id)").forEach(function(p){
+  rows("SELECT species_id,dex,name_cn,name_tw,name_en,type1,type2,atk,def,hp,is_shadow,is_mega,is_legendary,is_mythical,is_ultrabeast,is_regional,released FROM pokemon ORDER BY length(species_id)").forEach(function(p){
     SP[p.species_id]=p;
     if(!p.is_mega) if(!SIDOF[p.dex+"_"+p.is_shadow]) SIDOF[p.dex+"_"+p.is_shadow]=p.species_id;
     if(p.is_mega){MEGADEX[p.dex]=1;return;}
-    if(BASE[p.dex]===undefined){BASE[p.dex]=[p.atk,p.def,p.hp];NAME[p.dex]=p.name_cn;EN[p.dex]=(p.name_en||"").toLowerCase();FLAG[p.dex]={leg:p.is_legendary,my:p.is_mythical,ub:p.is_ultrabeast,reg:p.is_regional};}
+    if(BASE[p.dex]===undefined){BASE[p.dex]=[p.atk,p.def,p.hp];NAME[p.dex]=p.name_cn;TW[p.dex]=p.name_tw||p.name_cn;EN[p.dex]=(p.name_en||"").toLowerCase();FLAG[p.dex]={leg:p.is_legendary,my:p.is_mythical,ub:p.is_ultrabeast,reg:p.is_regional};}
   });
   rows("SELECT move_id,type,slot,pve_power,pve_energy,pve_duration_ms FROM moves").forEach(function(m){MOVE[m.move_id]=m;});
   rows("SELECT species_id,move_id,slot FROM pokemon_moves").forEach(function(r){(PM[r.species_id]=PM[r.species_id]||[]).push(r);});
@@ -255,22 +263,23 @@ function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}re
 function renderSearch(){
   // per-species swap/transfer instructions for current view
   var bySp={};ALL.forEach(function(x){var k=x._dex+"_"+x._sh;(bySp[k]=bySp[k]||{KEEP:0,pve:0,TRADE:0,TRANSFER:0,HESITATE:0})[x._act]++;if(x._reason==='pve-type')bySp[k].pve++;});
-  var swap=[],tr=[];
-  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=NAME[dex]||dex,en=EN[dex]||dex;var pre=sh?'shadow ':'';
-    if(v.TRADE>=2)swap.push('<code>'+pre+en+'&!favorite</code> '+(NAME[dex]||'')+' 留CP最高'+v.pve+',换'+v.TRADE);
-    if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+pre+en+'&!favorite</code> '+(NAME[dex]||'')+' 留'+v.pve+',清'+v.TRANSFER);
+  var swap=[],tr=[];var FAV=kw('fav');
+  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=spName(dex),pre=sh?kw('shadow')+' ':'';
+    if(v.TRADE>=2)swap.push('<code>'+pre+nm+'&!'+FAV+'</code> 留CP最高'+v.pve+',换'+v.TRADE);
+    if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+pre+nm+'&!'+FAV+'</code> 留'+v.pve+',清'+v.TRANSFER);
   });
   swap.sort();tr.sort();
-  $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（先把 shiny/lucky/costume/4* 打★保护）</h3>'+
+  $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（先把 '+kw('shiny')+'/'+kw('lucky')+'/'+kw('s4')+' 打★保护）</h3>'+
+    '<div style="font-size:11px;color:var(--dim);margin-bottom:6px">⚠️ 关键字随客户端语言，上方"搜索串语言"已选<b>'+({tw:'繁體中文',cn:'简体中文',en:'English'}[LANG()])+'</b>；不对就切换。名字用该语言的物种名。</div>'+
     '<div><b style="color:#7ea2ff">🔁 交换</b>（搜名字→按CP→留前N→其余打Swap）：<br>'+(swap.slice(0,12).join('<br>')||'无')+'</div>'+
-    '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解</b>（&!favorite 后剩下全清）：<br>'+(tr.slice(0,12).join('<br>')||'无')+'</div>'+
-    '<div style="margin-top:8px;color:var(--dim)">暗影不能交易；垃圾整种：<code>shadow&!favorite&!4*&!shiny</code></div>';
+    '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解</b>（&!'+FAV+' 后剩下全清）：<br>'+(tr.slice(0,12).join('<br>')||'无')+'</div>'+
+    '<div style="margin-top:8px;color:var(--dim)">暗影不能交易；垃圾整种：<code>'+kw('shadow')+'&!'+FAV+'&!'+kw('s4')+'&!'+kw('shiny')+'</code></div>';
 }
 function exportCSV(){
   var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','ML名次','PvE_L40','PvE属性','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
   var data=ALL.slice().sort(function(a,b){return (a._dex-b._dex)||(b._cp-a._cp);});
   var lines=[hdr.join(",")];
-  data.forEach(function(x){var nm=NAME[x._dex]||x._dex,en=EN[x._dex]||x._dex;var srch=(x._sh?'shadow ':'')+en+(x._act==='TRADE'?'&!shiny&!lucky&!4*':'');
+  data.forEach(function(x){var nm=NAME[x._dex]||x._dex;var srch=(x._sh?kw('shadow')+' ':'')+spName(x._dex)+(x._act==='TRADE'?'&!'+kw('shiny')+'&!'+kw('lucky')+'&!'+kw('s4'):'');
     lines.push([ACTMETA[x._act][0],x._reason,nm,x._dex,x._sh,x._dyn?'极':'',x._cp,Math.round(x._ivs/45*100),x._iv[0],x._iv[1],x._iv[2],x._gl||'',x._ul||'',x._ml||'',x._pdps40||'',x._ptype?TCN[x._ptype]:'',x._rare,x._shiny?1:'',x._lucky?1:'',x._cost||'',x._card?1:'',x._legacy?1:'','"'+x._moves+'"',srch].join(","));});
   var blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="盒子整理.csv";a.click();
