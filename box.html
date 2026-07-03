@@ -264,7 +264,10 @@ function renderSearch(){
   // per-species swap/transfer instructions for current view
   var bySp={};ALL.forEach(function(x){var k=x._dex+"_"+x._sh;(bySp[k]=bySp[k]||{KEEP:0,pve:0,TRADE:0,TRANSFER:0,HESITATE:0})[x._act]++;if(x._reason==='pve-type')bySp[k].pve++;});
   var swap=[],tr=[],whole=[];
-  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=(sh?kw('shadow')+' ':'')+spName(dex);
+  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';
+    // 关键：加 &!4*&!異色 保护满IV/异色不被误标；非暗影再加 &!幸運
+    var exc='&!'+kw('s4')+'&!'+kw('shiny')+(sh?'':'&!'+kw('lucky'));
+    var nm=(sh?kw('shadow')+' ':'')+spName(dex)+exc;
     if(v.TRADE>=2)swap.push('<code>'+nm+'</code> 留CP最高 '+v.pve+' 只，其余 '+v.TRADE+' 换');
     else if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+nm+'</code> 留CP最高 '+v.pve+' 只，其余 '+v.TRANSFER+' 分解');
     else if(v.TRANSFER>=2&&!v.KEEP&&!v.HESITATE&&!v.TRADE)whole.push(spName(dex));
@@ -272,18 +275,18 @@ function renderSearch(){
   swap.sort();tr.sort();
   var langn={tw:'繁體中文',cn:'简体中文',en:'English'}[LANG()];
   $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（客户端语言：'+langn+'）</h3>'+
-    '<div style="font-size:11.5px;color:var(--dim);margin-bottom:8px">做法：<b>搜物种名 → 把排序改成「战斗力/CP」→ 前 N 只保留 → 其余全选加标签</b>。遇到有 ✨異色 / 暗影 标记的手动略过（它们要保留）。<br>'+
-    (LANG()!=='en'?'（'+langn+'客户端<b>没有"最愛"搜索关键字</b>，所以用按CP排序的方式，不靠 favorite。）':'')+'</div>'+
+    '<div style="font-size:11.5px;color:var(--dim);margin-bottom:8px">做法：<b>粘搜索串 → 把排序改成「战斗力/CP」→ 前 N 只保留 → 其余全选加标签</b>。串里已加 <code>&!'+kw('s4')+'&!'+kw('shiny')+'</code> 自动排除<b>满IV/异色</b>，不会误标它们。<br>'+
+    '<b style="color:var(--warn)">⚠️ 仍无法搜索排除的</b>：PvP神IV(低星)、卡背、造型——这些看表格保留，别手动分解。'+(LANG()!=='en'?'（客户端无"最愛"关键字，故靠 4*/異色 排除+按CP排序）':'')+'</div>'+
     '<div><b style="color:#7ea2ff">🔁 交换</b>（换幸运/送朋友）：<br>'+(swap.slice(0,14).join('<br>')||'无')+'</div>'+
     '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解 · 留几只</b>：<br>'+(tr.slice(0,14).join('<br>')||'无')+'</div>'+
-    (whole.length?'<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解 · 整种全清</b>（这些没保留价值，一条搜出来全选）：<br><code>'+whole.slice(0,24).join(',')+'</code></div>':'')+
+    (whole.length?'<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解 · 整种全清</b>（这些整种无保留价值）：<br><code>'+whole.slice(0,24).join(',')+'</code></div>':'')+
     '<div style="margin-top:8px;color:var(--dim)">垃圾暗影（不能交易）：<code>'+kw('shadow')+'&!'+kw('shiny')+'&!'+kw('s4')+'</code> → 按CP强力的留几只，其余分解</div>';
 }
 function exportCSV(){
   var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','ML名次','PvE_L40','PvE属性','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
   var data=ALL.slice().sort(function(a,b){return (a._dex-b._dex)||(b._cp-a._cp);});
   var lines=[hdr.join(",")];
-  data.forEach(function(x){var nm=NAME[x._dex]||x._dex;var srch=(x._sh?kw('shadow')+' ':'')+spName(x._dex)+(x._act==='TRADE'?'&!'+kw('shiny')+'&!'+kw('lucky')+'&!'+kw('s4'):'');
+  data.forEach(function(x){var nm=NAME[x._dex]||x._dex;var exc=(x._act==='TRADE'||x._act==='TRANSFER')?('&!'+kw('shiny')+'&!'+kw('s4')+(x._sh?'':'&!'+kw('lucky'))):'';var srch=(x._sh?kw('shadow')+' ':'')+spName(x._dex)+exc;
     lines.push([ACTMETA[x._act][0],x._reason,nm,x._dex,x._sh,x._dyn?'极':'',x._cp,Math.round(x._ivs/45*100),x._iv[0],x._iv[1],x._iv[2],x._gl||'',x._ul||'',x._ml||'',x._pdps40||'',x._ptype?TCN[x._ptype]:'',x._rare,x._shiny?1:'',x._lucky?1:'',x._cost||'',x._card?1:'',x._legacy?1:'','"'+x._moves+'"',srch].join(","));});
   var blob=new Blob(["﻿"+lines.join("\n")],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="盒子整理.csv";a.click();
