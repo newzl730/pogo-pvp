@@ -65,7 +65,7 @@ a{color:var(--accent)}
   </div>
   <div class="search" id="searchbox"></div>
   <div style="font-size:11.5px;color:var(--dim);margin:8px 2px;line-height:1.9">
-    <b style="color:var(--txt)">标记说明：</b> ✨闪光 · 🍀幸运 · 🎩特殊造型 · 🖼活动卡背 · 🔑<b style="color:var(--accent2)">传承/特殊招式</b>　|
+    <b style="color:var(--txt)">标记说明：</b> ✨异色(闪光) · 🍀幸运 · 🎩特殊造型 · 🖼活动卡背 · 🔑<b style="color:var(--accent2)">传承/特殊招式</b>　|
     <b style="color:var(--txt)">列：</b>「暗」=暗影 ·「极」=极巨化 ·「GL/UL名次」=该联赛真实IV排名(越小越好, ≤10金色) ·「招式」<b style="color:var(--accent2)">含传承招会标🔑</b>
   </div>
   <div class="tablewrap"><table id="tbl"><thead></thead><tbody></tbody></table></div>
@@ -80,9 +80,9 @@ var TYPES=["normal","fire","water","electric","grass","ice","fighting","poison",
 var BASE={},NAME={},TW={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP={},PM={},MOVE={},SIDOF={},PMDEX={};
 var NONSPECIAL={FRUSTRATION:1,RETURN:1};// 暗影默认招/报恩，不算"特殊招"
 // 游戏内搜索：关键字随客户端语言本地化。名字用该语言的物种名。
-var KW={en:{fav:'favorite',shiny:'shiny',lucky:'lucky',shadow:'shadow',legendary:'legendary',s4:'4*'},
-        tw:{fav:'最愛',shiny:'閃光',lucky:'幸運',shadow:'暗影',legendary:'傳說',s4:'4*'},
-        cn:{fav:'最爱',shiny:'闪光',lucky:'幸运',shadow:'暗影',legendary:'传说',s4:'4*'}};
+var KW={en:{shiny:'shiny',lucky:'lucky',shadow:'shadow',legendary:'legendary',s4:'4*'},
+        tw:{shiny:'異色',lucky:'幸運',shadow:'暗影',legendary:'傳說',s4:'4*'},
+        cn:{shiny:'异色',lucky:'幸运',shadow:'暗影',legendary:'传说',s4:'4*'}};
 function LANG(){var e=document.getElementById('slang');return e?e.value:'tw';}
 function spName(dex){var l=LANG();return l==='en'?(EN[dex]||dex):l==='cn'?(NAME[dex]||dex):(TW[dex]||NAME[dex]||dex);}
 function kw(k){return KW[LANG()][k];}
@@ -263,17 +263,21 @@ function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}re
 function renderSearch(){
   // per-species swap/transfer instructions for current view
   var bySp={};ALL.forEach(function(x){var k=x._dex+"_"+x._sh;(bySp[k]=bySp[k]||{KEEP:0,pve:0,TRADE:0,TRANSFER:0,HESITATE:0})[x._act]++;if(x._reason==='pve-type')bySp[k].pve++;});
-  var swap=[],tr=[];var FAV=kw('fav');
-  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=spName(dex),pre=sh?kw('shadow')+' ':'';
-    if(v.TRADE>=2)swap.push('<code>'+pre+nm+'&!'+FAV+'</code> 留CP最高'+v.pve+',换'+v.TRADE);
-    if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+pre+nm+'&!'+FAV+'</code> 留'+v.pve+',清'+v.TRANSFER);
+  var swap=[],tr=[],whole=[];
+  Object.keys(bySp).forEach(function(k){var v=bySp[k];var p=k.split("_"),dex=+p[0],sh=p[1]==='1';var nm=(sh?kw('shadow')+' ':'')+spName(dex);
+    if(v.TRADE>=2)swap.push('<code>'+nm+'</code> 留CP最高 '+v.pve+' 只，其余 '+v.TRADE+' 换');
+    else if(v.TRANSFER>=3&&(v.KEEP||v.HESITATE))tr.push('<code>'+nm+'</code> 留CP最高 '+v.pve+' 只，其余 '+v.TRANSFER+' 分解');
+    else if(v.TRANSFER>=2&&!v.KEEP&&!v.HESITATE&&!v.TRADE)whole.push(spName(dex));
   });
   swap.sort();tr.sort();
-  $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（先把 '+kw('shiny')+'/'+kw('lucky')+'/'+kw('s4')+' 打★保护）</h3>'+
-    '<div style="font-size:11px;color:var(--dim);margin-bottom:6px">⚠️ 关键字随客户端语言，上方"搜索串语言"已选<b>'+({tw:'繁體中文',cn:'简体中文',en:'English'}[LANG()])+'</b>；不对就切换。名字用该语言的物种名。</div>'+
-    '<div><b style="color:#7ea2ff">🔁 交换</b>（搜名字→按CP→留前N→其余打Swap）：<br>'+(swap.slice(0,12).join('<br>')||'无')+'</div>'+
-    '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解</b>（&!'+FAV+' 后剩下全清）：<br>'+(tr.slice(0,12).join('<br>')||'无')+'</div>'+
-    '<div style="margin-top:8px;color:var(--dim)">暗影不能交易；垃圾整种：<code>'+kw('shadow')+'&!'+FAV+'&!'+kw('s4')+'&!'+kw('shiny')+'</code></div>';
+  var langn={tw:'繁體中文',cn:'简体中文',en:'English'}[LANG()];
+  $("searchbox").innerHTML='<h3>🎮 游戏内搜索串（客户端语言：'+langn+'）</h3>'+
+    '<div style="font-size:11.5px;color:var(--dim);margin-bottom:8px">做法：<b>搜物种名 → 把排序改成「战斗力/CP」→ 前 N 只保留 → 其余全选加标签</b>。遇到有 ✨異色 / 暗影 标记的手动略过（它们要保留）。<br>'+
+    (LANG()!=='en'?'（'+langn+'客户端<b>没有"最愛"搜索关键字</b>，所以用按CP排序的方式，不靠 favorite。）':'')+'</div>'+
+    '<div><b style="color:#7ea2ff">🔁 交换</b>（换幸运/送朋友）：<br>'+(swap.slice(0,14).join('<br>')||'无')+'</div>'+
+    '<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解 · 留几只</b>：<br>'+(tr.slice(0,14).join('<br>')||'无')+'</div>'+
+    (whole.length?'<div style="margin-top:8px"><b style="color:var(--bad)">🗑️ 分解 · 整种全清</b>（这些没保留价值，一条搜出来全选）：<br><code>'+whole.slice(0,24).join(',')+'</code></div>':'')+
+    '<div style="margin-top:8px;color:var(--dim)">垃圾暗影（不能交易）：<code>'+kw('shadow')+'&!'+kw('shiny')+'&!'+kw('s4')+'</code> → 按CP强力的留几只，其余分解</div>';
 }
 function exportCSV(){
   var hdr=['处理','原因','名字','图鉴','暗影','极巨','CP','iv%','iv攻','iv防','iv体','GL名次','UL名次','ML名次','PvE_L40','PvE属性','稀有','闪光','幸运','造型','卡背','传承','招式','搜索串'];
