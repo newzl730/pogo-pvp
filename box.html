@@ -81,8 +81,8 @@ var BASE={},NAME={},TW={},EN={},FLAG={},CPM={},LEVELS=[],MEGADEX={},EDGES={},SP=
 var NONSPECIAL={FRUSTRATION:1,RETURN:1};// 暗影默认招/报恩，不算"特殊招"
 // 游戏内搜索：关键字随客户端语言本地化。名字用该语言的物种名。
 var KW={en:{shiny:'shiny',lucky:'lucky',shadow:'shadow',legendary:'legendary',s4:'4*',fav:'favorite'},
-        tw:{shiny:'異色',lucky:'幸運',shadow:'暗影',legendary:'傳說',s4:'4*',fav:'最愛'},
-        cn:{shiny:'异色',lucky:'幸运',shadow:'暗影',legendary:'传说',s4:'4*',fav:'最爱'}};
+        tw:{shiny:'異色',lucky:'亮晶晶',shadow:'暗影',legendary:'傳說',s4:'4*',fav:'最愛'},
+        cn:{shiny:'异色',lucky:'亮晶晶',shadow:'暗影',legendary:'传说',s4:'4*',fav:'最爱'}};
 function LANG(){var e=document.getElementById('slang');return e?e.value:'tw';}
 function spName(dex){var l=LANG();return l==='en'?(EN[dex]||dex):l==='cn'?(NAME[dex]||dex):(TW[dex]||NAME[dex]||dex);}
 function kw(k){return KW[LANG()][k];}
