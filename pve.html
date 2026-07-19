@@ -183,7 +183,7 @@ function _gotoPve(){
 window.addEventListener("hashchange",_gotoPve);
 document.getElementById("types").innerHTML=TYPES.map(function(t){return '<span class="tb'+(t[0]==="fire"?" on":"")+'" data-t="'+t[0]+'" style="background:'+t[2]+'" onclick="selType(\''+t[0]+'\')">'+t[1]+'</span>';}).join("");
 initSqlJs({locateFile:function(f){return "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/"+f;}}).then(function(SQL){
-  return fetch("pokemon.db?v20260719-44629").then(function(r){return r.arrayBuffer();}).then(function(buf){
+  return fetch("pokemon.db?v=pve1").then(function(r){return r.arrayBuffer();}).then(function(buf){
     DB=new SQL.Database(new Uint8Array(buf));
     rows("SELECT level,cpm FROM cpm").forEach(function(r){CPM[r.level]=r.cpm;});
     POK=rows("SELECT species_id,dex,name_cn,type1,type2,atk,def,hp,is_shadow,is_mega,released,sprite FROM pokemon");
